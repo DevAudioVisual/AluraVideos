@@ -1,0 +1,23 @@
+{
+    "fechar_ao_criar": false,
+    "diretorio_padrao": "",
+    "checks": [
+        {
+            "Abrir_Premiere": false,
+            "Abrir_pasta_do_projeto": false,
+            "Verificar_videos": true,
+            "Extrair_audio": true
+        }
+    ],
+    "subpastas": [
+        {
+            "01_Bruto": true,
+            "02_Audio": true,
+            "03_Assets": true,
+            "04_Premiere": true,
+            "05_AfterEfects": false,
+            "06_Photoshop-Illustrator": false,
+            "07_Render": true
+        }
+    ]
+}

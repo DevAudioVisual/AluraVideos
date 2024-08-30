@@ -1,0 +1,12 @@
+{
+    "Cache_Adobe": "",
+    "Pastas": [
+        {
+            "Temp": true,
+            "PorcentoTemp": true,
+            "Prefetch": true,
+            "Adobe Cache": false,
+            "Lixeira": true
+        }
+    ]
+}

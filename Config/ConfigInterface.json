@@ -1,0 +1,12 @@
+{
+    "MostrarUsuario": true,
+    "SegundoPlano": true,
+    "OrdemJanelas": [
+        {
+            "Projeto": true,
+            "Editar": true,
+            "Validador": true,
+            "Limpar Cache": true
+        }
+    ]
+}

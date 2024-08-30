@@ -1,0 +1,41 @@
+
+-af anull: remove silencio do audio
+
+-af aperms: Reorganiza os canais de áudio.
+
+-af aresample: Reamostra o áudio para uma nova taxa de amostragem.
+
+-af asetnsamples: Define o número de amostras em um quadro de áudio.
+
+-af ashowinfo: Mostra informações sobre o fluxo de áudio.
+
+-af astats: Calcula estatísticas sobre o fluxo de áudio.
+
+-af astreamsync: Sincroniza fluxos de áudio.
+
+-af asubboost: Aumenta as frequências baixas.
+
+-af atempo: Altera a velocidade do áudio.
+
+-af atrim: Corta o áudio.
+
+-af volume: Ajusta o volume do áudio.
+
+-af volumedetect: Detecta o volume do áudio.
+Outros Filtros:
+
+-af abuffer: Gerencia buffers de áudio.
+
+-af acrusher: Efeito de distorção.
+
+-af adeclick: Remove clicks (estalos) do áudio.
+
+-af adeemph: Aplica de-ênfase ao áudio.
+
+-af aecho: Adiciona eco ao áudio.
+
+-af aeq: Equalizador de áudio.
+
+-af afifo: Fila (FIFO) de áudio.
+
+-af afilt: Aplica um filtro FIR (Finite Impulse Response).
