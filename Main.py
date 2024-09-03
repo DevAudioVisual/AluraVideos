@@ -10,7 +10,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from z_Testes import InterfaceConfig
 
-titulo = "S_Videos " + Util.version
+titulo = "S_AluraVideos " + Util.version
 InterfacePrincipal = None
 
 
@@ -38,11 +38,11 @@ def handle_interrupt(signum, frame):
 
 def setup_logging():
     log_dir = os.path.join(os.path.expanduser(
-        "~"), "Documents", "S_Videos", "Logs")
+        "~"), "Documents", "S_AluraVideos", "Logs")
     os.makedirs(log_dir, exist_ok=True)
 
     # Nome base do arquivo de log
-    log_file = os.path.join(log_dir, "s_videos.log")
+    log_file = os.path.join(log_dir, "s_AluraVideos.log")
     file_handler = TimedRotatingFileHandler(
         log_file,
         when="midnight",
