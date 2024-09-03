@@ -4,10 +4,10 @@ from cx_Freeze import setup, Executable
 import Util.Util as Util
 # qt_platforms_path = os.path.join(os.environ['VIRTUAL_ENV'], 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins', 'platforms')
 build_exe_options = {
-    "packages": ["os", "shutil", "tkinter", "patoolib", "numpy", "pandas", "pystray", "PyQt5", "requests", "six", "tqdm", "filelock", "setuptools"],
+    "packages": ["os", "shutil", "tkinter", "patoolib", "numpy", "pandas", "pystray", "PyQt5", "requests", "six", "setuptools"],
     "include_files": ["ffmpeg", "Templates", "Imagens"],
     "include_msvcr": True,
-    "includes": ["PyQt5.sip", "moviepy.audio.fx.all"],
+    "includes": ["PyQt5.sip"],
     # "bin_includes": ["msvcp140.dll", "tbb12.dll"],
     # "bin_path_includes": ["C:\\Windows\\System32","C:\\Windows\\SysWOW64", "C:\\Arquivos de Programas\\Intel\\TBB\\bin","C:\\Program Files (x86)\\Intel\\oneAPI\\tbb\\2021.13\\bin"]
 }

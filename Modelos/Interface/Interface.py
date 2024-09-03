@@ -9,17 +9,14 @@ from PIL import Image
 import os
 import Main
 from Modelos.Atalhos import Atalhos
-from Modelos.ChatBot import ChatBotGemini
 from Modelos.LimparCache import InterfaceLimparCache
 from Modelos.EditorVideo import InterfaceConversorMP4
 from Modelos.CriarProjeto import InterfaceCriarProjeto
 from Config import LoadConfigAtalhos, LoadConfigInterface, InterfaceConfigEditor
 from Modelos.EditorAudio import EditorAudioInterFace
 from Modelos.SegundoPlano import BandejaWindows
-from Modelos.ValidarVideos import InterfaceValidador
 from Util import Util, Styles, CustomWidgets, VerificarAtualizações
 from Modelos.ProcurarAssets import ImagensPixababy
-from z_Testes import InterfaceConfig
 
 root = tk.Tk()
 
@@ -53,9 +50,6 @@ class App():
                     self.tabview)
             elif Janela == "Projeto":
                 self.tab_widgets["Projeto"] = InterfaceCriarProjeto.interfaceCriarProjeto(
-                    self.tabview)
-            elif Janela == "Validador":
-                self.tab_widgets["Validador"] = InterfaceValidador.interfaceValidador(
                     self.tabview)
 
         def on_tab_change():
@@ -105,7 +99,8 @@ class App():
             self.frameBarraLateral, text="O que vamos fazer hoje?", bg_color="teal").pack(side="top", padx=10)
 
         def gemini():
-            ChatBotGemini.criarChatBot(root=root)
+            return
+            # ChatBotGemini.criarChatBot(root=root)
         CustomWidgets.CustomButton(self.frameBarraLateral, text="Pergunte ao Gemini", width=170, background="teal",
                                    command=gemini, Image=CustomWidgets.CustomImage("gemini.png", 20, 20)).pack(side="top", padx=10, pady=5)
         CustomWidgets.CustomButton(self.frameBarraLateral, text="Minhas tarefas", width=170, background="teal",
