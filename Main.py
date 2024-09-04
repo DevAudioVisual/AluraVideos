@@ -49,7 +49,7 @@ def setup_logging():
         backupCount=15
     )
     file_handler.setLevel(logging.WARNING)
-    file_handler.suffix = "%Y-%m-%d"  # Sufixo para incluir a data no nome do arquivo
+    file_handler.suffix = "%Y-%m-%d.log"  # Sufixo para incluir a data no nome do arquivo
 
     stream_handler = logging.StreamHandler()
 

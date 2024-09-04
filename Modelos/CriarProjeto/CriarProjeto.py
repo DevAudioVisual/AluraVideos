@@ -17,7 +17,7 @@ def descompactar(arquivo_zip,diretorio_saida):
                 print("descompacando")
 
                 #converter_zip_rar(novo_nome_arquivo, diretorio_saida,barra_progresso)
-                janela, barra_progresso = Descompactador.criar_barra_progresso(Interface.root)
+                janela, barra_progresso = Descompactador.criar_barra_progresso(Interface.root,"Descompactando, aguarde...")
 
                 tamanho_total = os.path.getsize(arquivo_zip)
                 
@@ -97,17 +97,18 @@ def criar_pastas():
                     print("############ novolinkedescomapct")
                     arquivo_zip = BaixarDoDrop.caminho_completo_tratado
                     descompactar(arquivo_zip,diretorio_saida)
-                Interface.root.after(2000, novolinkedescomapct)           
+                Interface.root.after(5000, novolinkedescomapct)           
+                Interface.root.after_cancel(verificar_termino_download)
             else: Interface.root.after(1000, verificar_termino_download)       
                
         def verificar_termino():
             if thread_extracao:
-                if not thread_extracao.is_alive():
-                    if InterfaceCriarProjeto.verificar_videos.get():
-                        Tempo = TempoVideos.calcular_duracao_total(destinoVideos)
+                if not thread_extracao.is_alive() and Descompactador.evento_termino.isSet():
+                    Tempo = TempoVideos.calcular_duracao_total(destinoVideos)
                     if Tempo: 
                         messagebox.showinfo("Aviso", Mensagem+" \n"+f"Você tem {Tempo} de bruto para edição.")
                         abriroufechar()
+                    Interface.root.after_cancel(verificar_termino)
                 else:
                     Interface.root.after(1000, verificar_termino)  # Verifica novamente em 100ms
     verificar_termino()
