@@ -127,7 +127,7 @@ def check_zip_integrity(filename):
     except zipfile.BadZipFile:
         return False
 
-def baixar_pasta_dropbox(root,url, dir_path, num_threads=16, chunk_size=16 * 1024 * 1024):
+def baixar_pasta_dropbox(root,url, dir_path, num_threads=8, chunk_size=8 * 1024 * 1024):
     """Baixa um arquivo em partes usando threads e exibe o progresso."""
 
     if not url.startswith('https://www.dropbox.com'):

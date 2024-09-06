@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+z_Testes/
 ffmpeg/
 00_teste/
 develop-eggs/

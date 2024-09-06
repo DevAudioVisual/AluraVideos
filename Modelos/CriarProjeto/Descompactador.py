@@ -81,9 +81,11 @@ def atualizar_barra(barra_progresso, tamanho_total, diretorio_saida, janela, eve
             print(progresso)
 
             # Agendar atualização na thread principal
-            if barra_progresso:
+            if progresso < 99:
                 print("atualizando barra", progresso)
                 janela.after(100, lambda: barra_progresso.config(value=progresso))
+            else:
+                break
     except Exception as e:
         Util.LogError("Descompactador", f"Ocorreu um erro ao atualizar a barra de progresso: {e}")
 
@@ -112,8 +114,8 @@ def converter_zip_rar(arquivo_entrada, diretorio_saida, barra_progresso, janela,
         Util.LogError("Descompactador", f"Erro inesperado: {ex}")
     finally:
         global extrair_audio
-        if InterfaceCriarProjeto.extrair_audio.get() == True:
-            janela2, barra_progresso2 = criar_barra_progresso_audios(Interface.root,"Extraindo áudios...")
+        #if InterfaceCriarProjeto.extrair_audio.get() == True:
+        janela2, barra_progresso2 = criar_barra_progresso_audios(Interface.root,"Extraindo áudios...")
         def extrair():
             total_videos = sum(1 for filename in os.listdir(diretorio_saida) if filename.endswith(('.mp4', '.avi', '.mkv', '.mov')))
             audios_extraidos = 0    
@@ -153,15 +155,15 @@ def converter_zip_rar(arquivo_entrada, diretorio_saida, barra_progresso, janela,
                         print("Audios extraidos: ", audios_extraidos)              
                     except subprocess.CalledProcessError as e:
                         Util.LogError("Descompactador", f'Erro ao extrair áudio de "{filename}": {e}')
-        if InterfaceCriarProjeto.extrair_audio.get() == True:
-            def e():
-                Interface.root.after(1000, extrair)
-            thread_audio = threading.Thread(target=e)
-            thread_audio.daemon = True
-            thread_audio.start()
-        else:
-            evento_termino.set()
+        #if InterfaceCriarProjeto.extrair_audio.get() == True:
+        def e():
+            Interface.root.after(1000, extrair)
+        thread_audio = threading.Thread(target=e)
+        thread_audio.daemon = True
+        thread_audio.start()
+        #else:
+            #evento_termino.set()
         if janela:
             janela.after(1, janela.destroy)
             janela.after(1, barra_progresso.destroy)
-        evento_termino.set()
+        #evento_termino.set()

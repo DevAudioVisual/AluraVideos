@@ -13,7 +13,7 @@ from unidecode import unidecode
 
 def interfaceCriarProjeto(tabview):
     global input_dir_var, output_dir_var, nome_projeto_var, CriarEm, ArquivoVideos
-    global criar_arquivos, criar_pastas, abrir_premiere, abrir_pasta, subpasta_vars, fechar_ao_criar, verificar_videos, extrair_audio
+    global criar_arquivos, criar_pastas, abrir_premiere, abrir_pasta, subpasta_vars, fechar_ao_criar, verificar_videos
 
     input_dir_var = ctk.StringVar()
     output_dir_var = ctk.StringVar()
@@ -132,9 +132,8 @@ def interfaceCriarProjeto(tabview):
     CustomWidgets.CustomCheckBox(master=frameAbrirProjetoEPasta, text="Abrir pasta do projeto",
                                  dica="Selecione para abrir a pasta do projeto ao criar.", variable=abrir_pasta).pack(pady=(10, 0),padx=5, anchor="w", fill="x")
 
-    extrair_audio = tk.BooleanVar(value=checks_vars["Extrair_audio"])
-    CustomWidgets.CustomCheckBox(master=frameAbrirProjetoEPasta, text="Extrair audio",
-                                 dica=None, variable=extrair_audio).pack(pady=(10, 0), padx=5, anchor="w", fill="x")
+    #extrair_audio = tk.BooleanVar(value=checks_vars["Extrair_audio"])
+    #CustomWidgets.CustomCheckBox(master=frameAbrirProjetoEPasta, text="Extrair audio",dica=None, variable=extrair_audio).pack(pady=(10, 0), padx=5, anchor="w", fill="x")
 
     CustomWidgets.CustomLabel(dialog, text="Sub-pastas para criar:",
                               dica="Selecione quais sub-pastas devem ser criadas.", font=Styles.fonte_titulo).pack(pady=10, fill="x")
