@@ -1,13 +1,13 @@
 import tkinter as tk
+from collections import OrderedDict
 import re
-import customtkinter as ctk
-from Config import  LoadConfigAtalhos
+import Main
 from Util import CustomWidgets, Styles
 
 def ConfigAtalhosInterface(tabview):
-    config_data = LoadConfigAtalhos.load_config()
+    config_data = Main.Config.getConfigData("ConfigAtalhos")
     
-    frame = CustomWidgets.CustomScroolabeFrame(tabview.tab("Atalhos"))
+    frame = CustomWidgets.CustomFrame(tabview.tab("Atalhos"))
     frame.pack(pady=10,padx=10,fill="both")
     
     CustomWidgets.CustomLabel(frame,text="Teclas de atalho",font=Styles.fonte_titulo).pack()
@@ -19,7 +19,7 @@ def ConfigAtalhosInterface(tabview):
     c = ConfigAtalhos(config_data=config_data,frame=frame,text_area_editor=text_area_editor)
     c.update_config_from_widgets()
     
-    CustomWidgets.CustomButton(frame,text="Resetar configurações",command=LoadConfigAtalhos.resetar_config).pack(pady=10)
+    CustomWidgets.CustomButton(frame,text="Resetar configurações",command=lambda: Main.Config.Reset("ConfigAtalhos")).pack(pady=10)
 
 class ConfigAtalhos:
     def __init__(self, config_data,frame,text_area_editor):
@@ -27,8 +27,8 @@ class ConfigAtalhos:
         self.checkbox_vars = {}
         self.frame = frame
         self.text_area_editor = text_area_editor
-        
-        usarTeclas = tk.BooleanVar(value=LoadConfigAtalhos.TeclasDeAtalho)
+        self.data = Main.Config.getConfigData("ConfigAtalhos", should_be_sorted=True)
+        usarTeclas = tk.BooleanVar(value=self.data["TeclasDeAtalho"])
         self.checkbox_vars["TeclasDeAtalho"] = usarTeclas
         CustomWidgets.CustomCheckBox(frame,text="Habilitar teclas de atalho",variable=usarTeclas,command=self.update_config_from_widgets).pack(fill="x",expand=True,pady=10)
 
@@ -53,7 +53,7 @@ class ConfigAtalhos:
         self.atalhos[key] = novo_atalho
         
     def update_config_from_widgets(self):
-        with open(LoadConfigAtalhos.file_path, 'r', encoding='utf-8') as f:
+        with open(Main.Config.file_path["ConfigAtalhos"], 'r', encoding='utf-8') as f:
             config_str = f.read()
 
 

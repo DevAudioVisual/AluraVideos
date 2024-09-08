@@ -4,24 +4,25 @@ import signal
 import sys
 import threading
 from Modelos.Interface import Interface
-from Config import LoadConfigCache, LoadConfigCriarProjeto, LoadConfigInterface, LoadConfigAtalhos
+from Config import LoadConfigCache, LoadConfigs
 from Util import Util
 from logging.handlers import TimedRotatingFileHandler
+
+from z_Testes import LoadConfigAtalhos, LoadConfigInterface
 
 
 titulo = "AluraVideos " + Util.version
 InterfacePrincipal = None
+Config = LoadConfigs.Configs()
+
+
 
 
 def main():
-    global InterfacePrincipal
+    global InterfacePrincipal,Config
     setup_signal_handlers()
     setup_logging()
-
-    LoadConfigInterface.iniciarConfig()
-    LoadConfigAtalhos.iniciarConfig()
     LoadConfigCache.iniciarConfig()
-    LoadConfigCriarProjeto.IniciarConfig()
     InterfaceP()
     pass
 

@@ -1,38 +1,102 @@
-import subprocess
 import threading
+import time
 from tkinter import messagebox
 import webbrowser
 import shutil
 import os
-import Main
 from Modelos.Interface import Interface
 from Modelos.CriarProjeto import Descompactador, BaixarDoDrop, InterfaceCriarProjeto
 from Util import TempoVideos,Util
 
 
 
-def descompactar(arquivo_zip,diretorio_saida):
-                #novo_nome_arquivo = arquivo_zip.replace("ç", "c").replace("-", " ").replace("_", " ").strip()
-                #os.rename(arquivo_zip, novo_nome_arquivo)
-                print("descompacando")
+def download_completo(arquivo, tamanho_esperado=None):
+    """Verifica se o download do arquivo está completo."""
+    tamanho_anterior = 0
+    tempo_ultima_alteracao = time.time()
 
-                #converter_zip_rar(novo_nome_arquivo, diretorio_saida,barra_progresso)
-                janela, barra_progresso = Descompactador.criar_barra_progresso(Interface.root,"Descompactando, aguarde...")
+    while True:
+        try:
+            tamanho_atual = os.path.getsize(arquivo)
+        except FileNotFoundError:
+            # O arquivo ainda não existe, o download provavelmente não começou
+            time.sleep(1)
+            continue
 
-                tamanho_total = os.path.getsize(arquivo_zip)
-                
-                # Thread para a extração
-                global thread_extracao
-                thread_extracao = threading.Thread(target=Descompactador.converter_zip_rar, args=(arquivo_zip, diretorio_saida, barra_progresso, janela, Descompactador.evento_termino))
-                thread_extracao.daemon = True
-                thread_extracao.start()
+        if tamanho_esperado and tamanho_atual >= tamanho_esperado:
+            return True  # Download completo se atingiu o tamanho esperado
 
-                # Thread para a barra de progresso
-                global thread_barra
-                thread_barra = threading.Thread(target=Descompactador.atualizar_barra, args=(barra_progresso, tamanho_total, diretorio_saida, janela, Descompactador.evento_termino))
-                thread_barra.daemon = True
-                thread_barra.start()
+        if tamanho_atual == tamanho_anterior:
+            if time.time() - tempo_ultima_alteracao > 5:  # 5 segundos sem alteração
+                return True  # Download completo se o tamanho não muda por 5 segundos
+        else:
+            tempo_ultima_alteracao = time.time()
 
+        tamanho_anterior = tamanho_atual
+        time.sleep(1)
+
+def descompactar(arquivo_zip, diretorio_saida):
+    """Descompacta o arquivo, mas só se ele estiver 100% baixado."""
+
+    max_tentativas = 5
+    tentativa = 0
+
+    while tentativa < max_tentativas:
+        try:
+            if not download_completo(arquivo_zip):
+                raise Exception("Arquivo ainda não baixado completamente.")
+
+            print("Descompactando...")
+
+            janela, barra_progresso = Descompactador.criar_barra_progresso(
+                Interface.root, "Descompactando, aguarde..."
+            )
+
+            tamanho_total = os.path.getsize(arquivo_zip)
+
+            # Thread para a extração
+            global thread_extracao
+            thread_extracao = threading.Thread(
+                target=Descompactador.converter_zip_rar,
+                args=(
+                    arquivo_zip,
+                    diretorio_saida,
+                    barra_progresso,
+                    janela,
+                    Descompactador.evento_termino,
+                ),
+            )
+            thread_extracao.daemon = True
+            thread_extracao.start()
+
+            # Thread para a barra de progresso
+            global thread_barra
+            thread_barra = threading.Thread(
+                target=Descompactador.atualizar_barra,
+                args=(
+                    barra_progresso,
+                    tamanho_total,
+                    diretorio_saida,
+                    janela,
+                    Descompactador.evento_termino,
+                ),
+            )
+            thread_barra.daemon = True
+            thread_barra.start()
+
+            return  # Sai da função se a descompactação for bem-sucedida
+
+        except Exception as e:
+            print(f"Erro na descompactação (tentativa {tentativa + 1}): {e}")        
+            tentativa += 1
+            time.sleep(5)
+
+    # Se todas as tentativas falharem, cancela a ação
+    print("Falha na descompactação após várias tentativas. Cancelando a ação.")
+    Util.LogError("Descompactar",f"Falha na descompactação após várias tentativas. Cancelando a ação.",True)
+    Descompactador.evento_termino.set()
+    janela.destroy()
+    
 def criar_pastas():
     if not InterfaceCriarProjeto.CriarEm.get(): 
         Util.logWarning(None,"Diretório de criação inválido.",False)
@@ -93,11 +157,8 @@ def criar_pastas():
         def verificar_termino_download():
             if BaixarDoDrop.foi_baixado == True:
                 print("############ INICIANDO DESCOMPACTAÇAO")
-                def novolinkedescomapct():
-                    print("############ novolinkedescomapct")
-                    arquivo_zip = BaixarDoDrop.caminho_completo_tratado
-                    descompactar(arquivo_zip,diretorio_saida)
-                Interface.root.after(5000, novolinkedescomapct)           
+                arquivo_zip = BaixarDoDrop.caminho_completo_tratado
+                Interface.root.after(5000, lambda: descompactar(arquivo_zip,diretorio_saida))           
                 Interface.root.after_cancel(verificar_termino_download)
             else: Interface.root.after(1000, verificar_termino_download)       
                

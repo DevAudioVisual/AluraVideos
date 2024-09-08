@@ -1,16 +1,15 @@
 import json
-import re
 import tkinter as tk
 from tkinter import filedialog
-import Config.LoadConfigCriarProjeto as LoadConfig
 import customtkinter as ctk
 from Config import InterfaceConfigEditor
 from Util import Styles
 from Util import CustomWidgets
+import Main
 
 
 def ConfigCriarProjetoInterface(tabview):
-    config_data = LoadConfig.load_config()
+    config_data = Main.Config.getConfigData("ConfigCriarProjeto")
 
     framePrincipal = ctk.CTkFrame(tabview.tab(
         "Config Criar projeto"), bg_color=Styles.cor_fundo, fg_color=Styles.cor_fundo)

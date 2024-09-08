@@ -1,13 +1,12 @@
 import json
 import pandas as pd
-import Config.LoadConfigInterface as LoadConfigInterface;
 from tkinter import ttk
 import tkinter as tk
 from Util import Styles,CustomWidgets
+import Main
 
 
 def ConfigInterfaceInterface(tabview):
-    config_data = LoadConfigInterface.load_config()
     frame = CustomWidgets.CustomFrame(tabview.tab("Config Interface"))
     frame.pack(fill="both",pady=10,padx=10)
     
@@ -31,10 +30,10 @@ def ConfigInterfaceInterface(tabview):
       
 
 
-    MostrarUsuario = tk.BooleanVar(value=bool(LoadConfigInterface.MostrarUsuario))
+    MostrarUsuario = tk.BooleanVar(value=bool(Main.Config.getConfigData("ConfigInterface","MostrarUsuario")))
     CustomWidgets.CustomCheckBox(frame,text="Mostrar usuário na barra lateral",command=update_config_from_widgets,variable=MostrarUsuario).pack(pady=10,fill="x")
     
-    SegundoPlano = tk.BooleanVar(value=bool(LoadConfigInterface.SegundoPlano))
+    SegundoPlano = tk.BooleanVar(value=bool(Main.Config.getConfigData("ConfigInterface","SegundoPlano")))
     CustomWidgets.CustomCheckBox(frame,text="Perguntar se deseja o app em segundo plano ao fechar",command=update_config_from_widgets,variable=SegundoPlano).pack(pady=10,fill="x")
     
     Label = CustomWidgets.CustomLabel(frame,text="Ordem das janelas na interface principal",font=Styles.fonte_titulo)
@@ -58,10 +57,19 @@ def ConfigInterfaceInterface(tabview):
     
     JanelasAtivadas = []
     Janelas = {}
-    for Janela in LoadConfigInterface.Janelas:
+    ordem_janelas = Main.Config.getConfigData("ConfigInterface","OrdemJanelas")
+    DataJanelas = pd.DataFrame({'OrdemJanelas': ordem_janelas})
+    ordem_janelas_dict = DataJanelas.loc[0, 'OrdemJanelas']
+    janelas_visiveis = {chave: valor for chave, valor in ordem_janelas_dict.items() if valor}
+    JanelasVisiveis = pd.DataFrame({'OrdemJanelas': [janelas_visiveis]})
+    TodasAsJanelas = pd.DataFrame({'OrdemJanelas': [ordem_janelas_dict]})
+    Janelas2 = JanelasVisiveis['OrdemJanelas'].iloc[0]
+    TodasJanelas = TodasAsJanelas['OrdemJanelas'].iloc[0]
+    
+    for Janela in Janelas2:
         JanelasAtivadas.append(Janela)
         
-    for Janela in LoadConfigInterface.TodasJanelas:
+    for Janela in TodasJanelas:
         if Janela in JanelasAtivadas:   
             Var = tk.BooleanVar(value=True)
             Janelas[Janela] = Var
@@ -92,7 +100,15 @@ class App(ttk.Frame):
         
         
         linha = 0
-        for j in LoadConfigInterface.TodasJanelas:
+        ordem_janelas = Main.Config.getConfigData("ConfigInterface","OrdemJanelas")
+        DataJanelas = pd.DataFrame({'OrdemJanelas': ordem_janelas})
+        ordem_janelas_dict = DataJanelas.loc[0, 'OrdemJanelas']
+        janelas_visiveis = {chave: valor for chave, valor in ordem_janelas_dict.items() if valor}
+        JanelasVisiveis = pd.DataFrame({'OrdemJanelas': [janelas_visiveis]})
+        TodasAsJanelas = pd.DataFrame({'OrdemJanelas': [ordem_janelas_dict]})
+        Janelas2 = JanelasVisiveis['OrdemJanelas'].iloc[0]
+        TodasJanelas = TodasAsJanelas['OrdemJanelas'].iloc[0]
+        for j in TodasJanelas:
             self.ordem_janelas.insert(linha,j)
             linha += 1
 

@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import tkinter as tk
+import Main
 import json
 import Config.LoadConfigCache as LoadConfigCache
 from Modelos.Atalhos import InterfaceConfigAtalhos
@@ -10,7 +11,6 @@ import Modelos.LimparCache.InterfaceConfigLimparcache as InterfaceLimparcache
 from Util import CustomWidgets, Util,Styles
 from tkinter import messagebox, messagebox
 from Modelos.CriarProjeto import InterfaceConfigCriarProjeto as InterfaceCriarprojeto
-from Config import LoadConfigAtalhos, LoadConfigCriarProjeto, LoadConfigInterface
 from Modelos.Interface import InterfaceConfigInterface
 
             
@@ -22,9 +22,13 @@ def save_and_close():
             new_config_data_LimparCache = json.loads(new_config_LimparCache)
             # new_config_data_CriarProjeto = json.loads(new_config_CriarProjeto)     
             LoadConfigCache.save_config(new_config_data_LimparCache) 
-        LoadConfigCriarProjeto.salvar_configuracoes_json()
-        LoadConfigInterface.salvar_configuracoes_json()
-        LoadConfigAtalhos.salvar_configuracoes_json()
+        config = Main.Config
+        config.saveConfig(config="ConfigAtalhos",text_area_editor=InterfaceConfigAtalhos.text_area_editor)
+        config.saveConfig(config="ConfigInterface",text_area_editor=InterfaceConfigInterface.text_area_editor)
+        config.saveConfig(config="ConfigCriarProjeto",text_area_editor=InterfaceCriarprojeto.text_area_editor)
+        #LoadConfigCriarProjeto.salvar_configuracoes_json()
+        #LoadConfigInterface.salvar_configuracoes_json()
+        #LoadConfigAtalhos.salvar_configuracoes_json()
        # print(f"Conteúdo do text_area_editor: {new_config_CriarProjeto}")  # Verifica o conteúdo
         #print(f"Tipo do conteúdo: {type(new_config_CriarProjeto)}") 
         

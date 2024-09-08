@@ -1,7 +1,8 @@
 import threading
 from tkinter import messagebox
 import keyboard
-from Config import LoadConfigAtalhos
+from z_Testes import LoadConfigAtalhos
+import Main
 from Modelos.Interface import Interface
 from Modelos.LimparCache import Limpeza
 from Modelos.ProcurarAssets import ImagensPixababy
@@ -10,10 +11,10 @@ from Util import Util
 class TeclasAtalho():
     def __init__(self):
         super().__init__()
-        self.ConfigAtalhos = LoadConfigAtalhos.load_config()
+        self.ConfigAtalhos = Main.Config
         
     def registrarAtalhos(self):
-        for atalhos, teclas in self.ConfigAtalhos.items():
+        for atalhos, teclas in self.ConfigAtalhos.getConfigData("ConfigAtalhos").items():
             comando = None
             if atalhos == "Mostrar": comando = self.Mostrar
             if atalhos == "Esconder": comando = self.Esconder

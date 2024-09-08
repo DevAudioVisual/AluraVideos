@@ -10,12 +10,6 @@ import unicodedata
 
 version = "1.0.6"
 
-
-global diretorio_atual
-global icone
-diretorio_atual = Path(__file__).parent.absolute()
-icone = os.path.join(diretorio_atual, 'icon.ico')
-
 def reabrir():
     try:
         if getattr(sys, 'frozen', False):  # If the program is compiled as an executable
@@ -68,7 +62,7 @@ def pegarTemplate(template):
     return os.path.join("Templates", template)
 
 def pegarImagem(imagem):
-    return os.path.join("Imagens", imagem)
+    return os.path.join(r"Assets\Images", imagem)
 
 def pegarFFMPEG():
     return os.path.join("ffmpeg", "ffmpeg.exe")
@@ -90,17 +84,17 @@ def frames_to_ms(frames, fps):
 
 
 def logWarning(func,mensagem,dialog = True):
-    logging.warn(f"Aviso na função {func} ", quebrar_linhas(mensagem))
-    print(f"Aviso na função {func} ", quebrar_linhas(mensagem))
+    logging.warn(f"Aviso na função {func} ", mensagem)
+    print(f"Aviso na função {func} ", mensagem)
     if dialog:
-        messagebox.showwarning("Aviso",mensagem)
+        messagebox.showwarning("Aviso",quebrar_linhas(mensagem))
 def logInfo(func,mensagem,dialog = True):
-    logging.debug(f"Info na função {func} ", quebrar_linhas(mensagem))
-    print(f"Info na função {func} ", quebrar_linhas(mensagem))
+    logging.debug(f"Info na função {func} ", mensagem)
+    print(f"Info na função {func} ", mensagem)
     if dialog:
-        messagebox.showwarning("Info",mensagem)
+        messagebox.showinfo("Info",quebrar_linhas(mensagem))
 def LogError(func,mensagem,dialog = True):
-    logging.error(f"Erro na função {func} ", quebrar_linhas(mensagem))
-    print(f"Erro na função {func} ", quebrar_linhas(mensagem))
+    logging.error(f"Erro na função {func} ", mensagem)
+    print(f"Erro na função {func} ", mensagem)
     if dialog:
-        messagebox.showwarning("Erro",quebrar_linhas(mensagem))
+        messagebox.showerror("Erro",quebrar_linhas(mensagem))

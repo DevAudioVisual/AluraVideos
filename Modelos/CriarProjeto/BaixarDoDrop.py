@@ -6,7 +6,6 @@ import time
 import tkinter as tk
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import Main
 from Modelos.CriarProjeto import InterfaceCriarProjeto
 from Modelos.Interface import Interface
 from tkinter import ttk,messagebox

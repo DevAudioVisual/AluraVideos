@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+.vscode/
 z_Testes/
 ffmpeg/
 00_teste/

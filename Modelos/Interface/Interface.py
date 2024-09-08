@@ -3,6 +3,8 @@ import threading
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 import webbrowser
+
+import pandas as pd
 import Ajuda as Ajuda
 import customtkinter as ctk
 from PIL import Image
@@ -12,11 +14,12 @@ from Modelos.Atalhos import Atalhos
 from Modelos.LimparCache import InterfaceLimparCache
 from Modelos.EditorVideo import InterfaceConversorMP4
 from Modelos.CriarProjeto import InterfaceCriarProjeto
-from Config import LoadConfigAtalhos, LoadConfigInterface, InterfaceConfigEditor
+from Config import InterfaceConfigEditor
 from Modelos.EditorAudio import EditorAudioInterFace
 from Modelos.SegundoPlano import BandejaWindows
 from Util import Util, Styles, CustomWidgets, VerificarAtualizações
 from Modelos.ProcurarAssets import ImagensPixababy
+from z_Testes import LoadConfigAtalhos, LoadConfigInterface
 
 root = tk.Tk()
 
@@ -33,7 +36,15 @@ class App():
     def carregarInterfacePrincipal(self):
         self.createFrames()
         self.tab_widgets = {}
-        for Janela in LoadConfigInterface.Janelas:
+        self.ordem_janelas = Main.Config.getConfigData("ConfigInterface","OrdemJanelas")
+        self.DataJanelas = pd.DataFrame({'OrdemJanelas': self.ordem_janelas})
+        self.ordem_janelas_dict = self.DataJanelas.loc[0, 'OrdemJanelas']
+        self.janelas_visiveis = {chave: valor for chave, valor in self.ordem_janelas_dict.items() if valor}
+        self.JanelasVisiveis = pd.DataFrame({'OrdemJanelas': [self.janelas_visiveis]})
+        self.TodasAsJanelas = pd.DataFrame({'OrdemJanelas': [self.ordem_janelas_dict]})
+        self.Janelas = self.JanelasVisiveis['OrdemJanelas'].iloc[0]
+        self.TodasJanelas = self.TodasAsJanelas['OrdemJanelas'].iloc[0]
+        for Janela in self.Janelas:
             self.tabview.add(Janela)
             if Janela == "Editar":
                 self.tabviewAudioEVideos = CustomWidgets.CustomTabview(
@@ -74,7 +85,7 @@ class App():
 
         ctk.CTkLabel(self.frameBarraLateral, text=None, image=CustomWidgets.CustomImage(
             "icon.ico", 100, 100)).pack(side="top", fill="x", padx=10, pady=10)
-        if LoadConfigInterface.MostrarUsuario:
+        if Main.Config.getConfigData("ConfigInterface","MostrarUsuario") == True:
             usuario = ",\n"+os.getlogin()
         else:
             usuario = " "
@@ -160,7 +171,7 @@ class App():
 
         global Bandeja
         Bandeja = None
-        if LoadConfigInterface.SegundoPlano == True:
+        if Main.Config.getConfigData("ConfigInterface","SegundoPlano") == True:
             Bandeja = BandejaWindows.App(root)
         # Agende a verificação de atualização após 1 segundo (1000 milissegundos)
         root.after(1000, verificar_atualizacaoEvent)
@@ -196,7 +207,7 @@ class App():
         root.columnconfigure(1, weight=1)
 
     def registrarAtalhos(self):
-        if LoadConfigAtalhos.TeclasDeAtalho:
+        if Main.Config.getConfigData("ConfigAtalhos","TeclasDeAtalho") == True:
             ata = Atalhos.TeclasAtalho()
             ata.registrarAtalhos()
 

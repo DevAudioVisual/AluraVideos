@@ -1,19 +1,23 @@
 import os
+import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from Modelos.CriarProjeto import CriarProjeto, InterfaceConfigCriarProjeto
-import Config.LoadConfigCriarProjeto as LoadConfig
+from Modelos.CriarProjeto import CriarProjeto
 import customtkinter as ctk
 from Util import Util, Styles, CustomWidgets
 import re
 import requests
 from bs4 import BeautifulSoup
 from unidecode import unidecode
+import Main
 
 
 def interfaceCriarProjeto(tabview):
     global input_dir_var, output_dir_var, nome_projeto_var, CriarEm, ArquivoVideos
     global criar_arquivos, criar_pastas, abrir_premiere, abrir_pasta, subpasta_vars, fechar_ao_criar, verificar_videos
+
+    config = Main.Config.getConfigData("ConfigCriarProjeto")
+    df = Main.Config.getDataFrame("ConfigCriarProjeto")
 
     input_dir_var = ctk.StringVar()
     output_dir_var = ctk.StringVar()
@@ -33,7 +37,7 @@ def interfaceCriarProjeto(tabview):
     CustomWidgets.CustomLabel(dialog, text="Diretório do projeto:",
                               font=Styles.fonte_titulo).pack(pady=5, fill="x")
 
-    CriarEm = tk.StringVar(value=LoadConfig.diretorio_padrao)
+    CriarEm = tk.StringVar(value=config["diretorio_padrao"])
 
     def changeDirectory():
         try:
@@ -106,10 +110,16 @@ def interfaceCriarProjeto(tabview):
         filepath = dialogo.get_input()
         ArquivoVideos.set(filepath)
 
-        nome_projeto_var.set(limpar_texto(obter_nome_pasta(filepath)))
+        def setNomeProjeto():
+            nome_projeto_var.set("Aguarde...")
+            nome_projeto_var.set(limpar_texto(obter_nome_pasta(filepath)))
+            
+        setNomeP = threading.Thread(target=setNomeProjeto)
+        setNomeP.daemon = True
+        setNomeP.start()
 
     checks_vars = {}
-    checks = LoadConfig.checks.items()
+    checks = df['checks'].iloc[0].items()
     for ch, ci in checks:
         checks_vars[ch] = ci
 
@@ -147,7 +157,7 @@ def interfaceCriarProjeto(tabview):
     coluna_atual = 0
     row = 0
 
-    for subpasta, criar in LoadConfig.subpastas.items():
+    for subpasta, criar in df['subpastas'].iloc[0].items():
         subpasta_vars[subpasta] = tk.BooleanVar(value=criar)
         CustomWidgets.CustomCheckBox(master=subpastas_frame, text=subpasta, variable=subpasta_vars[subpasta]).grid(
             row=row, column=coluna_atual, sticky="w", pady=5
@@ -156,7 +166,7 @@ def interfaceCriarProjeto(tabview):
         if row == 3:
             row = 0
             coluna_atual += 1
-    fechar_ao_criar = LoadConfig.fechar_ao_criar
+    fechar_ao_criar = config["fechar_ao_criar"]
     fechar_ao_criar = tk.BooleanVar(value=bool(fechar_ao_criar))
     CustomWidgets.CustomButton(master=dialog, text="Criar", dica="Clique aqui para criar seu projeto.",
                                command=CriarProjeto.criar_pastas, width=200).pack(anchor="center", pady=10, side=("left"), padx=10, fill="x")

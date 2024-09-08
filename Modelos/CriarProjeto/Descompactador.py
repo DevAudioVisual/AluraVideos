@@ -2,13 +2,9 @@ import os
 import re
 import subprocess
 import threading
-import time
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 import patoolib
-
-import Main
-from Modelos.CriarProjeto import CriarProjeto, InterfaceCriarProjeto
 from Modelos.Interface import Interface
 from Util import Util
 
