@@ -27,7 +27,7 @@ class TeclasAtalho():
             try:
                 if comando is not None and teclas: 
                     keyboard.add_hotkey(teclas.lower(),comando)
-                    print(f"Atalho: {atalhos} registrado com o comando: {teclas}")
+                    #print(f"Atalho: {atalhos} registrado com o comando: {teclas}")
                 else: print(f"Atalho: {atalhos} não registrado")
             except Exception as e:
                 Util.LogError("Atalho",f"Ocorreu um erro ao atribuir o atalho: {atalhos}")            
@@ -44,7 +44,7 @@ class TeclasAtalho():
     def BuscarImagens(self):
         ImagensPixababy.abrirInterface()    
     def iniciarlimpeza(self):
-        print("Atalho iniciar limpeza")
+        #print("Atalho iniciar limpeza")
         thread = threading.Thread(target=Limpeza.iniciar_limpeza)
         thread.daemon = True
         thread.start()  

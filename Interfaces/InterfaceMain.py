@@ -43,10 +43,9 @@ class App():
         self.Janelas = self.JanelasVisiveis['OrdemJanelas'].iloc[0]
         self.TodasJanelas = self.TodasAsJanelas['OrdemJanelas'].iloc[0]
         for Janela in self.Janelas:
-            self.tabview.add(Janela)
+            self.tabview.add(Janela) 
             if Janela == "Editar":
-                self.tabviewAudioEVideos = CustomWidgets.CustomTabview(
-                    self.tabview.tab("Editar"))
+                self.tabviewAudioEVideos = CustomWidgets.CustomTabview(self.tabview.tab("Editar"))
                 self.tabviewAudioEVideos.pack(pady=(0, 0))
                 self.tabviewAudioEVideos.add("Video")
                 self.tabviewAudioEVideos.add("Audio")
@@ -80,6 +79,7 @@ class App():
             widgets.pack_forget()
 
         on_tab_change()
+    
 
         ctk.CTkLabel(self.frameBarraLateral, text=None, image=CustomWidgets.CustomImage(
             "icon.ico", 100, 100)).pack(side="top", fill="x", padx=10, pady=10)

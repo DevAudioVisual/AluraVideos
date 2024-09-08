@@ -174,7 +174,8 @@ def CustomTabview(frame):
                           segmented_button_fg_color=Styles.cor_fundo,
                           segmented_button_selected_color=Styles.cor_ativo,
                           segmented_button_selected_hover_color=Styles.cor_ativo,
-                          segmented_button_unselected_hover_color=Styles.cor_ativo)
+                          segmented_button_unselected_hover_color=Styles.cor_ativo,
+                          state="normal")
 
 
 def CustomScroolabeFrame(frame):

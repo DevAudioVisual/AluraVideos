@@ -8,15 +8,9 @@ from Config import LoadConfigCache, LoadConfigs
 from Util import Util
 from logging.handlers import TimedRotatingFileHandler
 
-from z_Testes import LoadConfigAtalhos, LoadConfigInterface
-
-
 titulo = "AluraVideos " + Util.version
 InterfacePrincipal = None
 Config = LoadConfigs.Configs()
-
-
-
 
 def main():
     global InterfacePrincipal,Config
@@ -68,13 +62,11 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)
         return
-    logging.error("Exceção não tratada", exc_info=(
-        exc_type, exc_value, exc_traceback))
+    logging.error("Exceção não tratada", exc_info=(exc_type, exc_value, exc_traceback))
 
 
 def thread_exception_handler(args):
-    logging.error("Exceção não tratada em thread", exc_info=(
-        args.exc_type, args.exc_value, args.exc_traceback))
+    logging.error("Exceção não tratada em thread", exc_info=(args.exc_type, args.exc_value, args.exc_traceback))
 
 
 def InterfaceP():

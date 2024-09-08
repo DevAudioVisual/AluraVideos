@@ -1,10 +1,10 @@
 {
     "MostrarUsuario": true,
-    "SegundoPlano": true,
+    "SegundoPlano": false,
     "OrdemJanelas": [
         {
             "Projeto": true,
-            "Editar": true,
+            "Editar": false,
             "Limpar Cache": true
         }
     ]

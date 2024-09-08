@@ -12,6 +12,7 @@ build/
 .vscode/
 z_Testes/
 ffmpeg/
+Output/
 00_teste/
 develop-eggs/
 dist/

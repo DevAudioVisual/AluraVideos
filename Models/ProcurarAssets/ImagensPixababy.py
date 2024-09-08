@@ -2,9 +2,10 @@ import sys
 import threading
 import requests
 import os
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QListWidget, QPushButton, QLabel, QHBoxLayout, QListWidgetItem, QMessageBox, QComboBox
-from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtCore import Qt, QByteArray, QBuffer, QIODevice, QThread, pyqtSignal, QRunnable, QThreadPool
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QListWidget, QPushButton, QLabel, QHBoxLayout, QListWidgetItem, QMessageBox, QComboBox
+from PyQt6.QtGui import QPixmap, QImage, QCursor
+from PyQt6.QtCore import Qt, QByteArray, QBuffer, QIODevice, QThread, pyqtSignal, QRunnable, QThreadPool
+
 from functools import lru_cache
 
 from Util import Util
@@ -39,7 +40,7 @@ class ImageDownloader(QRunnable):
                     if not self.is_preview or not content_type.startswith("image/png"):
                         byte_array = QByteArray()
                         buffer = QBuffer(byte_array)
-                        buffer.open(QIODevice.WriteOnly)
+                        buffer.open(QIODevice.OpenModeFlag.WriteOnly)
                         image.save(buffer, "PNG")
                         image.loadFromData(byte_array)
 
@@ -48,7 +49,7 @@ class ImageDownloader(QRunnable):
                     if self.is_preview:
                         # Redimensionar apenas a miniatura
                         pixmap = pixmap.scaled(
-                            self.asset_widget.image_label.size(), Qt.KeepAspectRatio)
+                            self.asset_widget.image_label.size(), Qt.AspectRatioMode.KeepAspectRatio)
 
                     self.asset_widget.image_label.setPixmap(pixmap)
 
@@ -90,13 +91,13 @@ class AssetItem(QWidget):
 
     def set_image(self, pixmap):
         self.image_label.setPixmap(pixmap.scaled(
-            self.image_label.size(), Qt.KeepAspectRatio))
+            self.image_label.size(), Qt.AspectRatioMode.KeepAspectRatio))
 
     def set_image_from_data(self, image_data):
         try:
             image = QImage.fromData(image_data)
             pixmap = QPixmap.fromImage(image).scaled(
-                self.image_label.size(), Qt.KeepAspectRatio)
+                self.image_label.size(), Qt.AspectRatioMode.KeepAspectRatio)
             self.image_label.setPixmap(pixmap)
         except Exception as e:
             Util.LogError("ImagensPixaBaby",
@@ -142,7 +143,7 @@ class AssetDownloader(QWidget):
         search_layout.addWidget(self.Ordem)
 
         self.search_button = QPushButton("Pesquisar")
-        self.search_button.setCursor(Qt.PointingHandCursor)
+        self.search_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.search_button.clicked.connect(self.search_assets)
         search_layout.addWidget(self.search_button)
         layout.addLayout(search_layout)
@@ -153,20 +154,20 @@ class AssetDownloader(QWidget):
 
         # Botão de download
         self.download_button = QPushButton("Baixar")
-        self.download_button.setCursor(Qt.PointingHandCursor)
+        self.download_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.download_button.clicked.connect(self.download_asset)
         layout.addWidget(self.download_button)
 
         # Botões de paginação
         pagination_layout = QHBoxLayout()
         self.previous_button = QPushButton("Página anterior")
-        self.previous_button.setCursor(Qt.PointingHandCursor)
+        self.previous_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.previous_button.setEnabled(False)
         self.previous_button.clicked.connect(self.previous_page)
         pagination_layout.addWidget(self.previous_button)
 
         self.next_button = QPushButton("Próxima página")
-        self.next_button.setCursor(Qt.PointingHandCursor)
+        self.next_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.next_button.setEnabled(False)
         self.next_button.clicked.connect(self.next_page)
         pagination_layout.addWidget(self.next_button)
@@ -339,7 +340,7 @@ def abrirInterface():
         window = AssetDownloader()
         window.show()
         # Importante: Remover 'sys.exit(app.exec_())' para que o Tkinter não feche
-        app.exec_()
+        app.exec()
     run_app()
     # thread = threading.Thread(target=run_app)
     # thread.daemon = True
