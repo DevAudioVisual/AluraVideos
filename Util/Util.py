@@ -65,12 +65,24 @@ def pegarImagem(imagem):
     return os.path.join(r"Assets\Images", imagem)
 
 def pegarFFMPEG():
-    return os.path.join("ffmpeg", "ffmpeg.exe")
-
+    caminho_ffmpeg = os.path.join("ffmpeg", "ffmpeg.exe")
+    if os.path.exists(caminho_ffmpeg):
+        return caminho_ffmpeg
+    else:
+        return "ffmpeg"
 def pegarFFMPLAY():
-    return os.path.join("ffmpeg", "ffplay.exe")
+    caminho_ffplay = os.path.join("ffmpeg", "ffplay.exe")
+    if os.path.exists(caminho_ffplay):
+        return caminho_ffplay
+    else:
+        return "ffplay"
 def pegarFFPROBRE():
-    return os.path.join("ffmpeg", "ffprobe.exe")
+    caminho_ffprobe = os.path.join("ffmpeg", "ffprobe.exe")
+    if os.path.exists(caminho_ffprobe):
+        return caminho_ffprobe
+    else:
+        return "ffprobe"
+
 
 
 def frames_to_ms(frames, fps):

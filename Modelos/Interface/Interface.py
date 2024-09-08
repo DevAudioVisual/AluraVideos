@@ -5,7 +5,6 @@ from tkinter import ttk, messagebox, scrolledtext
 import webbrowser
 
 import pandas as pd
-import Ajuda as Ajuda
 import customtkinter as ctk
 from PIL import Image
 import os
@@ -158,7 +157,8 @@ class App():
         label_autor.pack(anchor="center", pady=5)
 
         def vaiseapaoxionar(event):
-            Ajuda.interfaceAjuda()
+            return
+            #Ajuda.interfaceAjuda()
         # Torna o texto clicável
         label_autor.bind("<Button-1>", abrir_link)
         label_autor.bind("<Button-3>", vaiseapaoxionar)
