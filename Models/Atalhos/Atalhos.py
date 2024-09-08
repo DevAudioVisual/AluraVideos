@@ -1,7 +1,5 @@
 import threading
-from tkinter import messagebox
 import keyboard
-from z_Testes import LoadConfigAtalhos
 import Main
 from Interfaces import InterfaceMain
 from Models.LimparCache import Limpeza
