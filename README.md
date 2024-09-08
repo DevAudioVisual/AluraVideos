@@ -17,8 +17,3 @@ Em sua fase beta, contamos com:
 - Automatizar upload e criação de showcases no vimeo
 - Automatizar cadastro na plataforma.
 
-## Você poderá encontrar o __download oficial__ em: https://samuelmariano.com/aluravideos
-
-```
-teste
-```
