@@ -6,8 +6,8 @@ from pystray import MenuItem as item
 from PIL import Image
 import threading
 from Util import Util
-from Modelos.LimparCache import Limpeza
-from Modelos.ProcurarAssets import ImagensPixababy
+from Models.LimparCache import Limpeza
+from Models.ProcurarAssets import ImagensPixababy
 
 class App:
     def __init__(self, root):

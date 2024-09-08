@@ -2,7 +2,7 @@ import json
 import tkinter as tk
 from tkinter import filedialog
 import customtkinter as ctk
-from Config import InterfaceConfigEditor
+from Interfaces import ConfigEditorInterface
 from Util import Styles
 from Util import CustomWidgets
 import Main
@@ -46,7 +46,7 @@ def ConfigCriarProjetoInterface(tabview):
         dirr = filedialog.askdirectory()
         diretorio_padrao.set(dirr)
         update_config_from_widgets()
-        InterfaceConfigEditor.editor_window.focus()
+        ConfigEditorInterface.editor_window.focus()
     CustomWidgets.CustomButton(frameDiretorios, text="Buscar", Image=CustomWidgets.CustomImage(
         "folder.png", 20, 20), command=escolherDir).pack(side="left")
 

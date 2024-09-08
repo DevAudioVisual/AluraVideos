@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk
 import Config.LoadConfigCache as LoadConfigCache
-import Modelos.LimparCache.Limpeza as LimparCache
+import Models.LimparCache.Limpeza as LimparCache
 import Util.Styles as Styles
 import customtkinter as ctk
 import Util.CustomWidgets as CustomWidgets

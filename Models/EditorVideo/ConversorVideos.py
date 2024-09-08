@@ -3,8 +3,8 @@ import subprocess
 import threading
 from tkinter import ttk
 import Main
-import Modelos.EditorVideo.InterfaceConversorMP4 as InterfaceConversorMP4
-from Modelos.Interface import Interface
+import Interfaces.EditorVideoInterface as EditorVideoInterface
+from Interfaces import InterfaceMain
 import Util.Util as Util
 import fnmatch
 import os
@@ -19,13 +19,13 @@ def select_input_directory():
     entrada = ctk.StringVar()
     arquivo = filedialog.askopenfiles()
     entrada.set(arquivo[0].name)
-    InterfaceConversorMP4.input_dir_var2.set(entrada.get())
+    EditorVideoInterface.input_dir_var2.set(entrada.get())
     for a in arquivo:     
-       InterfaceConversorMP4.input_dir_var.append(a.name)
+       EditorVideoInterface.input_dir_var.append(a.name)
 
 def select_output_directory():
     output_directory = filedialog.askdirectory()
-    InterfaceConversorMP4.output_dir_var.set(output_directory)
+    EditorVideoInterface.output_dir_var.set(output_directory)
 
 class Converter():
     def __init__(self, input_dir, output_dir,decodificadorVar,video_fps,video_crf,preset_compressao,ResolucaooVar,formatoDe,formatoPara):
@@ -56,7 +56,7 @@ class Converter():
         
         
     def criarBarradeProgresso(self):
-        self.janela = tk.Toplevel(Interface.root)
+        self.janela = tk.Toplevel(InterfaceMain.root)
         self.janela.title("Convertendo, aguarde...")
 
         # Trazer a janela para frente
@@ -153,43 +153,43 @@ class Converter():
             return "h264_nvenc"
     def getResulucao(self):
         if self.ResolucaooVar == "4k":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 3840*2
                 return f"{valor}x2160"
             else:
                 return "3840x2160"
         elif self.ResolucaooVar == "2k":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 2048*2
                 return f"{valor}x1080"
             else:
                 return "2048x1080"
         elif self.ResolucaooVar == "1080P":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 1920*2
                 return f"{valor}x1080"
             else:
                 return "1920x1080"
         elif self.ResolucaooVar == "720P":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 1280*2
                 return f"{valor}x720"
             else:
                 return "1280x720"
         elif self.ResolucaooVar == "480P":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 854*2
                 return f"{valor}x480"
             else:
                 return "854x480"
         elif self.ResolucaooVar == "360P":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 640*2
                 return f"{valor}x360"
             else:
                 return "640x360"
         elif self.ResolucaooVar == "144P":
-            if InterfaceConversorMP4.UltraWideoVar.get() == 1:
+            if EditorVideoInterface.UltraWideoVar.get() == 1:
                 valor = 256*2
                 return f"{valor}x144"
             else:

@@ -2,7 +2,7 @@ import tkinter as tk
 import re
 import Config.LoadConfigCache as LoadConfigCache
 import customtkinter as ctk
-from Config import InterfaceConfigEditor
+from Interfaces import ConfigEditorInterface
 from tkinter import filedialog
 from Util import CustomWidgets, Styles
 
@@ -25,7 +25,7 @@ def ConfigLimparCacheInterface(tabview):
     entry_vars = {}
     def escolher_diretorio(var):
         novo_diretorio = filedialog.askdirectory()
-        InterfaceConfigEditor.editor_window.focus()
+        ConfigEditorInterface.editor_window.focus()
         if novo_diretorio:
             novo_diretorio = novo_diretorio.replace("/", "\\\\")  # Duplica as barras invertidas
             #print(novo_diretorio)  # Verifica o valor retornado

@@ -6,8 +6,8 @@ import time
 import tkinter as tk
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from Modelos.CriarProjeto import InterfaceCriarProjeto
-from Modelos.Interface import Interface
+from Interfaces import CriarProjetoInterface
+from Interfaces import InterfaceMain
 from tkinter import ttk,messagebox
 from Util import CustomWidgets, Styles, Util
 from http.client import HTTPConnection 
@@ -162,13 +162,13 @@ def baixar_pasta_dropbox(root,url, dir_path, num_threads=8, chunk_size=8 * 1024 
 
         chunk_size = (total_size + num_threads - 1) // num_threads  
 
-        progress = DownloadProgress(Interface.root,total_size)
+        progress = DownloadProgress(InterfaceMain.root,total_size)
         lock = threading.Lock() 
         stop_event = threading.Event()
 
         threads = []
         #nome_arquivo = url_download.split("/")[-1].split("?")[0] + ".zip"
-        nome_arquivo = InterfaceCriarProjeto.nome_projeto_var.get() + ".zip"
+        nome_arquivo = CriarProjetoInterface.nome_projeto_var.get() + ".zip"
         for i in range(num_threads):
             chunk_start = i * chunk_size
             chunk_end = min(chunk_start + chunk_size - 1, total_size - 1)
@@ -191,7 +191,7 @@ def baixar_pasta_dropbox(root,url, dir_path, num_threads=8, chunk_size=8 * 1024 
             global foi_baixado    
             foi_baixado = True
                 
-        Interface.root.after(1000, baixou)
+        InterfaceMain.root.after(1000, baixou)
 
         if not check_zip_integrity(original):
             Util.LogError("DropboxDownloader","Arquivo ZIP corrompido.\nSe persistir, use o site do dropbox e reporte o erro.")
@@ -208,4 +208,4 @@ def baixar_pasta_dropbox(root,url, dir_path, num_threads=8, chunk_size=8 * 1024 
             global foi_baixado  
             foi_baixado = False
             print("Foi_baixado = False")
-        Interface.root.after(10000, f)
+        InterfaceMain.root.after(10000, f)

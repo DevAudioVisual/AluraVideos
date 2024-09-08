@@ -3,9 +3,9 @@ from tkinter import messagebox
 import keyboard
 from z_Testes import LoadConfigAtalhos
 import Main
-from Modelos.Interface import Interface
-from Modelos.LimparCache import Limpeza
-from Modelos.ProcurarAssets import ImagensPixababy
+from Interfaces import InterfaceMain
+from Models.LimparCache import Limpeza
+from Models.ProcurarAssets import ImagensPixababy
 from Util import Util
 
 class TeclasAtalho():
@@ -36,11 +36,11 @@ class TeclasAtalho():
         
         
     def Mostrar(self):
-        Interface.Bandeja.show_window() 
+        InterfaceMain.Bandeja.show_window() 
     def Esconder(self):
-        Interface.Bandeja.on_closing()     
+        InterfaceMain.Bandeja.on_closing()     
     def Fechar(self):
-        Interface.root.destroy()       
+        InterfaceMain.root.destroy()       
     def BuscarImagens(self):
         ImagensPixababy.abrirInterface()    
     def iniciarlimpeza(self):

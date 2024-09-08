@@ -10,10 +10,10 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 import numpy as np
 import Main
-import Modelos.EditorAudio.EditorAudioInterFace as AudioInterFace
+import Interfaces.EditorAudioInterface as AudioInterFace
 from tkinter import ttk
-from Modelos.EditorAudio.Efeitos import Speechnorm
-from Modelos.Interface import Interface
+from Models.EditorAudio.Efeitos import Speechnorm
+from Interfaces import InterfaceMain
 from Util import Util
 import Util.CustomWidgets as CustomWidgets
 import Util.Styles as Styles
@@ -217,7 +217,7 @@ class FiltrosAudio():
               # Remover o arquivo temporário após o uso
               os.remove(saida_temporaria)
   def criarBarradeProgresso(self):
-        self.janela = tk.Toplevel(Interface.root)
+        self.janela = tk.Toplevel(InterfaceMain.root)
         self.janela.title("Convertendo, aguarde...")
 
         # Trazer a janela para frente

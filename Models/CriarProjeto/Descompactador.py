@@ -5,7 +5,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk
 import patoolib
-from Modelos.Interface import Interface
+from Interfaces import InterfaceMain
 from Util import Util
 
 
@@ -111,7 +111,7 @@ def converter_zip_rar(arquivo_entrada, diretorio_saida, barra_progresso, janela,
     finally:
         global extrair_audio
         #if InterfaceCriarProjeto.extrair_audio.get() == True:
-        janela2, barra_progresso2 = criar_barra_progresso_audios(Interface.root,"Extraindo áudios...")
+        janela2, barra_progresso2 = criar_barra_progresso_audios(InterfaceMain.root,"Extraindo áudios...")
         def extrair():
             total_videos = sum(1 for filename in os.listdir(diretorio_saida) if filename.endswith(('.mp4', '.avi', '.mkv', '.mov')))
             audios_extraidos = 0    
@@ -153,7 +153,7 @@ def converter_zip_rar(arquivo_entrada, diretorio_saida, barra_progresso, janela,
                         Util.LogError("Descompactador", f'Erro ao extrair áudio de "{filename}": {e}')
         #if InterfaceCriarProjeto.extrair_audio.get() == True:
         def e():
-            Interface.root.after(1000, extrair)
+            InterfaceMain.root.after(1000, extrair)
         thread_audio = threading.Thread(target=e)
         thread_audio.daemon = True
         thread_audio.start()

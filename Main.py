@@ -3,7 +3,7 @@ import os
 import signal
 import sys
 import threading
-from Modelos.Interface import Interface
+from Interfaces import InterfaceMain
 from Config import LoadConfigCache, LoadConfigs
 from Util import Util
 from logging.handlers import TimedRotatingFileHandler
@@ -78,7 +78,7 @@ def thread_exception_handler(args):
 
 
 def InterfaceP():
-    InterfacePrincipal = Interface.App()
+    InterfacePrincipal = InterfaceMain.App()
     InterfacePrincipal.carregarInterfacePrincipal()
     # InterfaceConfig.GerenciadorAtalhos(Interface.root)
     InterfacePrincipal.getRoot().mainloop()

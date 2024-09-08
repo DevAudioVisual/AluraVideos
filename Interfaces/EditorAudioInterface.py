@@ -3,10 +3,10 @@ import Util.Util as Util;
 import customtkinter as ctk
 import tkinter as tk
 import Util.CustomWidgets as CustomWidgets
-import Modelos.EditorAudio.FiltrosAudio as FiltrosAudio
+import Models.EditorAudio.FiltrosAudio as FiltrosAudio
 from tkinter import filedialog
 import Util.Styles as Styles
-from Modelos.EditorAudio.Efeitos import ACompressor, ALimiter, Afftdn, AudioDelay, AudioMono, Loudnorm, Speechnorm
+from Models.EditorAudio.Efeitos import ACompressor, ALimiter, Afftdn, AudioDelay, AudioMono, Loudnorm, Speechnorm
 
 
 

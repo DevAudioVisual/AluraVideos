@@ -4,14 +4,14 @@ import tkinter as tk
 import Main
 import json
 import Config.LoadConfigCache as LoadConfigCache
-from Modelos.Atalhos import InterfaceConfigAtalhos
-import Modelos.Interface.Interface as Interface
+from Interfaces import AtalhosConfigInterface
+import Interfaces.InterfaceMain as InterfaceMain
 import customtkinter as ctk
-import Modelos.LimparCache.InterfaceConfigLimparcache as InterfaceLimparcache
+import Interfaces.LimparCacheConfigInterface as InterfaceLimparcache
 from Util import CustomWidgets, Util,Styles
 from tkinter import messagebox, messagebox
-from Modelos.CriarProjeto import InterfaceConfigCriarProjeto as InterfaceCriarprojeto
-from Modelos.Interface import InterfaceConfigInterface
+from Interfaces import CriarProjetoConfigInterface as InterfaceCriarprojeto
+from Interfaces import InterfacePrincipalConfigInterface
 
             
 def save_and_close():
@@ -23,8 +23,8 @@ def save_and_close():
             # new_config_data_CriarProjeto = json.loads(new_config_CriarProjeto)     
             LoadConfigCache.save_config(new_config_data_LimparCache) 
         config = Main.Config
-        config.saveConfig(config="ConfigAtalhos",text_area_editor=InterfaceConfigAtalhos.text_area_editor)
-        config.saveConfig(config="ConfigInterface",text_area_editor=InterfaceConfigInterface.text_area_editor)
+        config.saveConfig(config="ConfigAtalhos",text_area_editor=AtalhosConfigInterface.text_area_editor)
+        config.saveConfig(config="ConfigInterface",text_area_editor=InterfacePrincipalConfigInterface.text_area_editor)
         config.saveConfig(config="ConfigCriarProjeto",text_area_editor=InterfaceCriarprojeto.text_area_editor)
         #LoadConfigCriarProjeto.salvar_configuracoes_json()
         #LoadConfigInterface.salvar_configuracoes_json()
@@ -42,7 +42,7 @@ def save_and_close():
             
 def open_config_editor():
     global editor_window
-    editor_window = tk.Toplevel(Interface.root,padx=20,pady=20)  # Use ttk.Toplevel
+    editor_window = tk.Toplevel(InterfaceMain.root,padx=20,pady=20)  # Use ttk.Toplevel
     editor_window.title("Configurações")
     #diretorio_atual = Path(__file__).parent.absolute()
     global icone
@@ -82,8 +82,8 @@ def open_config_editor():
     
     InterfaceCriarprojeto.ConfigCriarProjetoInterface(tabview)
     InterfaceLimparcache.ConfigLimparCacheInterface(tabview)
-    InterfaceConfigInterface.ConfigInterfaceInterface(tabview)
-    InterfaceConfigAtalhos.ConfigAtalhosInterface(tabviewprincipal)
+    InterfacePrincipalConfigInterface.ConfigInterfaceInterface(tabview)
+    AtalhosConfigInterface.ConfigAtalhosInterface(tabviewprincipal)
    
 
     CustomWidgets.CustomButton(editor_window,text="Salvar",command=save_and_close).pack()

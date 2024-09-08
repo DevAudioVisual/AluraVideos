@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from Modelos.EditorVideo import ConversorVideos
+from Models.EditorVideo import ConversorVideos
 from Util import Styles, CustomWidgets
 
 def interfaceConversorMP4(tabview):

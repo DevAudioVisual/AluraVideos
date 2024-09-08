@@ -9,16 +9,15 @@ import customtkinter as ctk
 from PIL import Image
 import os
 import Main
-from Modelos.Atalhos import Atalhos
-from Modelos.LimparCache import InterfaceLimparCache
-from Modelos.EditorVideo import InterfaceConversorMP4
-from Modelos.CriarProjeto import InterfaceCriarProjeto
-from Config import InterfaceConfigEditor
-from Modelos.EditorAudio import EditorAudioInterFace
-from Modelos.SegundoPlano import BandejaWindows
+from Models.Atalhos import Atalhos
+from Interfaces import LimparCacheInterface
+from Interfaces import EditorVideoInterface
+from Interfaces import CriarProjetoInterface
+from Interfaces import ConfigEditorInterface
+from Interfaces import EditorAudioInterface
+from Models.SegundoPlano import BandejaWindows
 from Util import Util, Styles, CustomWidgets, VerificarAtualizações
-from Modelos.ProcurarAssets import ImagensPixababy
-from z_Testes import LoadConfigAtalhos, LoadConfigInterface
+from Models.ProcurarAssets import ImagensPixababy
 
 root = tk.Tk()
 
@@ -51,15 +50,15 @@ class App():
                 self.tabviewAudioEVideos.pack(pady=(0, 0))
                 self.tabviewAudioEVideos.add("Video")
                 self.tabviewAudioEVideos.add("Audio")
-                self.tab_widgets["Video"] = InterfaceConversorMP4.interfaceConversorMP4(
+                self.tab_widgets["Video"] = EditorVideoInterface.interfaceConversorMP4(
                     self.tabviewAudioEVideos)
-                self.tab_widgets["Audio"] = EditorAudioInterFace.abrirConfigAudio(
+                self.tab_widgets["Audio"] = EditorAudioInterface.abrirConfigAudio(
                     self.tabviewAudioEVideos)
             elif Janela == "Limpar Cache":
-                self.tab_widgets["Limpar Cache"] = InterfaceLimparCache.interfaceLimparCache(
+                self.tab_widgets["Limpar Cache"] = LimparCacheInterface.interfaceLimparCache(
                     self.tabview)
             elif Janela == "Projeto":
-                self.tab_widgets["Projeto"] = InterfaceCriarProjeto.interfaceCriarProjeto(
+                self.tab_widgets["Projeto"] = CriarProjetoInterface.interfaceCriarProjeto(
                     self.tabview)
 
         def on_tab_change():
@@ -130,7 +129,7 @@ class App():
         def abrirSite():
             webbrowser.open("https://www.samuelmariano.com/s-videos")
 
-        CustomWidgets.CustomButton(button_frame, text="Configurações", width=170, background="teal", command=InterfaceConfigEditor.open_config_editor,
+        CustomWidgets.CustomButton(button_frame, text="Configurações", width=170, background="teal", command=ConfigEditorInterface.open_config_editor,
                                    Image=CustomWidgets.CustomImage("config.ico", 20, 20)).pack(side="top", padx=2, pady=5)
         CustomWidgets.CustomButton(button_frame, text="Formulário", width=170, background="teal", command=abrirform,
                                    Image=CustomWidgets.CustomImage("forms.png", 20, 20)).pack(side="top", padx=2, pady=5)

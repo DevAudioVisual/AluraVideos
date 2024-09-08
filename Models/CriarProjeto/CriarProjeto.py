@@ -4,8 +4,9 @@ from tkinter import messagebox
 import webbrowser
 import shutil
 import os
-from Modelos.Interface import Interface
-from Modelos.CriarProjeto import Descompactador, BaixarDoDrop, InterfaceCriarProjeto
+from Interfaces import CriarProjetoInterface
+from Interfaces import InterfaceMain
+from Models.CriarProjeto import Descompactador, BaixarDoDrop
 from Util import TempoVideos,Util
 
 
@@ -49,7 +50,7 @@ def descompactar(arquivo_zip, diretorio_saida):
             print("Descompactando...")
 
             janela, barra_progresso = Descompactador.criar_barra_progresso(
-                Interface.root, "Descompactando, aguarde..."
+                InterfaceMain.root, "Descompactando, aguarde..."
             )
 
             tamanho_total = os.path.getsize(arquivo_zip)
@@ -98,16 +99,16 @@ def descompactar(arquivo_zip, diretorio_saida):
     janela.destroy()
     
 def criar_pastas():
-    if not InterfaceCriarProjeto.CriarEm.get(): 
+    if not CriarProjetoInterface.CriarEm.get(): 
         Util.logWarning(None,"Diretório de criação inválido.",False)
         return
         
     PastasCriadas = []
-    ArquivoVideos = InterfaceCriarProjeto.ArquivoVideos.get()
-    nome_projeto = InterfaceCriarProjeto.nome_projeto_var.get()
+    ArquivoVideos = CriarProjetoInterface.ArquivoVideos.get()
+    nome_projeto = CriarProjetoInterface.nome_projeto_var.get()
     CriarProjetos = True #InterfaceCriarProjeto.criar_arquivos.get()
     CriarSubPastas = True #InterfaceCriarProjeto.criar_pastas.get()
-    subpastas_selecionadas = [subpasta for subpasta, var in InterfaceCriarProjeto.subpasta_vars.items() if var.get()]
+    subpastas_selecionadas = [subpasta for subpasta, var in CriarProjetoInterface.subpasta_vars.items() if var.get()]
     Premire = False
     After = False
     destinoPremiere = ""
@@ -118,7 +119,7 @@ def criar_pastas():
     thread_extracao = None;
     thread_baixando = None;
     if nome_projeto:
-        caminho_pasta_principal = os.path.join(InterfaceCriarProjeto.CriarEm.get(), nome_projeto)
+        caminho_pasta_principal = os.path.join(CriarProjetoInterface.CriarEm.get(), nome_projeto)
         os.makedirs(caminho_pasta_principal, exist_ok=True)
         print(f"Pasta '{nome_projeto}' criada com sucesso!")
         if CriarSubPastas:
@@ -141,11 +142,11 @@ def criar_pastas():
         Tempo = None;            
         if ArquivoVideos:
             Tempo = 100
-            arquivo_zip = InterfaceCriarProjeto.filepath           
+            arquivo_zip = CriarProjetoInterface.filepath           
             #arquivo_zip = BaixarDoDrop.url_pasta
             diretorio_saida = destinoVideos
             if Util.is_url(arquivo_zip):
-                thread_baixando = threading.Thread(target=BaixarDoDrop.baixar_pasta_dropbox, args=(Interface.root,arquivo_zip,diretorio_saida))
+                thread_baixando = threading.Thread(target=BaixarDoDrop.baixar_pasta_dropbox, args=(InterfaceMain.root,arquivo_zip,diretorio_saida))
                 thread_baixando.daemon = True
                 thread_baixando.start()               
             else: descompactar(arquivo_zip,diretorio_saida)              
@@ -158,9 +159,9 @@ def criar_pastas():
             if BaixarDoDrop.foi_baixado == True:
                 print("############ INICIANDO DESCOMPACTAÇAO")
                 arquivo_zip = BaixarDoDrop.caminho_completo_tratado
-                Interface.root.after(5000, lambda: descompactar(arquivo_zip,diretorio_saida))           
-                Interface.root.after_cancel(verificar_termino_download)
-            else: Interface.root.after(1000, verificar_termino_download)       
+                InterfaceMain.root.after(5000, lambda: descompactar(arquivo_zip,diretorio_saida))           
+                InterfaceMain.root.after_cancel(verificar_termino_download)
+            else: InterfaceMain.root.after(1000, verificar_termino_download)       
                
         def verificar_termino():
             if thread_extracao:
@@ -169,20 +170,20 @@ def criar_pastas():
                     if Tempo: 
                         messagebox.showinfo("Aviso", Mensagem+" \n"+f"Você tem {Tempo} de bruto para edição.")
                         abriroufechar()
-                    Interface.root.after_cancel(verificar_termino)
+                    InterfaceMain.root.after_cancel(verificar_termino)
                 else:
-                    Interface.root.after(1000, verificar_termino)  # Verifica novamente em 100ms
+                    InterfaceMain.root.after(1000, verificar_termino)  # Verifica novamente em 100ms
     verificar_termino()
     verificar_termino_download()
     Mensagem = "Projeto: "+nome_projeto+" criado com sucesso!"
     def abriroufechar():    
-        if InterfaceCriarProjeto.abrir_premiere.get():
+        if CriarProjetoInterface.abrir_premiere.get():
             if Premire:
                 webbrowser.open(os.path.join(destinoPremiere, nome_projeto+".prproj"))
-        if InterfaceCriarProjeto.abrir_pasta.get():
-            Interface.root.after(1000, lambda: webbrowser.open(caminho_pasta_principal)) 
-        if InterfaceCriarProjeto.fechar_ao_criar.get():
-            Interface.root.after(1000, Interface.root.destroy) 
+        if CriarProjetoInterface.abrir_pasta.get():
+            InterfaceMain.root.after(1000, lambda: webbrowser.open(caminho_pasta_principal)) 
+        if CriarProjetoInterface.fechar_ao_criar.get():
+            InterfaceMain.root.after(1000, InterfaceMain.root.destroy) 
     if not Tempo: 
         abriroufechar()
         messagebox.showinfo("Aviso", Mensagem)

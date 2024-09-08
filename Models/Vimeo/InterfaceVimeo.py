@@ -1,7 +1,6 @@
 import customtkinter as ctk
 import tkinter as tk
 from tkinter import ttk
-import Interface
 import Util.CustomWidgets as CustomWidgets
 import Util.Styles as Styles
 

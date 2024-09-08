@@ -1,7 +1,7 @@
 import ctypes
 import os
-import Modelos.LimparCache.InterfaceLimparCache as InterfaceLimparCache
-from Modelos.Interface import Interface
+import Interfaces.LimparCacheInterface as LimparCacheInterface
+from Interfaces import InterfaceMain
 import Config.LoadConfigCache as LoadConfigCache
 from tkinter import messagebox
 
@@ -69,7 +69,7 @@ def get_temp_dir():
 
 def iniciar_limpeza():
     pastas_limpar = []
-    for key in InterfaceLimparCache.selected_keys:
+    for key in LimparCacheInterface.selected_keys:
         
         if (key == "Temp"): pastas_limpar.append("C:\\Windows\\Temp")     
         elif (key == "PorcentoTemp"): pastas_limpar.append(get_temp_dir())    
@@ -86,7 +86,7 @@ def iniciar_limpeza():
     for pasta in pastas_limpar:
          if pasta: 
             espaço_liberado, arquivos_deletados, arquivos_erro, arquivos_processados = excluir_arquivos_pasta(
-                 pasta, InterfaceLimparCache.progress_bar, total_arquivos, arquivos_processados, Interface.root
+                 pasta, LimparCacheInterface.progress_bar, total_arquivos, arquivos_processados, InterfaceMain.root
             )
             resultados_por_pasta[pasta] = (espaço_liberado, arquivos_deletados, arquivos_erro)
             espaço_total_liberado += espaço_liberado
@@ -94,4 +94,4 @@ def iniciar_limpeza():
 
 
     espaço_total_liberado_legivel = converter_tamanho(espaço_total_liberado)
-    Util.logInfo("Limpeza", f"Arquivos deletados.\nEspaço total liberado: {espaço_total_liberado_legivel}\nPastas limpas: {InterfaceLimparCache.selected_keys}")
+    Util.logInfo("Limpeza", f"Arquivos deletados.\nEspaço total liberado: {espaço_total_liberado_legivel}\nPastas limpas: {LimparCacheInterface.selected_keys}")

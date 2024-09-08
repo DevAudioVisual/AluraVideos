@@ -2,7 +2,7 @@ import os
 import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from Modelos.CriarProjeto import CriarProjeto
+from Models.CriarProjeto import CriarProjeto
 import customtkinter as ctk
 from Util import Util, Styles, CustomWidgets
 import re
