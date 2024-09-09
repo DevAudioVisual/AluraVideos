@@ -1,3 +1,4 @@
+"""
 import os
 from pathlib import Path
 import tkinter as tk
@@ -118,3 +119,4 @@ def iniciarConfig():
     except (FileNotFoundError, ValueError, KeyError, IndexError) as e:
         Util.LogError(
             "LoadConfigCache", f"Erro ao ler ou processar o arquivo de configuração: {e}")
+"""

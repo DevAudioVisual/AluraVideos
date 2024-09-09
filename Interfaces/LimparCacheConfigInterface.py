@@ -1,13 +1,14 @@
 import tkinter as tk
 import re
-import Config.LoadConfigCache as LoadConfigCache
-import customtkinter as ctk
+import Main
 from Interfaces import ConfigEditorInterface
 from tkinter import filedialog
 from Util import CustomWidgets, Styles
 
 def ConfigLimparCacheInterface(tabview):
-    config_data = LoadConfigCache.load_config()
+    config = Main.Config
+    config_data = config.getConfigData("ConfigCache")
+    df = config.getDataFrame("ConfigCache")
     
     frame = CustomWidgets.CustomFrame(tabview.tab("Config Limpar Cache"))
     frame.pack(pady=10,padx=10,fill="both")
@@ -44,7 +45,7 @@ def ConfigLimparCacheInterface(tabview):
             CustomWidgets.CustomButton(frameDiretorios, text="Buscar",Image=CustomWidgets.CustomImage("folder.png",20,20),command=lambda k=key: escolher_diretorio(entry_vars[k])).pack(side="left")
 
     checkbox_vars = {}
-    for key, criar in LoadConfigCache.Pastas.items():
+    for key, criar in df['Pastas'].iloc[0].items():
         check_var = tk.BooleanVar(value=criar)
         checkbox_vars[key] = check_var
         CustomWidgets.CustomCheckBox(framePastasTop,text=key,variable=check_var,command=lambda key=key: update_config_from_widgets()).pack(pady=10,fill="x")
@@ -55,7 +56,7 @@ def ConfigLimparCacheInterface(tabview):
     text_area_editor = tk.Text(framePastasTop, wrap='word', width=50, height=15)
     
     def update_config_from_widgets():
-        with open(LoadConfigCache.file_path, 'r', encoding='utf-8') as f:
+        with open(Main.Config.file_path["ConfigCache"], 'r', encoding='utf-8') as f:
             config_str = f.read()
 
         # Atualiza os valores dos checkboxes

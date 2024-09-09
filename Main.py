@@ -4,7 +4,7 @@ import signal
 import sys
 import threading
 from Interfaces import InterfaceMain
-from Config import LoadConfigCache, LoadConfigs
+from Config import LoadConfigs
 from Util import Util
 from logging.handlers import TimedRotatingFileHandler
 
@@ -16,7 +16,6 @@ def main():
     global InterfacePrincipal,Config
     setup_signal_handlers()
     setup_logging()
-    LoadConfigCache.iniciarConfig()
     InterfaceP()
     pass
 

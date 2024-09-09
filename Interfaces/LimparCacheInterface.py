@@ -1,11 +1,9 @@
 import threading
 import tkinter as tk
-from PIL import Image, ImageTk
 from tkinter import ttk
-import Config.LoadConfigCache as LoadConfigCache
 import Models.LimparCache.Limpeza as LimparCache
 import Util.Styles as Styles
-import customtkinter as ctk
+import Main
 import Util.CustomWidgets as CustomWidgets
 
 
@@ -38,7 +36,8 @@ def interfaceLimparCache(tabview):
     global checkbox_vars
     checkbox_vars = {}
     selected_keys = set()
-    for key, criar in LoadConfigCache.Pastas.items():
+    Pastas = Main.Config.getDataFrame("ConfigCache")
+    for key, criar in Pastas['Pastas'].iloc[0].items():
         check_var = tk.BooleanVar(value=criar)
         checkbox_vars[key] = check_var
         if (criar == True):

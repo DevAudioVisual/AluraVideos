@@ -2,10 +2,8 @@ import ctypes
 import os
 import Interfaces.LimparCacheInterface as LimparCacheInterface
 from Interfaces import InterfaceMain
-import Config.LoadConfigCache as LoadConfigCache
-from tkinter import messagebox
-
 from Util import Util
+import Main
 
 # Função para converter tamanho de bytes para uma forma legível
 def converter_tamanho(tamanho_bytes):
@@ -74,7 +72,7 @@ def iniciar_limpeza():
         if (key == "Temp"): pastas_limpar.append("C:\\Windows\\Temp")     
         elif (key == "PorcentoTemp"): pastas_limpar.append(get_temp_dir())    
         elif (key == "Prefetch"): pastas_limpar.append("C:\\Windows\\Prefetch")   
-        elif (key == "Adobe Cache"): pastas_limpar.append(LoadConfigCache.Diretorio_CacheAdobe)
+        elif (key == "Adobe Cache"): pastas_limpar.append(Main.Config.getConfigData("ConfigCache","Cache_Adobe"))
         elif (key == "Lixeira"): esvaziar_lixeira()
     #print(pastas_limpar)
     total_arquivos = contar_arquivos(pastas_limpar)

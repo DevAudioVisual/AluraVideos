@@ -15,25 +15,14 @@ from Interfaces import InterfacePrincipalConfigInterface
 
             
 def save_and_close():
-    new_config_LimparCache = InterfaceLimparcache.text_area_editor.get("1.0", tk.END).strip()
-    #new_config_CriarProjeto = InterfaceCriarprojeto.text_area_editor.get("1.0", tk.END).strip()
     try:
-        if new_config_LimparCache:
-            new_config_data_LimparCache = json.loads(new_config_LimparCache)
-            # new_config_data_CriarProjeto = json.loads(new_config_CriarProjeto)     
-            LoadConfigCache.save_config(new_config_data_LimparCache) 
         config = Main.Config
         config.saveConfig(config="ConfigAtalhos",text_area_editor=AtalhosConfigInterface.text_area_editor)
         config.saveConfig(config="ConfigInterface",text_area_editor=InterfacePrincipalConfigInterface.text_area_editor)
         config.saveConfig(config="ConfigCriarProjeto",text_area_editor=InterfaceCriarprojeto.text_area_editor)
-        #LoadConfigCriarProjeto.salvar_configuracoes_json()
-        #LoadConfigInterface.salvar_configuracoes_json()
-        #LoadConfigAtalhos.salvar_configuracoes_json()
-       # print(f"Conteúdo do text_area_editor: {new_config_CriarProjeto}")  # Verifica o conteúdo
-        #print(f"Tipo do conteúdo: {type(new_config_CriarProjeto)}") 
+        config.saveConfig(config="ConfigCache",text_area_editor=InterfaceLimparcache.text_area_editor)
         
         messagebox.showinfo("Informação", "Configurações salvas com sucesso!")
-        #Interface.root.destroy()
         Util.reabrir()
     except json.JSONDecodeError as e:
         Util.LogError("InterfaceConfigEditor",f"Erro ao salvar configurações: {e}")
