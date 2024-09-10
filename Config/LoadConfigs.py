@@ -24,8 +24,10 @@ class Configs():
       atualizar_json(self.config_file[c], self.file_path[c])
       
     self.Load()
+    
   def getConfigs(self):
       return Configs
+  
   def saveConfig(self,config,text_area_editor):
     editor_content = text_area_editor.get("1.0", tk.END)
     try:
@@ -34,6 +36,7 @@ class Configs():
             json.dump(data, file, indent=4)
     except json.JSONDecodeError:
         print("Erro: O conteúdo do editor não é um JSON válido.")  
+        
   def Reset(self,config):
     try:
         os.remove(self.file_path[config])
@@ -57,6 +60,7 @@ class Configs():
         
   def getDataFrame(self,config):
       return pd.read_json(self.file_path[config])
+  
   def getConfigData(self, config, data=None, should_be_sorted=False):
     try:
         config_data = self.config_data[config]

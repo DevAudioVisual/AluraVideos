@@ -1,9 +1,6 @@
-import subprocess
-import sys
 import tkinter as tk
 import Main
 import json
-import Config.LoadConfigCache as LoadConfigCache
 from Interfaces import AtalhosConfigInterface
 import Interfaces.InterfaceMain as InterfaceMain
 import customtkinter as ctk

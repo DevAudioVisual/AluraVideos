@@ -314,7 +314,9 @@ class SearchThread(QThread):
         self.ordem = ordem
 
     def run(self):
-        api_key = "26537515-16c067bfaadb70328236cbcad"
+        #api_key = "26537515-16c067bfaadb70328236cbcad"
+        api_key = os.environ.get('PIXABABY')
+        print("###################",api_key)
         if self.tipo == "Vetores":
             url = f"https://pixabay.com/api/?key={api_key}&q={self.query}&image_type=vector&order={
                 self.ordem}&page={self.page}&per_page={self.per_page}"
