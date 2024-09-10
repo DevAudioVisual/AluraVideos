@@ -1,0 +1,65 @@
+QComboBox {
+  background-color: blue;
+  border: 1px solid blue;
+  border-radius: 3px;
+  padding: 1px 18px 1px 3px;
+  min-width: 6em;
+}
+
+QComboBox:editable {
+  background: #4B70F5;
+}
+
+QScrollArea {
+  background-color: white;
+  border: 1px solid #ddd;
+}
+QWidget {
+  background-color: #030637;
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 12px; 
+}
+QLabel:hover#title_label {
+  color: #4B70F5;
+}
+QLabel:hover#image_label {
+  color: transparent;
+  background-color: transparent;
+}
+QLineEdit {
+  background-color: white;
+  color: black;
+  font-family: Inter, sans-serif;
+  font-weight: bold;
+  font-size: 12px; 
+  height: 16px;
+  padding: 10px 20px; 
+  border-radius: 5px; 
+}
+QPushButton {
+  background-color: #4C3BCF; 
+  color: white; 
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 12px; 
+  border-radius: 5px; 
+  padding: 10px 20px; 
+}
+
+QPushButton:hover {
+  background-color: #4B70F5; 
+}
+
+QComboBox {
+  background-color: #4C3BCF; 
+  color: white;
+  font-family: Helvetica, sans-serif;
+  font-size: 12px; 
+  border-radius: 5px; 
+  padding: 8px 13px; 
+}
+
+QComboBox:hover {
+  background-color: #4B70F5; 
+}

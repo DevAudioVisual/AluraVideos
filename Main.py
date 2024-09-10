@@ -73,7 +73,6 @@ def thread_exception_handler(args):
 def InterfaceP():
     InterfacePrincipal = InterfaceMain.App()
     InterfacePrincipal.carregarInterfacePrincipal()
-    # InterfaceConfig.GerenciadorAtalhos(Interface.root)
     InterfacePrincipal.getRoot().mainloop()
 
 

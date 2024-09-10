@@ -76,11 +76,13 @@ class AssetItem(QWidget):
         # Imagem de pré-visualização
         self.image_label = QLabel()
         self.image_label.setFixedSize(100, 75)
+        self.image_label.setObjectName("image_label")
         layout.addWidget(self.image_label)
 
         # Informações do asset
         info_layout = QVBoxLayout()
         self.title_label = QLabel(title)
+        self.title_label.setObjectName("title_label")
         info_layout.addWidget(self.title_label)
         layout.addLayout(info_layout)
 
@@ -173,33 +175,9 @@ class AssetDownloader(QWidget):
         pagination_layout.addWidget(self.next_button)
         layout.addLayout(pagination_layout)
 
-        self.setStyleSheet("""                           
-        QPushButton {
-            background-color: #4C3BCF; /* Cor de fundo (azul) */
-            color: white; /* Cor do texto (branco) */
-            font-family: Helvetica; /* Fonte */
-            font-size: 12px; /* Tamanho da fonte */
-            border-radius: 5px; /* Bordas arredondadas */
-            padding: 10px 20px; /* Espaçamento interno */
-        }
-
-        QPushButton:hover {
-            background-color: #4B70F5; /* Cor ao passar o mouse (azul mais escuro) */
-        }
-        
-        QComboBox {
-            background-color: #4C3BCF; /* Cor de fundo (azul) */
-            color: white; /* Cor do texto (branco) */
-            font-family: Helvetica; /* Fonte */
-            font-size: 12px; /* Tamanho da fonte */
-            border-radius: 5px; /* Bordas arredondadas */
-            padding: 8px 13px; /* Espaçamento interno */
-        }
-
-        QComboBox:hover {
-            background-color: #4B70F5; /* Cor ao passar o mouse (azul mais escuro) */
-        }
-        """)
+        with open(r"Models\ProcurarAssets\styles.css", "r") as f:
+            stylesheet = f.read()
+        self.setStyleSheet(stylesheet)
 
         self.setLayout(layout)
 
@@ -269,7 +247,7 @@ class AssetDownloader(QWidget):
             file_extension = os.path.splitext(url)[-1]
 
             # Nome base do arquivo (sem extensão)
-            base_filename = "S_Videos_Assets"  # Substitua por seu nome desejado
+            base_filename = "AluraVideos"  # Substitua por seu nome desejado
 
             # Caminho para a área de trabalho (Windows)
             desktop_path = os.path.join(os.path.join(
