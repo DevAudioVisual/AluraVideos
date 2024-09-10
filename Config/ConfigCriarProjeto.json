@@ -13,7 +13,7 @@
         {
             "01_Bruto": true,
             "02_Audio": true,
-            "03_Assets": true,
+            "03_Assets": false,
             "04_Premiere": true,
             "05_AfterEfects": false,
             "06_Photoshop-Illustrator": false,

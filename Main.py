@@ -1,4 +1,5 @@
 import logging
+from dotenv import load_dotenv
 import os
 import signal
 import sys
@@ -13,6 +14,7 @@ InterfacePrincipal = None
 Config = LoadConfigs.Configs()
 
 def main():
+    load_dotenv()
     global InterfacePrincipal,Config
     setup_signal_handlers()
     setup_logging()
