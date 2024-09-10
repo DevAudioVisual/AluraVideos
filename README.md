@@ -17,3 +17,5 @@ Em sua fase beta, contamos com:
 - Automatizar upload e criação de showcases no vimeo
 - Automatizar cadastro na plataforma.
 
+
+### [Tutorial de utilização](tutorial.md)
