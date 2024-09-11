@@ -16,7 +16,8 @@ from Interfaces import CriarProjetoInterface
 from Interfaces import ConfigEditorInterface
 from Interfaces import EditorAudioInterface
 from Models.SegundoPlano import BandejaWindows
-from Util import Util, Styles, CustomWidgets, VerificarAtualizações
+from Models.Updates import VerificarAtualizações
+from Util import Util, Styles, CustomWidgets
 from Models.ProcurarAssets import ImagensPixababy
 
 root = tk.Tk()
@@ -122,21 +123,18 @@ class App():
                 "https://docs.google.com/forms/d/e/1FAIpQLSdQJzQBVbLDwD8ZkEemNuLVBHlWHEhzag8cgwcC2fDyV6IhvQ/viewform?usp=sf_link")
 
         def abrirLogs():
-            log_dir = os.path.join(os.path.expanduser(
-                "~"), "Documents", "S_Videos", "Logs")
+            log_dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Logs")
             webbrowser.open(log_dir)
 
         def abrirSite():
-            webbrowser.open("https://www.samuelmariano.com/s-videos")
+            webbrowser.open("https://https://github.com/DevAudioVisual/AluraVideos")
 
-        CustomWidgets.CustomButton(button_frame, text="Configurações", width=170, background="teal", command=ConfigEditorInterface.open_config_editor,
-                                   Image=CustomWidgets.CustomImage("config.ico", 20, 20)).pack(side="top", padx=2, pady=5)
-        CustomWidgets.CustomButton(button_frame, text="Formulário", width=170, background="teal", command=abrirform,
-                                   Image=CustomWidgets.CustomImage("forms.png", 20, 20)).pack(side="top", padx=2, pady=5)
         CustomWidgets.CustomButton(button_frame, text="Logs", width=170, background="teal", command=abrirLogs,
                                    Image=CustomWidgets.CustomImage("logs.png", 20, 20)).pack(side="top", padx=2, pady=5)
-        CustomWidgets.CustomButton(button_frame, text="Site oficial", width=170, background="teal", command=abrirSite,
-                                   Image=CustomWidgets.CustomImage("icon.ico", 20, 20)).pack(side="top", padx=2, pady=5)
+        CustomWidgets.CustomButton(button_frame, text="GitHub", width=170, background="teal", command=abrirSite,
+                                   Image=CustomWidgets.CustomImage("github.ico", 20, 20)).pack(side="top", padx=2, pady=5)
+        CustomWidgets.CustomButton(button_frame, text="Configurações", width=170, background="teal", command=ConfigEditorInterface.open_config_editor,
+                                   Image=CustomWidgets.CustomImage("config.ico", 20, 20)).pack(side="top", padx=2, pady=5)
 
         # Frame de créditos na linha inferior
         credits_frame = tk.Frame(root, bg="gray")
@@ -162,18 +160,12 @@ class App():
         label_autor.bind("<Button-1>", abrir_link)
         label_autor.bind("<Button-3>", vaiseapaoxionar)
 
-        def verificar_atualizacaoEvent(event=None):
-            atualizacao = threading.Thread(target=VerificarAtualizações.verificar_atualizacao, args=(
-                root,))  # Passar a função e argumentos corretamente
-            atualizacao.daemon = True
-            atualizacao.start()
-
         global Bandeja
         Bandeja = None
         if Main.Config.getConfigData("ConfigInterface","SegundoPlano") == True:
             Bandeja = BandejaWindows.App(root)
         # Agende a verificação de atualização após 1 segundo (1000 milissegundos)
-        root.after(1000, verificar_atualizacaoEvent)
+        root.after(2000, lambda: VerificarAtualizações.app())
 
     def createFrames(self):
         self.frameSoftwares = CustomWidgets.CustomFrame(root)

@@ -191,7 +191,6 @@ def baixar_pasta_dropbox(root,url, dir_path, num_threads=8, chunk_size=8 * 1024 
             global foi_baixado    
             foi_baixado = True
                 
-        InterfaceMain.root.after(1000, baixou)
 
         if not check_zip_integrity(original):
             Util.LogError("DropboxDownloader","Arquivo ZIP corrompido.\nSe persistir, use o site do dropbox e reporte o erro.")
@@ -208,4 +207,5 @@ def baixar_pasta_dropbox(root,url, dir_path, num_threads=8, chunk_size=8 * 1024 
             global foi_baixado  
             foi_baixado = False
             print("Foi_baixado = False")
+        InterfaceMain.root.after(5000, baixou)
         InterfaceMain.root.after(10000, f)

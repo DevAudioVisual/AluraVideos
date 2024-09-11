@@ -99,6 +99,7 @@ def descompactar(arquivo_zip, diretorio_saida):
     janela.destroy()
     
 def criar_pastas():
+    tentativas = 0 
     if not CriarProjetoInterface.CriarEm.get(): 
         Util.logWarning(None,"Diretório de criação inválido.",False)
         return
@@ -150,18 +151,20 @@ def criar_pastas():
                 thread_baixando.daemon = True
                 thread_baixando.start()               
             else: descompactar(arquivo_zip,diretorio_saida)              
-            
+                 
                
         if CriarProjetos:
-            criar_Arquivos(destinoPremiere,destinoAfter,Premire,After,nome_projeto)        
-            
+            criar_Arquivos(destinoPremiere,destinoAfter,Premire,After,nome_projeto)   
         def verificar_termino_download():
             if BaixarDoDrop.foi_baixado == True:
-                print("############ INICIANDO DESCOMPACTAÇAO")
-                arquivo_zip = BaixarDoDrop.caminho_completo_tratado
-                InterfaceMain.root.after(5000, lambda: descompactar(arquivo_zip,diretorio_saida))           
-                InterfaceMain.root.after_cancel(verificar_termino_download)
-            else: InterfaceMain.root.after(1000, verificar_termino_download)       
+                    time.sleep(2)
+                    print("############ INICIANDO DESCOMPACTAÇAO")
+                    arquivo_zip = BaixarDoDrop.caminho_completo_tratado
+                    InterfaceMain.root.after(5000, lambda: descompactar(arquivo_zip,diretorio_saida))           
+                    InterfaceMain.root.after_cancel(verificar_termino_download)
+
+            else: 
+                InterfaceMain.root.after(1000, verificar_termino_download)       
                
         def verificar_termino():
             if thread_extracao:
