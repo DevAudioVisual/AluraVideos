@@ -110,17 +110,9 @@ class App():
 
         def gemini():
             return
-            # ChatBotGemini.criarChatBot(root=root)
-        CustomWidgets.CustomButton(self.frameBarraLateral, text="Pergunte ao Gemini", width=170, background="teal",
-                                   command=gemini, Image=CustomWidgets.CustomImage("gemini.png", 20, 20)).pack(side="top", padx=10, pady=5)
-        CustomWidgets.CustomButton(self.frameBarraLateral, text="Minhas tarefas", width=170, background="teal",
-                                   command=EmBreve, Image=CustomWidgets.CustomImage("tarefas.png", 20, 20)).pack(side="top", padx=10, pady=5)
-        CustomWidgets.CustomButton(self.frameBarraLateral, text="Buscar Imagens", width=170, background="teal",
-                                   command=ImagensPixababy.abrirInterface, Image=CustomWidgets.CustomImage("photo.png", 20, 20)).pack(side="top", padx=10, pady=5)
-
-        def abrirform():
-            webbrowser.open_new(
-                "https://docs.google.com/forms/d/e/1FAIpQLSdQJzQBVbLDwD8ZkEemNuLVBHlWHEhzag8cgwcC2fDyV6IhvQ/viewform?usp=sf_link")
+        #CustomWidgets.CustomButton(self.frameBarraLateral, text="Pergunte ao Gemini", width=170, background="teal",command=gemini, Image=CustomWidgets.CustomImage("gemini.png", 20, 20)).pack(side="top", padx=10, pady=5)
+        #CustomWidgets.CustomButton(self.frameBarraLateral, text="Minhas tarefas", width=170, background="teal",command=EmBreve, Image=CustomWidgets.CustomImage("tarefas.png", 20, 20)).pack(side="top", padx=10, pady=5)
+        CustomWidgets.CustomButton(self.frameBarraLateral, text="Buscar Imagens", width=170, background="teal",command=ImagensPixababy.abrirInterface, Image=CustomWidgets.CustomImage("photo.png", 20, 20)).pack(side="top", padx=10, pady=5)
 
         def abrirLogs():
             log_dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Logs")

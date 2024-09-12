@@ -175,7 +175,7 @@ class AssetDownloader(QWidget):
         pagination_layout.addWidget(self.next_button)
         layout.addLayout(pagination_layout)
 
-        with open(r"Models\ProcurarAssets\styles.css", "r") as f:
+        with open(r"Assets\styles\styles_buscar_assets.css", "r") as f:
             stylesheet = f.read()
         self.setStyleSheet(stylesheet)
 

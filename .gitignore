@@ -10,6 +10,7 @@ __pycache__/
 setup.py
 .vscode/
 compilador.iss
+pathnotes.md
 .Python
 .github/
 build/

@@ -77,17 +77,33 @@ class Configs():
 
 
 def atualizar_chaves_recursivamente(dados1, dados2):
-    for chave, valor1 in dados1.items():
-        if chave not in dados2:
-            dados2[chave] = valor1  # Adiciona a chave se não existir no segundo dicionário
-        elif isinstance(valor1, dict) and isinstance(dados2[chave], dict):
-            # Chama recursivamente apenas se ambos os valores forem dicionários
-            dados2[chave] = atualizar_chaves_recursivamente(valor1, dados2[chave])
+    if isinstance(dados1, dict) and isinstance(dados2, dict):
+        for chave, valor1 in dados1.items():
+            if chave not in dados2:
+                dados2[chave] = valor1 
+            elif isinstance(valor1, dict) and isinstance(dados2[chave], dict):
+                atualizar_chaves_recursivamente(valor1, dados2[chave])
+            elif isinstance(valor1, list) and isinstance(dados2[chave], list):
+                # Certifique-se de que ambos os valores são listas antes de iterar
+                for i in range(max(len(valor1), len(dados2[chave]))):
+                    if i < len(valor1) and i < len(dados2[chave]):
+                        # Chama recursivamente para elementos correspondentes nas listas
+                        atualizar_chaves_recursivamente(valor1[i], dados2[chave][i])
+                    elif i < len(valor1):
+                        # Adiciona elementos extras de valor1 à lista em dados2
+                        dados2[chave].append(valor1[i])
 
-    # Remove chaves que existem em dados2 mas não em dados1
-    for chave in list(dados2.keys()):
-        if chave not in dados1:
-            del dados2[chave]
+        # Remove chaves que existem em dados2 mas não em dados1, apenas se a chave pai existir em ambos
+        for chave in list(dados2.keys()):
+            if chave not in dados1 and isinstance(dados1, dict):
+                del dados2[chave]
+    # Adiciona o caso onde ambos os dados são listas
+    elif isinstance(dados1, list) and isinstance(dados2, list):
+        for i in range(max(len(dados1), len(dados2))):
+            if i < len(dados1) and i < len(dados2):
+                atualizar_chaves_recursivamente(dados1[i], dados2[i])
+            elif i < len(dados1):
+                dados2.append(dados1[i])
 
     return dados2
 
