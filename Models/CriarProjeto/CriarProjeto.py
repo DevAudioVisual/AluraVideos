@@ -6,7 +6,7 @@ import shutil
 import os
 from Interfaces import CriarProjetoInterface
 from Interfaces import InterfaceMain
-from Models.CriarProjeto import Descompactador, BaixarDoDrop
+from Models.CriarProjeto import Descompactador, DropDownloader
 from Util import TempoVideos,Util
 
 
@@ -146,8 +146,9 @@ def criar_pastas():
             arquivo_zip = CriarProjetoInterface.filepath           
             #arquivo_zip = BaixarDoDrop.url_pasta
             diretorio_saida = destinoVideos
+            Downloader = DropDownloader.DownloadDropApp(root=InterfaceMain.root,url=arquivo_zip,extract_folder_path=diretorio_saida)
             if Util.is_url(arquivo_zip):
-                thread_baixando = threading.Thread(target=BaixarDoDrop.baixar_pasta_dropbox, args=(InterfaceMain.root,arquivo_zip,diretorio_saida))
+                thread_baixando = threading.Thread(target=Downloader.startDownload())
                 thread_baixando.daemon = True
                 thread_baixando.start()               
             else: descompactar(arquivo_zip,diretorio_saida)              
@@ -156,10 +157,10 @@ def criar_pastas():
         if CriarProjetos:
             criar_Arquivos(destinoPremiere,destinoAfter,Premire,After,nome_projeto)   
         def verificar_termino_download():
-            if BaixarDoDrop.foi_baixado == True:
+            if Downloader and Downloader.downloaded == True:
                     time.sleep(2)
                     print("############ INICIANDO DESCOMPACTAÇAO")
-                    arquivo_zip = BaixarDoDrop.caminho_completo_tratado
+                    arquivo_zip = Downloader.zip_file
                     InterfaceMain.root.after(5000, lambda: descompactar(arquivo_zip,diretorio_saida))           
                     InterfaceMain.root.after_cancel(verificar_termino_download)
 

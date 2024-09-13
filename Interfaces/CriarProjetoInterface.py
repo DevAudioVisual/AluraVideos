@@ -2,6 +2,7 @@ import os
 import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from turtle import bgcolor
 from Models.CriarProjeto import CriarProjeto
 import customtkinter as ctk
 from Util import Util, Styles, CustomWidgets
@@ -111,8 +112,13 @@ def interfaceCriarProjeto(tabview):
         ArquivoVideos.set(filepath)
 
         def setNomeProjeto():
-            nome_projeto_var.set("Aguarde...")
+            BotaoCriar.getButton().configure(state=tk.DISABLED)
+            BotaoCriar.getButton().configure(fg_color="gray")
+            BotaoCriar.getButton().configure(text="Aguarde...")
             nome_projeto_var.set(limpar_texto(obter_nome_pasta(filepath)))
+            BotaoCriar.getButton().configure(state=tk.NORMAL)
+            BotaoCriar.getButton().configure(fg_color=Styles.cor_botao)
+            BotaoCriar.getButton().configure(text="Criar")
             
         setNomeP = threading.Thread(target=setNomeProjeto)
         setNomeP.daemon = True
@@ -168,8 +174,9 @@ def interfaceCriarProjeto(tabview):
             coluna_atual += 1
     fechar_ao_criar = config["fechar_ao_criar"]
     fechar_ao_criar = tk.BooleanVar(value=bool(fechar_ao_criar))
-    CustomWidgets.CustomButton(master=dialog, text="Criar", dica="Clique aqui para criar seu projeto.",
-                               command=CriarProjeto.criar_pastas, width=200).pack(anchor="center", pady=10, side=("left"), padx=10, fill="x")
+    BotaoCriar = CustomWidgets.CustomButton(master=dialog, text="Criar", dica="Clique aqui para criar seu projeto.",
+                               command=CriarProjeto.criar_pastas, width=200)
+    BotaoCriar.pack(anchor="center", pady=10, side=("left"), padx=10, fill="x")
     CustomWidgets.CustomCheckBox(master=dialog, text="Fechar ao criar", dica="Selecione para fechar o Software ao criar.",
                                  variable=fechar_ao_criar).pack(anchor="center", side=("left"), fill="x")
 
