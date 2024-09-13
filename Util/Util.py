@@ -8,7 +8,7 @@ from tkinter import messagebox
 from urllib.parse import urlparse
 import unicodedata
 
-version = "V0.0"
+version = "V0.0.1"
 
 def reabrir():
     try:

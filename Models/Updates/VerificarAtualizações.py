@@ -9,6 +9,7 @@ import tempfile
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 import time
+from packaging import version
 from Util import Util
 
 class app():
@@ -17,7 +18,7 @@ class app():
         self.repo_name = "AluraVideos"
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
         self.headers = {"Accept": "application/vnd.github+json"}
-        self.current_version = float(double(Util.version.lstrip("V")))
+        self.current_version = version.parse(Util.version.lstrip("V"))
         
         self.response = None
         self.release_data = None
@@ -29,13 +30,14 @@ class app():
         
     def initRequest(self):
         try:
+            print("Verificando atualizações...")
             self.response = requests.get(self.api_url, headers=self.headers)
             self.response.raise_for_status()
             self.release_data = self.response.json()
             self.latest_tag_name = self.release_data["tag_name"]
             self.release_notes = self.release_data["body"]
-            self.release_version = float(self.latest_tag_name.lstrip("V"))
-            
+            self.release_version = version.parse(self.latest_tag_name.lstrip("V"))
+            print(f"Versão atual: {self.current_version} Ultima versão disponíveL: {self.release_version}")
             self.check_updates()
         except requests.exceptions.RequestException as e:
             Util.LogError(func="Atualizações",mensagem=f"Erro ao buscar por atualizações: {e}")
@@ -67,6 +69,8 @@ class app():
                 threading.Thread(target=self.download_latest_release(),daemon=True).start()   
             else:
                 return
+        else:
+            print("Você está atualizado!")
 
             
     def download_latest_release(self):
