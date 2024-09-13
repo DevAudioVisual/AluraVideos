@@ -6,6 +6,7 @@
             "Projeto": true,
             "S3": false,
             "Vimeo": false,
+            "PM3": false,
             "Editar": false,
             "Limpar Cache": true
         }
