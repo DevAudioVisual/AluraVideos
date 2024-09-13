@@ -15,6 +15,7 @@ from Interfaces import EditorVideoInterface
 from Interfaces import CriarProjetoInterface
 from Interfaces import ConfigEditorInterface
 from Interfaces import EditorAudioInterface
+from Models.ExtensoesPPRO import ExtensionsDownloader
 from Models.SegundoPlano import BandejaWindows
 from Models.Updates import VerificarAtualizações
 from Util import Util, Styles, CustomWidgets
@@ -112,6 +113,7 @@ class App():
             return
         #CustomWidgets.CustomButton(self.frameBarraLateral, text="Pergunte ao Gemini", width=170, background="teal",command=gemini, Image=CustomWidgets.CustomImage("gemini.png", 20, 20)).pack(side="top", padx=10, pady=5)
         #CustomWidgets.CustomButton(self.frameBarraLateral, text="Minhas tarefas", width=170, background="teal",command=EmBreve, Image=CustomWidgets.CustomImage("tarefas.png", 20, 20)).pack(side="top", padx=10, pady=5)
+        CustomWidgets.CustomButton(self.frameBarraLateral, text="Extensões PPRO", width=170, background="teal",command=lambda: ExtensionsDownloader.interfaceGerenciadorExtensoes(), Image=CustomWidgets.CustomImage("premiere.ico", 20, 20)).pack(side="top", padx=10, pady=5)
         CustomWidgets.CustomButton(self.frameBarraLateral, text="Buscar Imagens", width=170, background="teal",command=ImagensPixababy.abrirInterface, Image=CustomWidgets.CustomImage("photo.png", 20, 20)).pack(side="top", padx=10, pady=5)
 
         def abrirLogs():
