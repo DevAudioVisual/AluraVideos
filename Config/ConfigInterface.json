@@ -4,9 +4,9 @@
     "OrdemJanelas": [
         {
             "Projeto": true,
-            "S3": false,
+            "S3": true,
             "Vimeo": false,
-            "PM3": false,
+            "PM3": true,
             "Editar": false,
             "Limpar Cache": true
         }

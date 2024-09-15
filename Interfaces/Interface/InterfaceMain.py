@@ -8,13 +8,15 @@ import pandas as pd
 import customtkinter as ctk
 from PIL import Image
 import os
+from Interfaces.PM3 import PM3Interface
+from Interfaces.S3 import S3Interface
 import Main
 from Models.Atalhos import Atalhos
-from Interfaces import LimparCacheInterface
-from Interfaces import EditorVideoInterface
-from Interfaces import CriarProjetoInterface
-from Interfaces import ConfigEditorInterface
-from Interfaces import EditorAudioInterface
+from Interfaces.LimparCache import LimparCacheInterface
+from Interfaces.EditorVideo import EditorVideoInterface
+from Interfaces.CriarProjeto import CriarProjetoInterface
+from Interfaces.Config import ConfigEditorInterface
+from Interfaces.EditorAudio import EditorAudioInterface
 from Models.ExtensoesPPRO import ExtensionsDownloader
 from Models.SegundoPlano import BandejaWindows
 from Models.Updates import VerificarAtualizações
@@ -44,6 +46,7 @@ class App():
         self.TodasAsJanelas = pd.DataFrame({'OrdemJanelas': [self.ordem_janelas_dict]})
         self.Janelas = self.JanelasVisiveis['OrdemJanelas'].iloc[0]
         self.TodasJanelas = self.TodasAsJanelas['OrdemJanelas'].iloc[0]
+        
         for Janela in self.Janelas:
             self.tabview.add(Janela) 
             if Janela == "Editar":
@@ -51,16 +54,21 @@ class App():
                 self.tabviewAudioEVideos.pack(pady=(0, 0))
                 self.tabviewAudioEVideos.add("Video")
                 self.tabviewAudioEVideos.add("Audio")
-                self.tab_widgets["Video"] = EditorVideoInterface.interfaceConversorMP4(
-                    self.tabviewAudioEVideos)
-                self.tab_widgets["Audio"] = EditorAudioInterface.abrirConfigAudio(
-                    self.tabviewAudioEVideos)
+                
+                self.tab_widgets["Video"] = EditorVideoInterface.interfaceConversorMP4(self.tabviewAudioEVideos)
+                self.tab_widgets["Audio"] = EditorAudioInterface.abrirConfigAudio(self.tabviewAudioEVideos)
+                
             elif Janela == "Limpar Cache":
-                self.tab_widgets["Limpar Cache"] = LimparCacheInterface.interfaceLimparCache(
-                    self.tabview)
+                self.tab_widgets["Limpar Cache"] = LimparCacheInterface.interfaceLimparCache(self.tabview)
+                
             elif Janela == "Projeto":
-                self.tab_widgets["Projeto"] = CriarProjetoInterface.interfaceCriarProjeto(
-                    self.tabview)
+                self.tab_widgets["Projeto"] = CriarProjetoInterface.interfaceCriarProjeto(self.tabview)
+                
+            elif Janela == "PM3":
+                self.tab_widgets["PM3"] = PM3Interface.InterfacePM3(self.tabview)
+                
+            elif Janela == "S3":
+                self.tab_widgets["S3"] = S3Interface.InterfaceS3(self.tabview)
 
         def on_tab_change():
             selected_tab_name = self.tabview.get()

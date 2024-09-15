@@ -4,8 +4,8 @@ from tkinter import messagebox
 import webbrowser
 import shutil
 import os
-from Interfaces import CriarProjetoInterface
-from Interfaces import InterfaceMain
+from Interfaces.CriarProjeto import CriarProjetoInterface
+from Interfaces.Interface import InterfaceMain
 from Models.CriarProjeto import Descompactador, DropDownloader
 from Util import TempoVideos,Util
 

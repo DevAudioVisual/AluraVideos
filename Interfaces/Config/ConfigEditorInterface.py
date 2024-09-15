@@ -1,14 +1,14 @@
 import tkinter as tk
 import Main
 import json
-from Interfaces import AtalhosConfigInterface
-import Interfaces.InterfaceMain as InterfaceMain
+from Interfaces.Atalhos import AtalhosConfigInterface
+import Interfaces.Interface.InterfaceMain as InterfaceMain
 import customtkinter as ctk
-import Interfaces.LimparCacheConfigInterface as InterfaceLimparcache
+import Interfaces.LimparCache.LimparCacheConfigInterface as InterfaceLimparcache
 from Util import CustomWidgets, Util,Styles
 from tkinter import messagebox, messagebox
-from Interfaces import CriarProjetoConfigInterface as InterfaceCriarprojeto
-from Interfaces import InterfacePrincipalConfigInterface
+from Interfaces.CriarProjeto import CriarProjetoConfigInterface as InterfaceCriarprojeto
+from Interfaces.Interface import InterfacePrincipalConfigInterface
 
             
 def save_and_close():

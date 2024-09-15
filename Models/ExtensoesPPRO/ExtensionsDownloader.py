@@ -14,7 +14,7 @@ def interfaceGerenciadorExtensoes():
   root = Main.InterfaceMain.root
   janela = tk.Toplevel(root)
   janela.title("Baixar extensões")
-  janela.geometry("350x250")
+  janela.geometry("350x220")
   janela.configure(bg=Styles.cor_fundo,padx=50,pady=50)
   janela.lift()
   janela.attributes('-topmost', True)
@@ -24,13 +24,13 @@ def interfaceGerenciadorExtensoes():
   frame.pack()
   
   textEffector = "Download Effector"
-  EffectorB = ctk.CustomButton(frame,text=textEffector,command=lambda: Downloader("Effector",EffectorB,textEffector))
+  EffectorB = ctk.CustomButton(frame,text=textEffector,command=lambda: Downloader("Effector",EffectorB,textEffector),width=150)
   EffectorB.pack(pady=5)
   textOrdinem = "Download Ordinem"
-  OrdinemB = ctk.CustomButton(frame,text=textOrdinem,command=lambda: Downloader("Ordinem",OrdinemB,textOrdinem))
+  OrdinemB = ctk.CustomButton(frame,text=textOrdinem,command=lambda: Downloader("Ordinem",OrdinemB,textOrdinem),width=150)
   OrdinemB.pack(pady=5)
   textNotability = "Download Notability"
-  NotabilityB = ctk.CustomButton(frame,text=textNotability,command=lambda: Downloader("Notability",NotabilityB,textNotability))
+  NotabilityB = ctk.CustomButton(frame,text=textNotability,command=lambda: Downloader("Notability",NotabilityB,textNotability),width=150)
   NotabilityB.pack(pady=5)
   
 class Downloader():

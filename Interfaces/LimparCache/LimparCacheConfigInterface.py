@@ -1,7 +1,7 @@
 import tkinter as tk
 import re
 import Main
-from Interfaces import ConfigEditorInterface
+from Interfaces.Config import ConfigEditorInterface
 from tkinter import filedialog
 from Util import CustomWidgets, Styles
 

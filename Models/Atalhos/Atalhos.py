@@ -1,7 +1,7 @@
 import threading
 import keyboard
 import Main
-from Interfaces import InterfaceMain
+from Interfaces.Interface import InterfaceMain
 from Models.LimparCache import Limpeza
 from Models.ProcurarAssets import ImagensPixababy
 from Util import Util

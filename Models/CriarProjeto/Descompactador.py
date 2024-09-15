@@ -5,7 +5,7 @@ import threading
 import tkinter as tk
 from tkinter import ttk
 import patoolib
-from Interfaces import InterfaceMain
+from Interfaces.Interface import InterfaceMain
 from Util import Util
 
 

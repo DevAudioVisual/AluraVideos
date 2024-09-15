@@ -1,7 +1,7 @@
 import ctypes
 import os
-import Interfaces.LimparCacheInterface as LimparCacheInterface
-from Interfaces import InterfaceMain
+import Interfaces.LimparCache.LimparCacheInterface as LimparCacheInterface
+from Interfaces.Interface import InterfaceMain
 from Util import Util
 import Main
 

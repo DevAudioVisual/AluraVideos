@@ -3,8 +3,8 @@ import subprocess
 import threading
 from tkinter import ttk
 import Main
-import Interfaces.EditorVideoInterface as EditorVideoInterface
-from Interfaces import InterfaceMain
+import Interfaces.EditorVideo.EditorVideoInterface as EditorVideoInterface
+from Interfaces.Interface import InterfaceMain
 import Util.Util as Util
 import fnmatch
 import os

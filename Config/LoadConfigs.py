@@ -11,7 +11,7 @@ class Configs():
   def __init__(self):
     self.config_dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Config") 
     self.diretorio_atual = Path(__file__).parent.absolute()
-    self.Configs = ["ConfigAtalhos","ConfigCache","ConfigCriarProjeto","ConfigInterface"]
+    self.Configs = ["ConfigAtalhos","ConfigCache","ConfigCriarProjeto","ConfigInterface","Credentials"]
     os.makedirs(self.config_dir, exist_ok=True)
     
     self.file_path = {}
@@ -37,12 +37,21 @@ class Configs():
     except json.JSONDecodeError:
         print("Erro: O conteúdo do editor não é um JSON válido.")  
         
-  def Reset(self,config):
+  def saveConfigDict(self,config,dict):
+    try:
+        data = json.loads(dict)
+        with open(self.file_path[config], 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=4)
+    except json.JSONDecodeError:
+        print("Erro: O conteúdo do editor não é um JSON válido.")  
+        
+  def Reset(self,config,reabrir = True):
     try:
         os.remove(self.file_path[config])
         messagebox.showinfo("Aviso", "Configuração resetada com sucesso!")
         print(f"Arquivo '{self.file_path[config]}' apagado com sucesso!")
-        Util.reabrir()
+        if reabrir:
+            Util.reabrir()
     except FileNotFoundError:
         print(f"Erro: Arquivo '{self.file_path[config]}' não encontrado.")
     except PermissionError:

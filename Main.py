@@ -4,7 +4,7 @@ import os
 import signal
 import sys
 import threading
-from Interfaces import InterfaceMain
+from Interfaces.Interface import InterfaceMain
 from Config import LoadConfigs
 from Util import Util
 from logging.handlers import TimedRotatingFileHandler
@@ -36,7 +36,6 @@ def setup_logging():
         "~"), "Documents", "AluraVideos", "Logs")
     os.makedirs(log_dir, exist_ok=True)
 
-    # Nome base do arquivo de log
     log_file = os.path.join(log_dir, "AluraVideos.log")
     file_handler = TimedRotatingFileHandler(
         log_file,
@@ -45,7 +44,7 @@ def setup_logging():
         backupCount=15
     )
     file_handler.setLevel(logging.WARNING)
-    file_handler.suffix = "%Y-%m-%d.log"  # Sufixo para incluir a data no nome do arquivo
+    file_handler.suffix = "%Y-%m-%d.log" 
 
     stream_handler = logging.StreamHandler()
 

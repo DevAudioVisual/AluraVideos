@@ -2,7 +2,7 @@ import json
 import tkinter as tk
 from tkinter import filedialog
 import customtkinter as ctk
-from Interfaces import ConfigEditorInterface
+from Interfaces.Config import ConfigEditorInterface
 from Util import Styles
 from Util import CustomWidgets
 import Main

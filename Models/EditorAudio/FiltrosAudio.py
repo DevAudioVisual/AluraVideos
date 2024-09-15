@@ -10,10 +10,10 @@ import soundfile as sf
 import matplotlib.pyplot as plt
 import numpy as np
 import Main
-import Interfaces.EditorAudioInterface as AudioInterFace
+import Interfaces.EditorAudio.EditorAudioInterface as AudioInterFace
 from tkinter import ttk
 from Models.EditorAudio.Efeitos import Speechnorm
-from Interfaces import InterfaceMain
+from Interfaces.Interface import InterfaceMain
 from Util import Util
 import Util.CustomWidgets as CustomWidgets
 import Util.Styles as Styles

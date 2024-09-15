@@ -8,6 +8,26 @@ from CTkListbox import *
 from ttkwidgets.autocomplete import AutocompleteEntryListbox
 
 
+class CustomTextbox(ttk.Frame):
+    def __init__(self, master=None,wrap="word",width=200,height=400, **kwargs):
+        super().__init__(master, **kwargs)
+        self.config(style="Custom.TFrame")
+        self.textbox = ctk.CTkTextbox(master=master,
+                                        wrap=wrap,
+                                        width=width,
+                                        height=height,
+                                        bg_color=Styles.cor_fundo,
+                                        font=Styles.fonte_input,
+                                        activate_scrollbars=True,
+                                        scrollbar_button_color=Styles.cor_botao,
+                                        scrollbar_button_hover_color=Styles.cor_ativo,
+                                        text_color="white",
+                                        corner_radius=10)
+        self.textbox.pack()
+
+    def getTextBox(self):
+        return self.textbox
+
 class CustomSegmentedButton(ttk.Frame):
     def __init__(self, master=None, values=[], segemented_button_var=None, command=None, **kwargs):
         super().__init__(master, **kwargs)
@@ -214,7 +234,7 @@ def CustomFrame2(frame):
 
 
 class CustomLabel(ttk.Frame):
-    def __init__(self, master=None, text="", font=Styles.fonte_texto, bg_color=Styles.cor_fundo, dica=None, image=None, pack=False, **kwargs):
+    def __init__(self, master=None, text="",text_color=Styles.cor_texto, font=Styles.fonte_texto, bg_color=Styles.cor_fundo, dica=None, image=None, pack=False, **kwargs):
         super().__init__(master, **kwargs)
 
         self.config(style="Custom.TFrame")
@@ -222,8 +242,8 @@ class CustomLabel(ttk.Frame):
                                   bg_color=bg_color,
                                   font=font,
                                   image=image,
-                                  text_color=Styles.cor_texto,
-                                  text_color_disabled=Styles.cor_texto,
+                                  text_color=text_color,
+                                  text_color_disabled=text_color,
                                   fg_color=bg_color)
 
         if dica:
@@ -233,6 +253,9 @@ class CustomLabel(ttk.Frame):
             self.Label.pack()
         else:
             self.Label.grid()
+        
+    def get(self):
+        return self.Label
 
 
 class CustomButton(ttk.Frame):
