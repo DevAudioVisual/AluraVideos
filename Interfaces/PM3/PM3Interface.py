@@ -60,7 +60,7 @@ def InterfacePM3(tabview):
         threading.Thread(target=startdownload,daemon=True).start()
     max_threads = multiprocessing.cpu_count()    
     divide_threads = max_threads / 2
-    start_threads = math.ceil(divide_threads) if divide_threads % 1 != 0 else divide_threads
+    start_threads = int(math.ceil(divide_threads) if divide_threads % 1 != 0 else divide_threads)
     max_workers = ctk.CustomSlider(frame_buttons,from_=1,to=max_threads,start=start_threads,sufixo="Máximo paralelismo")
     max_workers.pack(side="left",padx=10,pady=10, expand=True,fill="x")
     ctk.CustomButton(frame_buttons,text="Download",command=download).pack(side="left",padx=10,pady=10, expand=True,fill="x")

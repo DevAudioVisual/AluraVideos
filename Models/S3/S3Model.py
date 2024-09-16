@@ -1,6 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 import json
-from logging import root
+import multiprocessing
 import os
 import threading
 import time
@@ -24,6 +24,7 @@ class S3Model():
     self.downloaded = False
     
   def resetCredentials(self):
+    self.s3_client = None
     Main.Config.Reset("Credentials",reabrir=False)
     
   def setS3Client(self):  
@@ -46,28 +47,46 @@ class S3Model():
     s3_destination_folder = f"{destination_folder}/{folder_name}/"
     s3_destination_folder = s3_destination_folder.replace('\\', '/')
 
-    Interface = ProgressInterface()
+    Interface = ProgressInterface(folder_name)
     total_size = 0
     Interface.create_progress_window()
+    print("Iniciando o upload")
     for root, dirs, files in os.walk(local_folder_path):
         for file in files:
             total_size += os.path.getsize(os.path.join(root, file))
     def update(): 
         global _seen_so_far
-        Interface.update_progress(_seen_so_far, total_size)
+        def u():
+          Interface.update_progress(_seen_so_far, total_size)
+        threading.Thread(target=u,daemon=True).start()
         if _seen_so_far >= total_size:
-            print(f"baixado com sucesso!")
-            self.downloaded == True
+            print(f"Upload concluido!")
+            self.downloaded = True
+            Interface.downloaded = True
+            average_speed = sum(Interface.dict_values["Velocidade"]) / len(Interface.dict_values["Velocidade"])
+            peak_speed = max(Interface.dict_values["Velocidade"])
+            ctk.CustomLabel(Interface.main_frame,text=f"Velocidade média: {format_size(average_speed)}/s").pack(pady=5)
+            ctk.CustomLabel(Interface.main_frame,text=f"Pico máximo de velocidade: {format_size(peak_speed)}/s").pack(pady=5)
+            ctk.CustomLabel(Interface.main_frame,text=f"Tamanho total: {format_size(Interface.dict_values["Tamanho"])}").pack(pady=5)
+            print(f"Velocidade média: {format_size(average_speed)}/s")
+            print(f"Pico máximo de velocidade: {format_size(peak_speed)}/s")
+            print(f"Tamanho total: {format_size(Interface.dict_values["Tamanho"])}")
             return            
-        Main.InterfaceMain.root.after(700, update)
-    update()
+        Main.InterfaceMain.root.after(500, update)
+    threading.Thread(target=update,daemon=True).start()
     config = TransferConfig(
-                      multipart_threshold=1024 * 1024 * 32,
-                      multipart_chunksize=1024 * 1024 * 32,
+                      multipart_threshold=1024 * 1024 * 16,
+                      multipart_chunksize=1024 * 1024 * 16,
                       use_threads=False,
                       #max_concurrency=10
                   ) 
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    max_threads = multiprocessing.cpu_count()
+    workers = 0
+    if max_threads >= 10:
+      workers = 10
+    else: 
+      workers = max_threads  
+    with ThreadPoolExecutor(max_workers=workers) as executor:
       for root, dirs, files in os.walk(local_folder_path):
           for dir_name in dirs:
               subfolder_path = os.path.relpath(os.path.join(root, dir_name), local_folder_path)
@@ -111,6 +130,7 @@ class S3Model():
         else:
           messagebox.showinfo("Sucesso!","Credenciais válidadas e registradas com sucesso!")
           self.Encode(access_key=access_key,secret_key=secret_key)
+          self.setS3Client()
           return True
           
   def ValidateCredentials(self,secret_key, access_key):
@@ -140,7 +160,7 @@ class S3Model():
     return jwt.decode(token, self.KEY, algorithms=["HS256"])
 
 class ProgressInterface():
-    def __init__(self):
+    def __init__(self,folder_name):
        # Criação dos elementos da janela principal
         self.janela = tk.Toplevel()
         self.janela.configure(bg=Styles.cor_fundo,padx=50,pady=50)
@@ -148,47 +168,68 @@ class ProgressInterface():
         self.janela.attributes('-topmost', True)
         self.janela.after_idle(self.janela.attributes, '-topmost', False)
         
+        self.janela.title("S3 Uploader")
+        
         self.main_frame = ctk.CustomFrame(self.janela)
         self.main_frame.pack(fill="both", expand=True, anchor="center")
 
+        self.folder_name = folder_name
+
         self.start_time = None
         self.progress_var = tk.DoubleVar()
-        self.progress_bar = ttk.Progressbar(self.main_frame, variable=self.progress_var, maximum=100)
+        self.progress_bar = ttk.Progressbar(self.main_frame, variable=self.progress_var, maximum=100,length=300)
+        self.folder_name_label = ctk.CustomLabel(self.main_frame,font=Styles.fonte_titulo, text=self.folder_name)
+        self.total_label = ctk.CustomLabel(self.main_frame,font=Styles.fonte_input, text="Total: Calculando...")
         self.progress_label = ctk.CustomLabel(self.main_frame,font=Styles.fonte_input, text="Progresso: Calculando...")
         self.time_remaining_label = ctk.CustomLabel(self.main_frame,font=Styles.fonte_input, text="Tempo restante: Calculando...")
         self.speed_label = ctk.CustomLabel(self.main_frame,font=Styles.fonte_input, text="Velocidade: Calculando...")
         
+        self.dict_values = {}
+        self.speed_history = []
+        
+        self.downloaded = False
+        
+        #self.button_frames = ctk.CustomFrame(self.janela)
+        #self.button_frames.pack(fill="both", expand=True, anchor="center")
+        
     def create_progress_window(self):
         def create():    
-            self.progress_bar.pack()
-            self.progress_label.pack()
+            self.folder_name_label.pack(pady=5)
+            self.total_label.pack()
             self.time_remaining_label.pack()        
             self.speed_label.pack()
+            self.progress_bar.pack()
+            self.progress_label.pack()
         threading.Thread(target=create,daemon=True).start()
         
-    def update_progress(self, uploaded_size, total_size):
-          progress_percent = (uploaded_size / total_size) * 100
+    def update_progress(self, uploaded_size, total_size):    
+          progress_percent = (uploaded_size / total_size) * 100 if total_size > 0 else 100
           self.progress_var.set(progress_percent)
           self.progress_label.get().configure(text=f"{progress_percent:.2f}%")
 
           if self.start_time is None:
               self.start_time = time.time()
           else:
-              if progress_percent >= 99:
+              if uploaded_size >= total_size:
                   self.time_remaining_label.get().configure(text=f"Concluído")
                   self.progress_var.set(100)
                   self.speed_label.pack_forget()
+                  self.total_label.pack_forget()
                   self.progress_label.pack_forget()
                   self.main_frame.update()
                   return
               elapsed_time = time.time() - self.start_time
               remaining_time = (elapsed_time / progress_percent) * (100 - progress_percent) if progress_percent > 0 else 0
               self.time_remaining_label.get().configure(text=f"Tempo restante: {time.strftime('%H:%M:%S', time.gmtime(remaining_time))}")
+              self.total_label.get().configure(text=f"Total: {format_size(uploaded_size)} / {format_size(total_size)}")
 
               speed = uploaded_size / elapsed_time
+              self.speed_history.append(speed)
+              self.dict_values['Velocidade'] = self.speed_history
+              self.dict_values['Tamanho'] = total_size
               self.speed_label.get().configure(text=f"Velocidade: {format_size(speed)}/s")
 
-          self.main_frame.after(100, lambda: self.main_frame.update_idletasks()) 
+          self.main_frame.after(300, lambda: self.main_frame.update_idletasks()) 
 
 
 class ProgressPercentage(object):

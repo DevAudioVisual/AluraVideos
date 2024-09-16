@@ -2,6 +2,7 @@ import threading
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
+import Main
 from Models.S3 import S3Model
 from Util import Styles
 import Util.CustomWidgets as ctk
@@ -10,17 +11,16 @@ def InterfaceS3(tabview):
     frame_principal = ctk.CustomFrame(tabview.tab("S3"))
     model = S3Model.S3Model()
 
-    def Verify():
-      if model.hasToken(): 
-        if model.s3_client != None:
-          hasCredentials(frame_principal,model)   
-        else: 
-          startConnection(frame_principal,model)   
+    if model.hasToken(): 
+      if model.s3_client != None:
+        hasCredentials(frame_principal,model)   
       else: 
-        noCredentials(frame_principal,model) 
-    threading.Thread(target=Verify,daemon=True).start()
+        startConnection(frame_principal,model)   
+    else: 
+      noCredentials(frame_principal,model) 
     
     return frame_principal
+  
 def startConnection(frame_principal,model):
     def limpar():
       for widget in frame_principal.winfo_children():
@@ -31,11 +31,11 @@ def startConnection(frame_principal,model):
     def connect():
       limpar()
       hasCredentials(frame_principal,model)
-    ctk.CustomButton(frame_principal,text="Conectar",command=lambda: threading.Thread(target=connect,daemon=True).start()).pack(pady=5)
+    ctk.CustomButton(frame_principal,text="Conectar",command=connect).pack(pady=5)
     
 def hasCredentials(frame_principal,model):
     if model.setS3Client() == False:
-      ctk.CustomLabel(frame_principal,font=Styles.fonte_titulo,text_color="red",text="Erro de contexão ou credenciais inválidas.").pack(pady=10)
+      ctk.CustomLabel(frame_principal,font=Styles.fonte_titulo,text_color="red",text="Erro de conexão ou credenciais inválidas.").pack(pady=10)
       frame = ctk.CustomFrame(frame_principal)
       frame.pack()
       def Reset():
@@ -48,6 +48,7 @@ def hasCredentials(frame_principal,model):
       ctk.CustomButton(frame,text="Registrar novas credenciais",command=Reset).pack(padx=5,pady=10,side="left")
       ctk.CustomButton(frame,text="Tentar novamente",command=lambda: startConnection(frame_principal,model)).pack(padx=5,pady=10,side="left")
       return
+    
     ctk.CustomLabel(frame_principal,font=Styles.fonte_titulo,text="Upload Amazon S3").pack(pady=10)
     
     frame_pastas_s3 = ctk.CustomFrame(frame_principal)
@@ -59,20 +60,31 @@ def hasCredentials(frame_principal,model):
     frame_pastas = ctk.CustomFrame(frame_principal)
     frame_pastas.pack()
     entryLocalVar = tk.StringVar()
-    entryLocal = ctk.CustomEntry(frame_pastas,textvariable=entryLocalVar,width=250)
+    entryLocal = ctk.CustomEntry(frame_pastas,textvariable=entryLocalVar,width=500)
     entryLocal.pack(pady=10,padx=5,side="left")
     def setLocal():
       dir = filedialog.askdirectory()
       entryLocalVar.set(dir)
     ctk.CustomButton(frame_pastas,text="Buscar",command=setLocal).pack(pady=10,padx=5,side="left")
     
+    def checkUploaded():
+      if model.downloaded == True:
+        uploadButton.getButton().configure(state=tk.NORMAL)
+        uploadButton.getButton().configure(fg_color=Styles.cor_botao)
+        uploadButton.getButton().configure(text="Realizar upload")
+        return
+      Main.InterfaceMain.root.after(2000, checkUploaded) 
     def upload():
+      checkUploaded()
+      uploadButton.getButton().configure(state=tk.DISABLED)
+      uploadButton.getButton().configure(fg_color="gray")
+      uploadButton.getButton().configure(text="Aguarde...")
       def t():
         model.upload_folder_to_s3(local_folder_path=entryLocalVar.get(), destination_folder=foldersS3Var.get())
       threading.Thread(target=t,daemon=True).start()
         
-    ctk.CustomButton(frame_principal,text="Realizar upload",
-                     command=upload).pack(pady=10,padx=5)
+    uploadButton = ctk.CustomButton(frame_principal,text="Realizar upload",command=upload)
+    uploadButton.pack(pady=10,padx=5)
       
   
 def noCredentials(frame_principal,model):

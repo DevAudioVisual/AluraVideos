@@ -5,7 +5,7 @@
         {
             "Projeto": true,
             "S3": true,
-            "Vimeo": false,
+            "Vimeo": true,
             "PM3": true,
             "Editar": false,
             "Limpar Cache": true

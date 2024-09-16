@@ -12,6 +12,7 @@ setup.py
 compilador.iss
 pathnotes.md
 .Python
+interface_invisivel.png
 .github/
 build/
 .vscode/

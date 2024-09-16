@@ -10,6 +10,7 @@ from PIL import Image
 import os
 from Interfaces.PM3 import PM3Interface
 from Interfaces.S3 import S3Interface
+from Interfaces.Vimeo import VimeoInterface
 import Main
 from Models.Atalhos import Atalhos
 from Interfaces.LimparCache import LimparCacheInterface
@@ -43,9 +44,7 @@ class App():
         self.ordem_janelas_dict = self.DataJanelas.loc[0, 'OrdemJanelas']
         self.janelas_visiveis = {chave: valor for chave, valor in self.ordem_janelas_dict.items() if valor}
         self.JanelasVisiveis = pd.DataFrame({'OrdemJanelas': [self.janelas_visiveis]})
-        self.TodasAsJanelas = pd.DataFrame({'OrdemJanelas': [self.ordem_janelas_dict]})
         self.Janelas = self.JanelasVisiveis['OrdemJanelas'].iloc[0]
-        self.TodasJanelas = self.TodasAsJanelas['OrdemJanelas'].iloc[0]
         
         for Janela in self.Janelas:
             self.tabview.add(Janela) 
@@ -69,6 +68,9 @@ class App():
                 
             elif Janela == "S3":
                 self.tab_widgets["S3"] = S3Interface.InterfaceS3(self.tabview)
+                
+            elif Janela == "Vimeo":
+                self.tab_widgets["Vimeo"] = VimeoInterface.InterfaceVimeo(self.tabview)
 
         def on_tab_change():
             selected_tab_name = self.tabview.get()
