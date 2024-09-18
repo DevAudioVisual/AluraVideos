@@ -18,7 +18,7 @@ _seen_so_far = 0
 
 class S3Model():
   def __init__(self):
-    self.KEY = os.environ.get('S3_KEY')
+    self.KEY = str(os.environ.get('S3_KEY'))
     self.s3_client = None
     self.bucket_name = "equipevideos"
     self.downloaded = False

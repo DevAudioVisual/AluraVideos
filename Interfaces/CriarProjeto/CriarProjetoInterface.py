@@ -28,15 +28,12 @@ def interfaceCriarProjeto(tabview):
     dialog = CustomWidgets.CustomFrame(frame_auxiliar)
     dialog.pack()
 
-    CustomWidgets.CustomLabel(
-        dialog, text="Nome do projeto:", font=Styles.fonte_titulo).pack(pady=5, fill="x")
+    CustomWidgets.CustomLabel(dialog, text="Nome do projeto:", font=Styles.fonte_titulo).pack(pady=5, fill="x")
 
     nome_projeto_var = tk.StringVar(value="00_Novo Projeto")
-    CustomWidgets.CustomEntry(dialog, textvariable=nome_projeto_var,
-                              dica="Defina um nome para o projeto:", width=300).pack(pady=5, fill="x", side="top")
+    CustomWidgets.CustomEntry(dialog, textvariable=nome_projeto_var,dica="Defina um nome para o projeto:", width=300).pack(pady=5, fill="x", side="top")
 
-    CustomWidgets.CustomLabel(dialog, text="Diretório do projeto:",
-                              font=Styles.fonte_titulo).pack(pady=5, fill="x")
+    CustomWidgets.CustomLabel(dialog, text="Diretório do projeto:",font=Styles.fonte_titulo).pack(pady=5, fill="x")
 
     CriarEm = tk.StringVar(value=config["diretorio_padrao"])
 
@@ -54,8 +51,7 @@ def interfaceCriarProjeto(tabview):
     # Posiciona o Entry e o botão "Buscar" diretamente no dialog
     framebuscar = CustomWidgets.CustomFrame(dialog)
     framebuscar.pack(fill="x")
-    CustomWidgets.CustomEntry(framebuscar, textvariable=CriarEm, width=300).pack(
-        pady=5, fill="x", side="left")
+    CustomWidgets.CustomEntry(framebuscar, textvariable=CriarEm, width=300).pack(pady=5, fill="x", side="left")
     imagem_folder = CustomWidgets.CustomImage("folder.png", 20, 20)
     CustomWidgets.CustomButton(framebuscar, text="Buscar", dica="Clique para buscar um diretório para o projeto.",
                                Image=imagem_folder, command=changeDirectory).pack(pady=5, padx=5, fill="x", side="left")
@@ -100,7 +96,7 @@ def interfaceCriarProjeto(tabview):
 
     framebuscarVideos = CustomWidgets.CustomFrame(dialog)
     framebuscarVideos.pack()
-    CustomWidgets.CustomEntry(framebuscarVideos, textvariable=ArquivoVideos, width=300).pack(
+    CustomWidgets.CustomEntry(framebuscarVideos, textvariable=ArquivoVideos, width=300, state="readonly").pack(
         pady=5, fill="x", side="left")
     imagem_folder = CustomWidgets.CustomImage("folder.png", 20, 20)
 
@@ -173,9 +169,16 @@ def interfaceCriarProjeto(tabview):
             row = 0
             coluna_atual += 1
     fechar_ao_criar = config["fechar_ao_criar"]
-    fechar_ao_criar = tk.BooleanVar(value=bool(fechar_ao_criar))
+    fechar_ao_criar = tk.BooleanVar(value=fechar_ao_criar)
     BotaoCriar = CustomWidgets.CustomButton(master=dialog, text="Criar", dica="Clique aqui para criar seu projeto.",
-                               command=CriarProjeto.criar_pastas, width=200)
+                               command=lambda: CriarProjeto.ProjectCreator(ArquivoVideos.get(),
+                                                                           nome_projeto_var.get(),
+                                                                           subpasta_vars,
+                                                                           CriarEm,
+                                                                           abrir_pasta.get(),
+                                                                           fechar_ao_criar.get(),
+                                                                           abrir_premiere.get()
+                                                                           ).create(), width=200)
     BotaoCriar.pack(anchor="center", pady=10, side=("left"), padx=10, fill="x")
     CustomWidgets.CustomCheckBox(master=dialog, text="Fechar ao criar", dica="Selecione para fechar o Software ao criar.",
                                  variable=fechar_ao_criar).pack(anchor="center", side=("left"), fill="x")
@@ -189,16 +192,11 @@ def obter_nome_pasta(url):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Dependendo da estrutura da página, você pode precisar ajustar esta seleção.
-        # Aqui estamos supondo que o nome da pasta é encontrado em um elemento <title> ou similar.
-        # É possível que você precise inspecionar a página e ajustar o seletor.
         title_tag = soup.find('title')
 
         if title_tag:
             title_text = title_tag.get_text()
-            # partes = title_text.split(' - ')
-            texto = str(title_text).replace(
-                "Dropbox - ", "").replace(" - Simplify your life", "")
+            texto = str(title_text).replace("Dropbox - ", "").replace(" - Simplify your life", "")
             return texto
         else:
             return 'Título não encontrado'

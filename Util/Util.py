@@ -96,17 +96,17 @@ def frames_to_ms(frames, fps):
 
 
 def logWarning(func,mensagem,dialog = True):
-    logging.warn(f"Aviso na função {func} ", mensagem)
-    print(f"Aviso na função {func} ", mensagem)
+    logging.warn(f"Aviso na função {func}:", mensagem)
+    print(f"Aviso na função {func}:", mensagem)
     if dialog:
         messagebox.showwarning("Aviso",quebrar_linhas(mensagem))
 def logInfo(func,mensagem,dialog = True):
-    logging.debug(f"Info na função {func} ", mensagem)
-    print(f"Info na função {func} ", mensagem)
+    logging.debug(f"Info na função {func}:", mensagem)
+    print(f"Info na função {func}:", mensagem)
     if dialog:
         messagebox.showinfo("Info",quebrar_linhas(mensagem))
 def LogError(func,mensagem,dialog = True):
-    logging.error(f"Erro na função {func} ", mensagem)
-    print(f"Erro na função {func} ", mensagem)
+    logging.error(f"Erro na função {func}:", mensagem)
+    print(f"Erro na função {func}:", mensagem)
     if dialog:
         messagebox.showerror("Erro",quebrar_linhas(mensagem))

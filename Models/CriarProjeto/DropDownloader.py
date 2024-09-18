@@ -31,7 +31,7 @@ class DownloadDropApp():
     def updateInterface(self):
         if self.downloaded == True:
             return
-        self.Interface.velocidade_download.set(f"Velocidade: {self.format_size(self.velocidade)}")
+        self.Interface.velocidade_download.set(f"Velocidade: {self.format_size(self.velocidade)}/s")
         self.Interface.tempo_restante.set(f"Tempo Restante: {time.strftime('%H:%M:%S', time.gmtime(self.tempo_restante))}") 
         self.Interface.total_baixado.set(f"Tamanho do Arquivo: {self.format_size(self.downloaded_size)} / {self.format_size(self.total_size)}")
         self.Interface.barra_progresso['value'] = self.progress

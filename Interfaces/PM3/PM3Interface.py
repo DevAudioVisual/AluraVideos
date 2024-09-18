@@ -19,7 +19,7 @@ def InterfacePM3(tabview):
     text_widget = ctk.CustomTextbox(frame_principal,wrap="word",width=700,height=500)
     text_widget.pack(fill="both", expand=True)
     
-    ctk.CustomLabel(frame_principal,text_color="red",text="ATENÇÃO!\nÉ possível que haja erro de downloads, verifique após o término.",font=Styles.fonte_titulo).pack(pady=10, expand=True)
+    #ctk.CustomLabel(frame_principal,text_color="red",text="ATENÇÃO!\nÉ possível que haja erro de downloads, verifique após o término.",font=Styles.fonte_titulo).pack(pady=10, expand=True)
     
     frame_project_name = ctk.CustomFrame(frame_principal)
     frame_project_name.pack(side="top", expand=True)
@@ -44,6 +44,11 @@ def InterfacePM3(tabview):
     frame_buttons = ctk.CustomFrame(frame_principal)
     frame_buttons.pack(side="top", expand=True)
     
+    max_threads = multiprocessing.cpu_count()    
+    divide_threads = max_threads / 2
+    start_threads = int(math.ceil(divide_threads) if divide_threads % 1 != 0 else divide_threads)
+    #max_workers = ctk.CustomSlider(frame_buttons,from_=1,to=max_threads,start=start_threads,sufixo="Máximo paralelismo")
+    #max_workers.pack(side="left",padx=10,pady=10, expand=True,fill="x")
     def download():
         if DirVar == tk.StringVar(value=""):
             print("Diretório inválido")
@@ -56,13 +61,8 @@ def InterfacePM3(tabview):
                 filename=text_widget.getTextBox().get("1.0", "end-1c"),
                 extract_folder_path=rf"{DirVar.get()}",
                 extract_folder_name=Util.sanitize_filename(ProjectName.get()),
-                max_workers=max_workers.get_slider_value()).startDownload()
+                max_workers=max_threads) #max_workers.get_slider_value()).startDownload()
         threading.Thread(target=startdownload,daemon=True).start()
-    max_threads = multiprocessing.cpu_count()    
-    divide_threads = max_threads / 2
-    start_threads = int(math.ceil(divide_threads) if divide_threads % 1 != 0 else divide_threads)
-    max_workers = ctk.CustomSlider(frame_buttons,from_=1,to=max_threads,start=start_threads,sufixo="Máximo paralelismo")
-    max_workers.pack(side="left",padx=10,pady=10, expand=True,fill="x")
     ctk.CustomButton(frame_buttons,text="Download",command=download).pack(side="left",padx=10,pady=10, expand=True,fill="x")
     
     return frame_principal

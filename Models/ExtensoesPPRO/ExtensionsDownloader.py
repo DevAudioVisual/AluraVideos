@@ -8,12 +8,14 @@ import requests
 import Main
 import tkinter as tk
 import Util.CustomWidgets as ctk
-from Util import Styles
+from Util import Styles, Util
 
 def interfaceGerenciadorExtensoes():
   root = Main.InterfaceMain.root
   janela = tk.Toplevel(root)
   janela.title("Baixar extensões")
+  icone = Util.pegarImagem("premiere.ico")
+  janela.iconbitmap(False, icone)
   janela.geometry("350x220")
   janela.configure(bg=Styles.cor_fundo,padx=50,pady=50)
   janela.lift()
