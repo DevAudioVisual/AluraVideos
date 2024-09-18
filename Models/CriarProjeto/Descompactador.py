@@ -2,7 +2,6 @@ import os
 import re
 import subprocess
 import threading
-import time
 import tkinter as tk
 from tkinter import ttk
 import zipfile
