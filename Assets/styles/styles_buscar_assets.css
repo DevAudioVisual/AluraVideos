@@ -40,11 +40,8 @@ QLineEdit {
 QPushButton {
   background-color: #4C3BCF; 
   color: white; 
-  font-family: Helvetica, sans-serif;
-  font-weight: bold;
-  font-size: 12px; 
   border-radius: 5px; 
-  padding: 10px 20px; 
+  padding: 5px 10px; 
 }
 
 QPushButton:hover {

@@ -1,58 +1,65 @@
-import threading
 import time
-from tkinter import messagebox, ttk
 import zipfile
 import requests
 import os
-import tkinter as tk
+from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QProgressBar
+from PyQt6.QtCore import pyqtSignal, QObject,QThread,QTimer
 
-from Util import CustomWidgets, Styles
+class DownloadDropApp(QObject):
+    progress_updated = pyqtSignal(int, str, str, str)
 
-class DownloadDropApp():
-    def __init__(self, root, url, extract_folder_path):
+    def __init__(self, url, extract_folder_path):
+        super().__init__() 
         self.extract_folder_path = extract_folder_path
         self.zip_file = None
         self.url = self.convert_link(url)
         self.downloaded = False
-        self.root = root
-        
-        self.Interface = DownloadDropInterface(root)
-        
+
         self.velocidade = 0
         self.tempo_restante = 0
         self.downloaded_size = 0
         self.progress = 0
         self.total_size = 0
-        
-    def startDownload(self): 
-        threading.Thread(target=self.Download,daemon=True).start()
-        threading.Thread(target=self.updateInterface,daemon=True).start()
-        
-    def updateInterface(self):
-        if self.downloaded == True:
-            return
-        self.Interface.velocidade_download.set(f"Velocidade: {self.format_size(self.velocidade)}/s")
-        self.Interface.tempo_restante.set(f"Tempo Restante: {time.strftime('%H:%M:%S', time.gmtime(self.tempo_restante))}") 
-        self.Interface.total_baixado.set(f"Tamanho do Arquivo: {self.format_size(self.downloaded_size)} / {self.format_size(self.total_size)}")
-        self.Interface.barra_progresso['value'] = self.progress
-        self.root.update_idletasks()
-        self.root.after(300, self.updateInterface)
-             
-    def Download(self,chunk_size=8192):
+
+        self.progressdialog = ProgressDialog()
+        self.progress_updated.connect(self.progressdialog.update_progress)
+
+    def startDownload(self):
+        self.progressdialog.show()
+
+        self.download_thread = QThread()
+        self.moveToThread(self.download_thread)
+        self.download_thread.started.connect(self.Download)
+        self.download_thread.start()
+
+        def update():
+            self.emit_progress_update()
+            if self.downloaded == True:
+                self.update_thread.quit()
+                self.update_thread.wait()
+                self.progressdialog.close()
+                return
+            QTimer.singleShot(1000,update)
+        self.update_thread = QThread()
+        self.update_thread.started.connect(update)
+        self.update_thread.start()
+
+    def Download(self, chunk_size=8 * 1024 * 1024):
         if not self.url.startswith('https://www.dropbox.com'):
-            messagebox.showerror("Error","Link do dropbox inválido ou comprometido.")
+            #messagebox.showerror("Error","Link do dropbox inválido ou comprometido.")
             return
+
         filename = "arquivo_videos.zip"
         folderpath = os.path.join(self.extract_folder_path)
         os.makedirs(folderpath, exist_ok=True)
-        filepath = os.path.join(folderpath,filename)
+        filepath = os.path.join(folderpath, filename)
 
         retries = 0
         max_retries = 3
         retry_delay = 5
-        
+
         start_time = time.time()
-        
+
         while retries < max_retries:
             try:
                 response = requests.get(self.url, stream=True, allow_redirects=True)
@@ -66,15 +73,13 @@ class DownloadDropApp():
                         self.elapsed_time = time.time() - start_time
                         self.velocidade = (self.downloaded_size / self.elapsed_time) 
                         self.tempo_restante = ((self.total_size - self.downloaded_size) / self.velocidade) if self.velocidade > 0 else 0
-                        
-                        #print(f"Velocidade: {self.format_size(self.velocidade)}")
-                        
+
                 self.zip_file = filepath
                 if not self.check_zip_integrity(filepath):
                     print("Arquivo zip corrompido.")
+                    break 
                 self.downloaded = True
-                self.Interface.janela.destroy()
-                break 
+
             except requests.exceptions.RequestException as e:
                 retries += 1
                 print(f"Erro no download (tentativa {retries}/{max_retries}): {e}")
@@ -83,6 +88,25 @@ class DownloadDropApp():
                     time.sleep(retry_delay)
                 else:
                     print("Número máximo de tentativas atingido. Download falhou.")
+
+        self.download_thread.quit()
+        self.download_thread.wait()
+
+        # Encerra a thread de atualização da interface
+        self.update_timer.stop()
+        self.update_thread.quit()
+        self.update_thread.wait()
+
+    def emit_progress_update(self):
+        """
+        Emite o sinal de atualização de progresso com os valores atuais.
+        """
+        self.progress_updated.emit(
+            int(self.progress),
+            self.format_size(self.velocidade),
+            time.strftime('%H:%M:%S', time.gmtime(self.tempo_restante)),
+            f"{self.format_size(self.downloaded_size)} / {self.format_size(self.total_size)}"
+        )
                     
     def convert_link(self,url):
         if "dl=0" in url:
@@ -106,29 +130,32 @@ class DownloadDropApp():
         else:
             return f"{size:.2f} bytes"
         
-        
-class DownloadDropInterface():
-    def __init__(self, root):
-        self.janela = tk.Toplevel(root)
-        self.janela.title("Baixando arquivos...")
-        self.janela.configure(bg=Styles.cor_fundo,padx=50,pady=50)
-        self.janela.protocol("WM_DELETE_WINDOW", lambda: None)
-        self.janela.lift()
-        self.janela.attributes('-topmost', True)
-        self.janela.after_idle(self.janela.attributes, '-topmost', False)
-        self.janela.resizable(False, False)
-        
-        frameBarra = CustomWidgets.CustomFrame(self.janela)
-        frameBarra.pack()
-        
-        self.barra_progresso = ttk.Progressbar(frameBarra, orient='horizontal', length=300, mode='determinate',style="Horizontal.TProgressbar")
-        self.barra_progresso.pack(anchor="center",side="top")
-        self.progresso = tk.StringVar()
-        self.total_baixado = tk.StringVar()
-        self.velocidade_download = tk.StringVar()
-        self.tempo_restante = tk.StringVar()
-        CustomWidgets.CustomEntry(frameBarra,textvariable=self.progresso,width=380,border_width=0,fg_color=Styles.cor_fundo,text_color="white",state="readonly").pack(anchor="center",side="top",pady=2)
-        CustomWidgets.CustomEntry(self.janela,textvariable=self.total_baixado,width=380,border_width=0,fg_color=Styles.cor_fundo,text_color="white",state="readonly").pack(fill="x",pady=2)
-        CustomWidgets.CustomEntry(self.janela,textvariable=self.velocidade_download,width=380,border_width=0,fg_color=Styles.cor_fundo,text_color="white",state="readonly").pack(fill="x",pady=2)
-        CustomWidgets.CustomEntry(self.janela,textvariable=self.tempo_restante,width=380,border_width=0,fg_color=Styles.cor_fundo,text_color="white",state="readonly").pack(fill="x",pady=2)
-            
+
+class ProgressDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Progresso")
+
+        layout = QVBoxLayout()
+
+        self.velocidade_download = QLabel("Velocidade: Calculando...")
+        self.tempo_restante = QLabel("Tempo Restante: Calculando...")
+        self.total_baixado = QLabel("Tamanho do Arquivo: Calculando...")
+
+        layout.addWidget(self.velocidade_download)
+        layout.addWidget(self.tempo_restante)
+        layout.addWidget(self.total_baixado)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setValue(0)  # Inicializa a barra de progresso em 0
+        layout.addWidget(self.progress_bar)
+
+        self.setLayout(layout)
+
+    def update_progress(self, progress, velocidade, tempo_restante, total_baixado):
+        self.progress_bar.setValue(progress)
+        self.velocidade_download.setText(f"Velocidade: {velocidade}/s")
+        self.tempo_restante.setText(f"Tempo Restante: {tempo_restante}")
+        self.total_baixado.setText(f"Tamanho do Arquivo: {total_baixado}")
+
+

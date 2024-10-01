@@ -16,6 +16,7 @@ interface_invisivel.png
 .github/
 build/
 .vscode/
+z_Old/
 z_Testes/
 ffmpeg/
 Output/

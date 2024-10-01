@@ -1,27 +1,40 @@
 import logging
-from dotenv import load_dotenv
+from logging.handlers import TimedRotatingFileHandler
 import os
 import signal
 import sys
+from dotenv import load_dotenv
 import threading
-from Interfaces.Interface import InterfaceMain
-from Config import LoadConfigs
-from Util import Util
-from logging.handlers import TimedRotatingFileHandler
-
-titulo = "AluraVideos " + Util.version
-InterfacePrincipal = None
-Config = LoadConfigs.Configs()
+from PyQt6.QtWidgets import QApplication
+from QtInterfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
+from QtInterfaces.MainWindow import MainWindow
 
 def main():
     load_dotenv()
-    global InterfacePrincipal,Config
     setup_signal_handlers()
     setup_logging()
-    InterfaceP()
-    pass
+    
+    app = QApplication(sys.argv) 
+    with open(r"Assets\styles\style.css", "r") as f:
+             stylesheet = f.read()
+    app.setStyleSheet(stylesheet)
 
+    loading_screen = LoadingScreen()
+    loading_screen.show()
 
+    loading_thread = LoadingThread()
+
+    loading_thread.progress_updated.connect(loading_screen.update_progress)
+    loading_thread.finished.connect(loading_screen.close)
+    loading_thread.finished.connect(MainWindow.create_main_window)
+
+    # Conecta o sinal aboutToQuit ao slot que encerra a thread
+    app.aboutToQuit.connect(loading_thread.quit)
+
+    loading_thread.start()
+
+    sys.exit(app.exec())
+    
 def setup_signal_handlers():
     signal.signal(signal.SIGINT, handle_interrupt)
 
@@ -67,13 +80,6 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 
 def thread_exception_handler(args):
     logging.error("Exceção não tratada em thread", exc_info=(args.exc_type, args.exc_value, args.exc_traceback))
-
-
-def InterfaceP():
-    InterfacePrincipal = InterfaceMain.App()
-    InterfacePrincipal.carregarInterfacePrincipal()
-    InterfacePrincipal.getRoot().mainloop()
-
 
 if __name__ == '__main__':
     main()

@@ -7,16 +7,21 @@ from tkinter import messagebox, messagebox
 import pandas as pd
 from Util import Util
 
+global Config
+Config = None
+
 class Configs():
   def __init__(self):
     self.config_dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Config") 
     self.diretorio_atual = Path(__file__).parent.absolute()
     self.Configs = ["ConfigAtalhos","ConfigCache","ConfigCriarProjeto","ConfigInterface","Credentials"]
-    os.makedirs(self.config_dir, exist_ok=True)
     
     self.file_path = {}
     self.config_data = {}
     self.config_file = {}
+    
+    """
+    os.makedirs(self.config_dir, exist_ok=True)
     
     for c in self.Configs:
       self.file_path[c] = os.path.join(self.config_dir, f"{c}.json")
@@ -24,9 +29,20 @@ class Configs():
       atualizar_json(self.config_file[c], self.file_path[c])
       
     self.Load()
+    """
+    
+  def firtLoad(self):
+    os.makedirs(self.config_dir, exist_ok=True)
+    
+    for c in self.Configs:
+      self.file_path[c] = os.path.join(self.config_dir, f"{c}.json")
+      self.config_file[c] = os.path.join(self.diretorio_atual, f'{c}.json')
+      atualizar_json(self.config_file[c], self.file_path[c])
+      
+    self.Load() 
     
   def getConfigs(self):
-      return Configs
+    return Configs
   
   def saveConfig(self,config,text_area_editor):
     editor_content = text_area_editor.get("1.0", tk.END)
@@ -59,13 +75,22 @@ class Configs():
     except Exception as e:
         print(f"Erro inesperado: {e}")
         
-  def Load(self):
-    for c in self.Configs:
-      try:
-          with open(self.file_path[c], 'r', encoding='utf-8') as f:
-              self.config_data[c] = json.load(f)
-      except FileNotFoundError:
-          return messagebox.showerror("Erro", f"Erro ao carregar configurações de {c}")
+  def Load(self, config = None):
+    if config is not None:
+        try:
+            with open(self.file_path[config], 'r', encoding='utf-8') as f:
+                self.config_data[config] = json.load(f)
+                print(f"{config} carregada com sucesso.")
+        except FileNotFoundError:
+            return messagebox.showerror("Erro", f"Erro ao carregar configurações de {c}")
+    else:
+        for c in self.Configs:
+            try:
+                with open(self.file_path[c], 'r', encoding='utf-8') as f:
+                    self.config_data[c] = json.load(f)
+                print(f"{c} carregada com sucesso.")
+            except FileNotFoundError:
+                return messagebox.showerror("Erro", f"Erro ao carregar configurações de {c}")
         
   def getDataFrame(self,config):
       return pd.read_json(self.file_path[config])

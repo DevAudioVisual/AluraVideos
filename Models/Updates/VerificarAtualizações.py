@@ -2,7 +2,6 @@ import re
 import sys
 import threading
 from tkinter import messagebox
-from numpy import double
 import requests
 import os
 import tempfile
@@ -11,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 from packaging import version
 from Util import Util
+from PyQt6.QtCore import QTimer
 
 class app():
     def __init__(self):
@@ -26,7 +26,8 @@ class app():
         self.release_notes = None
         self.release_version = None
         
-        threading.Thread(target=self.initRequest(),daemon=True).start()
+        self.initRequest()
+        #threading.Thread(target=self.initRequest(),daemon=True).start()
         
     def initRequest(self):
         try:
@@ -95,16 +96,12 @@ class app():
                 time.sleep(1)
                 baixado = True
                 
-        while True:
-            if baixado == True:
-                print(f"Executando {exe_asset['name']}...")
-                subprocess.run([temp_exe_path])
-                sys.exit()
-                break
-            else:
-                print(f"Erro no download de {exe_asset['name']}. O tamanho do arquivo baixado não corresponde ao tamanho esperado.")
-
-
-
-
-# https://api.github.com/repos/devaudiovisual/effector/releases/latest
+        def loopVerificarBaixado():
+            if baixado != True:
+                QTimer.singleShot(1000, lambda: loopVerificarBaixado())
+                #Main.InterfaceMain.root.after(1000, lambda: loopVerificarBaixado())
+                return
+            print(f"Executando {exe_asset['name']}...")
+            subprocess.run([temp_exe_path])
+            sys.exit()
+        loopVerificarBaixado()        

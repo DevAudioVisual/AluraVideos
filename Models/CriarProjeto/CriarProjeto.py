@@ -1,29 +1,24 @@
-import threading
 import time
-from tkinter import messagebox
 import webbrowser
 import shutil
 import os
-from Interfaces.CriarProjeto import CriarProjetoInterface
-from Interfaces.Interface import InterfaceMain
 from Models.CriarProjeto import Descompactador, DropDownloader
-from Util import TempoVideos,Util
-
-
-
-
+from QtInterfaces.ProjectCreator import InterfaceProjectCreator
+from Util import TempoVideos, Util
+from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtCore import QTimer
     
 class ProjectCreator():
-    def __init__(self, ArquivoVideos, nome_projeto_var, subpasta_vars, CriarEm,abrir_pasta,fechar_ao_criar,abrir_premiere):
+    def __init__(self, ArquivoVideos, nome_projeto_var, subpasta_vars, CriarEm,abrir_pasta,fechar_ao_criar,abrir_premiere, main_window):
         self.PastasCriadas = []
         self.abrir_pasta = abrir_pasta
         self.abrir_premiere = abrir_premiere
         self.fechar_ao_criar = fechar_ao_criar
         self.ArquivoVideos = ArquivoVideos #CriarProjetoInterface.ArquivoVideos.get()
-        self.nome_projeto = nome_projeto_var #CriarProjetoInterface.nome_projeto_var.get()
+        self.nome_projeto = nome_projeto_var.text() #CriarProjetoInterface.nome_projeto_var.get()
         self.CriarEm = CriarEm
         self.subpasta_vars = subpasta_vars
-        self.subpastas_selecionadas = [subpasta for subpasta, var in self.subpasta_vars.items() if var.get()]
+        self.subpastas_selecionadas = [subpasta for subpasta, var in self.subpasta_vars.items() if var.isChecked()]
         self.Premire = False
         self.After = False
         self.destinoPremiere = ""
@@ -36,18 +31,21 @@ class ProjectCreator():
         self.Downloader = None    
         self.Descompactador = None
         
+        self.main_window = main_window
+        
         self.Mensagem = "Projeto: "+self.nome_projeto+" criado com sucesso!"
+        self.Interface = InterfaceProjectCreator.Interface()
         
     def create(self):
-        if not self.CriarEm.get(): 
+        if not self.CriarEm.text(): 
             Util.logWarning(None,"Diretório de criação inválido.",True)
             return
-        if not self.ArquivoVideos: 
+        if not self.ArquivoVideos.text(): 
             Util.logWarning(None,"Arquivo de vídeos não fornecido.",True)
             return
         
         if self.nome_projeto:
-            self.caminho_pasta_principal = os.path.join(CriarProjetoInterface.CriarEm.get(), self.nome_projeto)
+            self.caminho_pasta_principal = os.path.join(self.CriarEm.text(), self.nome_projeto)
             os.makedirs(self.caminho_pasta_principal, exist_ok=True)
             print(f"Pasta '{self.nome_projeto}' criada com sucesso!")
             for subpasta in self.subpastas_selecionadas:
@@ -73,24 +71,27 @@ class ProjectCreator():
                 if self.Downloader and self.Downloader.downloaded == True:
                         print("############ INICIANDO DESCOMPACTAÇAO")
                         self.arquivo_zip = self.Downloader.zip_file
-                        InterfaceMain.root.after(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida))         
+                        QTimer.singleShot(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida))
+                        #InterfaceMain.root.after(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida))         
                 else: 
-                    InterfaceMain.root.after(1000, verificar_termino_download)       
+                    QTimer.singleShot(1000, verificar_termino_download)
+                    #InterfaceMain.root.after(1000, verificar_termino_download)       
                 
             def verificar_termino():
                 if self.Descompactador.descompacted == True:
                     self.Tempo = TempoVideos.calcular_duracao_total(self.destinoVideos)
-                    messagebox.showinfo("Aviso", self.Mensagem+" \n"+f"Você tem {self.Tempo} de bruto para edição.")
+                    QMessageBox.information(None, "Aviso", self.Mensagem+" \n"+f"Você tem {self.Tempo} de bruto para edição.")
+                    #messagebox.showinfo("Aviso", self.Mensagem+" \n"+f"Você tem {self.Tempo} de bruto para edição.")
                     self.abriroufechar()
-                    InterfaceMain.root.after_cancel(verificar_termino)
                 else:
-                    InterfaceMain.root.after(1000, verificar_termino)  # Verifica novamente em 100ms
+                    QTimer.singleShot(1000, verificar_termino)
+                    #InterfaceMain.root.after(1000, verificar_termino)  # Verifica novamente em 100ms
             if self.ArquivoVideos:
-                self.arquivo_zip = CriarProjetoInterface.filepath           
+                self.arquivo_zip = self.ArquivoVideos.text()          
                 self.diretorio_saida = self.destinoVideos
                 if Util.is_url(self.arquivo_zip):
-                    self.Downloader = DropDownloader.DownloadDropApp(root=InterfaceMain.root,url=self.arquivo_zip,extract_folder_path=self.diretorio_saida)
-                    threading.Thread(target=self.Downloader.startDownload(),daemon=True).start() 
+                    self.Downloader = DropDownloader.DownloadDropApp(url=self.arquivo_zip, extract_folder_path=self.diretorio_saida)
+                    self.Downloader.startDownload() 
                     verificar_termino_download()
                     verificar_termino()
                 else: 
@@ -103,9 +104,14 @@ class ProjectCreator():
         if self.abrir_premiere == True and self.Premire == True:
             webbrowser.open(os.path.join(self.destinoPremiere, self.nome_projeto+".prproj"))
         if self.abrir_pasta  == True:
-            InterfaceMain.root.after(1000, lambda: webbrowser.open(self.caminho_pasta_principal)) 
+            QTimer.singleShot(1000, lambda: webbrowser.open(self.caminho_pasta_principal))
+            #InterfaceMain.root.after(1000, lambda: webbrowser.open(self.caminho_pasta_principal)) 
         if self.fechar_ao_criar  == True:
-            InterfaceMain.root.after(1000, InterfaceMain.root.destroy) 
+            return
+            #timer = QTimer()
+            #timer.timeout.connect(updateInterface)
+            #timer.start(1000)
+            #InterfaceMain.root.after(1000, InterfaceMain.root.destroy) 
     def download_completo(self,arquivo, tamanho_esperado=None):
         tamanho_anterior = 0
         tempo_ultima_alteracao = time.time()

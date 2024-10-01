@@ -106,7 +106,7 @@ class AssetItem(QWidget):
                           f"Erro ao carregar imagem do cache: {e}", False)
 
 
-class AssetDownloader(QWidget):
+class Interface(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Buscador de imagens")
@@ -118,7 +118,7 @@ class AssetDownloader(QWidget):
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("O que você deseja buscar?")
         search_layout.addWidget(self.search_bar)
-        self.setFixedSize(800, 600)
+        #self.setFixedSize(800, 600)
 
         self.tipoImagem = QComboBox()
         self.tipoImagem.addItem("Imagens")
@@ -175,9 +175,9 @@ class AssetDownloader(QWidget):
         pagination_layout.addWidget(self.next_button)
         layout.addLayout(pagination_layout)
 
-        with open(r"Assets\styles\styles_buscar_assets.css", "r") as f:
-            stylesheet = f.read()
-        self.setStyleSheet(stylesheet)
+        # with open(r"Assets\styles\styles_buscar_assets.css", "r") as f:
+        #     stylesheet = f.read()
+        # self.setStyleSheet(stylesheet)
 
         self.setLayout(layout)
 
@@ -311,15 +311,15 @@ class SearchThread(QThread):
         self.result_ready.emit(hits, total_hits)
 
 
-def abrirInterface():
-    """Abre a interface AssetDownloader em uma thread separada."""
-    def run_app():
-        app = QApplication(sys.argv)
-        window = AssetDownloader()
-        window.show()
-        # Importante: Remover 'sys.exit(app.exec_())' para que o Tkinter não feche
-        app.exec()
-    run_app()
+# def abrirInterface():
+#     """Abre a interface AssetDownloader em uma thread separada."""
+#     def run_app():
+#         app = QApplication(sys.argv)
+#         window = AssetDownloader()
+#         window.show()
+#         # Importante: Remover 'sys.exit(app.exec_())' para que o Tkinter não feche
+#         app.exec()
+#     run_app()
     # thread = threading.Thread(target=run_app)
     # thread.daemon = True
     # thread.start()
