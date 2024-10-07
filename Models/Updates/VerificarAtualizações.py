@@ -48,7 +48,6 @@ class app():
             try:
                 with requests.get(url, stream=True) as r:
                     r.raise_for_status()
-                    #total_size = int(r.headers.get('content-length', 0))
                     with open(file_path, 'wb') as f:
                         with ThreadPoolExecutor(max_workers=4) as executor:
                             for chunk in r.iter_content(chunk_size=chunk_size):
