@@ -9,8 +9,9 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QTimer
     
 class ProjectCreator():
-    def __init__(self, ArquivoVideos, nome_projeto_var, subpasta_vars, CriarEm,abrir_pasta,fechar_ao_criar,abrir_premiere, main_window):
+    def __init__(self, ArquivoVideos, nome_projeto_var, subpasta_vars, CriarEm,abrir_pasta,fechar_ao_criar,abrir_premiere, main_window, stackedwidget):
         self.PastasCriadas = []
+        self.stackedwidget = stackedwidget
         self.abrir_pasta = abrir_pasta
         self.abrir_premiere = abrir_premiere
         self.fechar_ao_criar = fechar_ao_criar
@@ -24,9 +25,6 @@ class ProjectCreator():
         self.destinoPremiere = ""
         self.destinoAfter = ""
         self.destinoVideos = ""
-        self.thread_barra = None;
-        self.thread_extracao = None;
-        self.thread_baixando = None;
         self.Tempo = None;       
         self.Downloader = None    
         self.Descompactador = None
@@ -65,13 +63,13 @@ class ProjectCreator():
                     self.caminho_nova_pasta = self.caminho_subpasta
                     self.destinoPremiere = self.caminho_nova_pasta
              
-            self.Descompactador = Descompactador.Descompact()
+            self.Descompactador = Descompactador.Descompact(projeto=self.nome_projeto)
              
             def verificar_termino_download():
                 if self.Downloader and self.Downloader.downloaded == True:
                         print("############ INICIANDO DESCOMPACTAÇAO")
                         self.arquivo_zip = self.Downloader.zip_file
-                        QTimer.singleShot(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida))
+                        QTimer.singleShot(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida, stackedwidget=self.stackedwidget))
                         #InterfaceMain.root.after(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida))         
                 else: 
                     QTimer.singleShot(1000, verificar_termino_download)
@@ -90,8 +88,12 @@ class ProjectCreator():
                 self.arquivo_zip = self.ArquivoVideos.text()          
                 self.diretorio_saida = self.destinoVideos
                 if Util.is_url(self.arquivo_zip):
-                    self.Downloader = DropDownloader.DownloadDropApp(url=self.arquivo_zip, extract_folder_path=self.diretorio_saida)
+                    self.Downloader = DropDownloader.DownloadDropApp(url=self.arquivo_zip, extract_folder_path=self.diretorio_saida,stackedwidget=self.stackedwidget,projeto=self.nome_projeto)
                     self.Downloader.startDownload() 
+                    #url = self.arquivo_zip
+                    #self.Downloader = DropDownloader.DownloadWidget(url,self.diretorio_saida)
+                    #self.stackedwidget.addWidget(self.progressdialog)
+                    #self.stackedwidget.setCurrentWidget(self.progressdialog)
                     verificar_termino_download()
                     verificar_termino()
                 else: 

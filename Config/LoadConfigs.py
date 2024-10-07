@@ -20,17 +20,6 @@ class Configs():
     self.config_data = {}
     self.config_file = {}
     
-    """
-    os.makedirs(self.config_dir, exist_ok=True)
-    
-    for c in self.Configs:
-      self.file_path[c] = os.path.join(self.config_dir, f"{c}.json")
-      self.config_file[c] = os.path.join(self.diretorio_atual, f'{c}.json')
-      atualizar_json(self.config_file[c], self.file_path[c])
-      
-    self.Load()
-    """
-    
   def firtLoad(self):
     os.makedirs(self.config_dir, exist_ok=True)
     
@@ -55,9 +44,12 @@ class Configs():
         
   def saveConfigDict(self,config,dict):
     try:
-        data = json.loads(dict)
-        with open(self.file_path[config], 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4)
+        with open(self.file_path[config], 'r') as f:
+            data = json.load(f)
+        data.update(dict)    
+        with open(self.file_path[config], 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4)
+            
     except json.JSONDecodeError:
         print("Erro: O conteúdo do editor não é um JSON válido.")  
         

@@ -20,13 +20,17 @@ class Tabs(QTabWidget):
         self.setMovable(True)
         self.setTabsClosable(False)
         self.tabCloseRequested.connect(self.close_tab)
-
-        self.addTab(self.InterfaceProjectCreator, "Criar Projeto")
-        self.addTab(self.InterfaceS3, "S3")
-        self.addTab(None, "PM3")
-        self.addTab(self.InterfaceAssetsPixaBay, "Imagens PixaBay")
-        self.addTab(self.InterfaceLimparCache, "Limpar Cache")
-
+        
+        abas = {
+            "Criar Projeto": InterfaceProjectCreator.Interface(),
+            "S3": InterfaceS3.Interface(),
+            "PM3": None,  # Se PM3 não tem um módulo associado
+            "Imagens Pixabay": ImagensPixabay.Interface(),
+            "Limpar Cache": InterfaceLimparCache.Interface()
+        }
+        for nome_aba, modulo in abas.items():
+            self.addTab(modulo,nome_aba)
+            
         layout = QVBoxLayout()
         layout.addWidget(self)
         
@@ -63,9 +67,7 @@ class Tabs(QTabWidget):
             self.menubar.janelas_submenu.addAction(reopen_action)
 
     def reopen_tab(self, tab_name):
-        print("Reopen")
         if tab_name in self.closed_tabs:
-            print("esta")
             self.addTab(self.closed_tabs[tab_name], tab_name)
             del self.closed_tabs[tab_name]
             # Remover a ação de reabrir do menu

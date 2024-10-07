@@ -2,14 +2,16 @@ import time
 import zipfile
 import requests
 import os
-from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QProgressBar
-from PyQt6.QtCore import pyqtSignal, QObject,QThread,QTimer
+from PyQt6.QtWidgets import QLabel, QWidget, QGridLayout, QProgressBar
+from PyQt6.QtCore import pyqtSignal, QObject,QThread,QTimer, Qt
 
 class DownloadDropApp(QObject):
     progress_updated = pyqtSignal(int, str, str, str)
 
-    def __init__(self, url, extract_folder_path):
+    def __init__(self, url, extract_folder_path,stackedwidget, projeto):
         super().__init__() 
+        self.stackedwidget = stackedwidget
+        self.projeto = projeto
         self.extract_folder_path = extract_folder_path
         self.zip_file = None
         self.url = self.convert_link(url)
@@ -21,12 +23,12 @@ class DownloadDropApp(QObject):
         self.progress = 0
         self.total_size = 0
 
-        self.progressdialog = ProgressDialog()
+        self.progressdialog = ProgressWidget(projeto=projeto)
+        self.stackedwidget.addWidget(self.progressdialog)
+        self.stackedwidget.setCurrentWidget(self.progressdialog)
         self.progress_updated.connect(self.progressdialog.update_progress)
 
     def startDownload(self):
-        self.progressdialog.show()
-
         self.download_thread = QThread()
         self.moveToThread(self.download_thread)
         self.download_thread.started.connect(self.Download)
@@ -37,7 +39,6 @@ class DownloadDropApp(QObject):
             if self.downloaded == True:
                 self.update_thread.quit()
                 self.update_thread.wait()
-                self.progressdialog.close()
                 return
             QTimer.singleShot(1000,update)
         self.update_thread = QThread()
@@ -131,24 +132,32 @@ class DownloadDropApp(QObject):
             return f"{size:.2f} bytes"
         
 
-class ProgressDialog(QDialog):
-    def __init__(self):
+class ProgressWidget(QWidget):
+    def __init__(self, projeto):
         super().__init__()
-        self.setWindowTitle("Progresso")
 
-        layout = QVBoxLayout()
+        layout = QGridLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        layout.setContentsMargins(10, 20, 10, 10)
+
+        self.titulo = QLabel(f"Aguarde! Estou criando o projeto: {projeto} para você! ^^")
+        self.titulo.setObjectName("grande")
+        self.subtitulo = QLabel("Etapa atual: Fazendo download")
+        self.subtitulo.setObjectName("medio")
 
         self.velocidade_download = QLabel("Velocidade: Calculando...")
         self.tempo_restante = QLabel("Tempo Restante: Calculando...")
         self.total_baixado = QLabel("Tamanho do Arquivo: Calculando...")
 
-        layout.addWidget(self.velocidade_download)
-        layout.addWidget(self.tempo_restante)
-        layout.addWidget(self.total_baixado)
+        layout.addWidget(self.titulo,1,0)
+        layout.addWidget(self.subtitulo,2,0)
+        layout.addWidget(self.velocidade_download,3,0)
+        layout.addWidget(self.tempo_restante,4,0)
+        layout.addWidget(self.total_baixado,5,0)
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)  # Inicializa a barra de progresso em 0
-        layout.addWidget(self.progress_bar)
+        layout.addWidget(self.progress_bar,6,0)
 
         self.setLayout(layout)
 

@@ -3,14 +3,15 @@ import subprocess
 import zipfile
 import patoolib
 from Util import Util
-from PyQt6.QtCore import QTimer, QThread, QObject, pyqtSignal
-from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QProgressBar
+from PyQt6.QtCore import QTimer, QThread, QObject, pyqtSignal, Qt
+from PyQt6.QtWidgets import QLabel, QWidget, QGridLayout, QProgressBar
 
 class Descompact(QObject):
     progress_signal = pyqtSignal(int, int)  # Para comunicar o progresso
 
-    def __init__(self):
+    def __init__(self, projeto):
         super().__init__()
+        self.projeto = projeto
         self.arquivo_entrada = None
         self.diretorio_saida = None
         self.descompacted = False
@@ -18,14 +19,17 @@ class Descompact(QObject):
         self.patoolprogress = 0
         self.audioprogress = 0
         self.total_zip = 0
-        self.progress = ProgressDialog()  # Janela de progresso
+        self.progress = ProgressDialog(projeto=self.projeto)  # Janela de progresso
         self.progress_signal.connect(self.progress.update_progress)
 
         # Timer para atualizar a interface
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self.updateInterface)
 
-    def start(self, arquivo_entrada, diretorio_saida):
+    def start(self, arquivo_entrada, diretorio_saida, stackedwidget):
+        self.stackedwidget = stackedwidget
+        self.stackedwidget.addWidget(self.progress)
+        self.stackedwidget.setCurrentWidget(self.progress)
         self.arquivo_entrada = arquivo_entrada
         self.diretorio_saida = diretorio_saida
         self.limpar_texto()
@@ -52,6 +56,13 @@ class Descompact(QObject):
         self.update_timer.start(500)
 
     def finish(self):
+
+        num_widgets = self.stackedwidget.count()
+        if num_widgets > 1:
+            for i in range(1, num_widgets):
+                self.stackedwidget.removeWidget(self.stackedwidget.widget(1))  # Remove sempre o índice 1
+        self.stackedwidget.setCurrentIndex(0)
+        
         # Finalizar a thread e parar o timer
         self.worker_thread.quit()
         self.worker_thread.wait()
@@ -141,18 +152,24 @@ class Worker(QObject):
         self.finished.emit()  # Emite sinal de finalização
 
 
-class ProgressDialog(QDialog):
-    def __init__(self):
+class ProgressDialog(QWidget):
+    def __init__(self, projeto):
         super().__init__()
-        self.setWindowTitle("Progresso")
-        layout = QVBoxLayout()
+        layout = QGridLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        layout.setContentsMargins(10, 20, 10, 10)
+
+        self.titulo = QLabel(f"Aguarde! Estou criando o projeto: {projeto} para você! ^^")
+        self.titulo.setObjectName("grande")
+        self.subtitulo = QLabel("Etapa atual: carregando")
+        self.subtitulo.setObjectName("medio")
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
-        layout.addWidget(self.progress_bar)
 
-        self.label = QLabel("Calculando progresso...")
-        layout.addWidget(self.label)
+        layout.addWidget(self.titulo,0,0)
+        layout.addWidget(self.subtitulo,1,0)
+        layout.addWidget(self.progress_bar,2,0)
 
         self.setLayout(layout)
 
@@ -163,4 +180,4 @@ class ProgressDialog(QDialog):
             etapa = "Descompactando vídeos"
         else:
             etapa = "Extraindo áudios"
-        self.label.setText(f"Etapa atual: {etapa}%")
+        self.subtitulo.setText(f"Etapa atual: {etapa}")

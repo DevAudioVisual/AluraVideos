@@ -30,9 +30,9 @@ class Interface(QWidget):
         botao_notabillity = QPushButton("Download Notabillity  ")
         botao_notabillity.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         
-        botao_effector.setIcon(QIcon(r"Assets\Images\download.ico"))
-        botao_ordinem.setIcon(QIcon(r"Assets\Images\download.ico"))
-        botao_notabillity.setIcon(QIcon(r"Assets\Images\download.ico"))
+        botao_effector.setIcon(QIcon(r"Assets\Icons\download.ico"))
+        botao_ordinem.setIcon(QIcon(r"Assets\Icons\download.ico"))
+        botao_notabillity.setIcon(QIcon(r"Assets\Icons\download.ico"))
         
         botao_effector.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         botao_ordinem.setLayoutDirection(Qt.LayoutDirection.RightToLeft)

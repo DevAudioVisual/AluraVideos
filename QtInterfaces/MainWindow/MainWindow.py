@@ -1,15 +1,11 @@
 import sys
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton
-from PyQt6.QtGui import QIcon, QAction, QCursor
+from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton,QApplication
+from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt
-from QtInterfaces.Config import ConfigInterface
+from QtInterfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.ExtensõesPPRO import InterfaceExtensoes
-from QtInterfaces.ImagensPixaBay import ImagensPixabay
-from QtInterfaces.LimparCache import InterfaceLimparCache
 from QtInterfaces.MainWindow.MenuBar import MenuBar
 from QtInterfaces.MainWindow.Tabs import Tabs
-from QtInterfaces.ProjectCreator import InterfaceProjectCreator
-from QtInterfaces.S3 import InterfaceS3
 from Util import Util
 
 global main_window
@@ -24,12 +20,14 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(f'AluraVideos {Util.version}')
-        icon = QIcon(r"Assets\Images\icon.ico")
+        icon = QIcon(r"Assets\Icons\icon.ico")
         self.setWindowIcon(icon) 
         
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
         
         self.extensoes = InterfaceExtensoes.Interface()
-        self.config = ConfigInterface.Interface()
+        self.config = InterfacePreferencias.Interface()
         
         
         self.menubar = MenuBar(self)  # Criar a instância de MenuBar
@@ -37,13 +35,11 @@ class MainWindow(QMainWindow):
         
         self.Navbar()
  
-        self.stacked_widget = QStackedWidget()
-        self.setCentralWidget(self.stacked_widget)
         
         self.stacked_widget.addWidget(self.tabs)
         self.stacked_widget.addWidget(self.config)
         self.stacked_widget.addWidget(self.extensoes)
-        
+
     def closeEvent(self, event):
         print("################# ENCERRANDO")
         #sys.exit()    
@@ -59,10 +55,8 @@ class MainWindow(QMainWindow):
         
         # Adicionar ações à barra de ferramentas
         acao_home = QAction(QIcon(r"Assets\Images\penguin.png"), "Home", self)
-        acao_ppro = QAction(QIcon(r"Assets\Images\premiere.ico"), "Extensões PPRO", self)
-        acao_logs = QAction(QIcon(r"Assets\Images\logs.png"), "Logs", self)
-        acao_repositorio = QAction(QIcon(r"Assets\Images\github.ico"), "Repositório", self)
-        acao_configuracoes = QAction(QIcon(r"Assets\Images\config.ico"), "Configurações", self)
+        acao_ppro = QAction(QIcon(r"Assets\Icons\prproj.ico"), "Extensões PPRO", self)
+        #acao_configuracoes = QAction(QIcon(r"Assets\Icons\config.ico"), "Configurações", self)
         
         self.toolbar.addAction(acao_home)
         self.toolbar.widgetForAction(acao_home).setProperty("active",True)
@@ -71,12 +65,10 @@ class MainWindow(QMainWindow):
         self.toolbar.addAction(acao_ppro)
         acao_ppro.triggered.connect(self.mostrar_extensoes)
         acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
-        self.toolbar.addAction(acao_logs)
-        self.toolbar.addAction(acao_repositorio)
         
-        self.toolbar.addAction(acao_configuracoes)
-        acao_configuracoes.triggered.connect(self.mostrar_configuracoes)
-        acao_configuracoes.triggered.connect(self.atualizar_estilo_botoes)
+        # self.toolbar.addAction(acao_configuracoes)
+        # acao_configuracoes.triggered.connect(self.mostrar_configuracoes)
+        # acao_configuracoes.triggered.connect(self.atualizar_estilo_botoes)
         
         self.botao_expandir = QPushButton("<")
         #self.toolbar.addWidget(self.botao_expandir)
@@ -87,7 +79,7 @@ class MainWindow(QMainWindow):
         botao_expandir_layout = QVBoxLayout(botao_expandir_container)
         botao_expandir_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)  # Alinhar o botão ao fundo
         botao_expandir_layout.setContentsMargins(0, 0, 0, 0)  # Remover margens extras
-        spacer = QSpacerItem(20, 5000, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         botao_expandir_layout.addItem(spacer)
         botao_expandir_layout.addWidget(self.botao_expandir)
 

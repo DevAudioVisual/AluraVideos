@@ -1,7 +1,10 @@
-from PyQt6.QtGui import QCursor
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QComboBox, QMessageBox
+import os
+from PyQt6.QtGui import QCursor,QStandardItemModel,QAction,QIcon
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QComboBox, QMessageBox, QTreeView,QVBoxLayout,QMenu
 from PyQt6.QtCore import Qt,QTimer
 from Models.S3 import S3Model
+from QtInterfaces.S3.S3TreeItem import S3TreeItem
+from QtInterfaces.S3.S3TreeView import S3TreeView
 
 
 class Interface(QWidget):
@@ -51,59 +54,79 @@ class Interface(QWidget):
         self.GridLayout.addWidget(botao_registrar_novas_credenciais,1,1)
         return
       
-      label_h1 = QLabel("Upload Amazon S3")      
-
-      label_local = QLabel("Selecione o diretório dentro do S3") 
-      combo_local = QComboBox()
-      combo_local.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
-      combo_local.addItems(self.model.list_folders_s3(sort=True))
-      
-      campo_dir = QLineEdit()
-      def setLocal():
-        file_name = QFileDialog.getExistingDirectory(self, "Selecione uma pasta")
-        campo_dir.setText(file_name)
-      botao_buscar_dir = QPushButton("Buscar")
-      botao_buscar_dir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-      botao_buscar_dir.clicked.connect(setLocal)
+      label_h1 = QLabel("Amazon S3")    
+      label_h1.setObjectName("grande")  
       
       def checkUploaded():
         if self.model.downloaded == True:
-          self.setCursor(Qt.CursorShape.WaitCursor)
-          botao_upload.setText("Realizar upload")
-          botao_upload.setEnabled(True)
           return
         QTimer.singleShot(2000,checkUploaded)
-        #Main.InterfaceMain.root.after(2000, checkUploaded) 
-      def upload():
-        if campo_dir.text() == "":
-          QMessageBox.information(None,"Aviso","Arquivo para upload não fornecido.")
-          return
-        if combo_local.currentText() == "":
-          QMessageBox.information(None,"Aviso","Pasta de destino não especificada")
-          return
-        checkUploaded()
-        self.setCursor(Qt.CursorShape.ArrowCursor)
-        botao_upload.setText("Realizando upload...")
-        botao_upload.setEnabled(False)
-        self.model.start(local_folder_path=campo_dir.text(), destination_folder=combo_local.currentText())
+
       
-      botao_upload = QPushButton("Realizar upload")  
-      botao_upload.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))  
-      botao_upload.clicked.connect(upload)
+      #self.botao_recarregar = QPushButton("Recarregar Tree")
+      #self.search_input.setPlaceholderText("Buscar pastas ou itens... (EM BREVE)")
+      #self.botao_recarregar.clicked.connect(self.refresh_tree)
       
-      self.GridLayout.addWidget(label_h1,0,0)
-      self.GridLayout.addWidget(label_local,1,0)
-      self.GridLayout.addWidget(combo_local,1,1)
-      self.GridLayout.addWidget(campo_dir,2,0)
-      self.GridLayout.addWidget(botao_buscar_dir,2,1)
-      self.GridLayout.addWidget(botao_upload,3,0,1,1)
+      self.search_input = QLineEdit()
+      self.search_input.setPlaceholderText("Buscar pastas ou itens... (EM BREVE)")
+      search_input_action = self.search_input.addAction(QIcon(r"Assets\Icons\reload.ico"), QLineEdit.ActionPosition.TrailingPosition)
+      search_input_action.triggered.connect(self.refresh_tree)
+      #self.search_input.textChanged.connect(self.filter_tree)
+      
+      self.Standardmodel = QStandardItemModel()
+      self.Standardmodel.setHorizontalHeaderLabels(['equipevideos Bucket'])
+      self.tree_view = S3TreeView(self.model)
+      self.tree_view.setModel(self.Standardmodel)
+      self.tree_view.header().setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
+      self.tree_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+      self.tree_view.customContextMenuRequested.connect(self.create_context_menu)  # Conecta o menu ao clique direito
+      
+      layout = QVBoxLayout()
+      layout.addWidget(label_h1)
+      layout.addWidget(self.search_input)
+      layout.addWidget(self.tree_view)
+      
+      self.load_root()
+
+      # Conectar o evento de expansão de itens
+      self.tree_view.expanded.connect(self.on_item_expanded)
+      self.GridLayout.addLayout(layout,1,0,1,1)
         
     def noCredentials(self):
-      label_h1 = QLabel("Você não possui credenciais associadas ao AluraVideos!\n Por favor as associe agora.")
+      label_h1 = QLabel("Você não possui credenciais associadas ao AluraVideos.\nPor favor as associe agora.")
+      label_h1.setObjectName("grande")
+      label_h1.setAlignment(Qt.AlignmentFlag.AlignHCenter)
       label_access_key = QLabel("Access Key:")
       campo_access_key = QLineEdit()
+      campo_access_key.setPlaceholderText("Digite a sua access key")
+      campo_access_key.setClearButtonEnabled(True)
+      campo_access_key.setEchoMode(QLineEdit.EchoMode.Password)
+      action_access_key = campo_access_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), QLineEdit.ActionPosition.TrailingPosition)
+      def alterarOfuscarAccessKey():
+        if campo_access_key.echoMode() == QLineEdit.EchoMode.Password:
+            campo_access_key.setEchoMode(QLineEdit.EchoMode.Normal)
+            action_access_key.setIcon(QIcon(r"Assets\Icons\eye_off.ico"))  # Ícone de olho aberto
+        else:
+            campo_access_key.setEchoMode(QLineEdit.EchoMode.Password)
+            action_access_key.setIcon(QIcon(r"Assets\Icons\eye_on.ico")) 
+      action_access_key.triggered.connect(alterarOfuscarAccessKey)
+          
       label_secret_key = QLabel("Secret Key:")
       campo_secret_key = QLineEdit()
+      campo_secret_key.setPlaceholderText("Digite a sua secret key")
+      campo_secret_key.setClearButtonEnabled(True)
+      campo_secret_key.setEchoMode(QLineEdit.EchoMode.Password)
+      action_secret_key = campo_secret_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), QLineEdit.ActionPosition.TrailingPosition)
+      def alterarOfuscarSecretKey():
+        if campo_secret_key.echoMode() == QLineEdit.EchoMode.Password:
+            campo_secret_key.setEchoMode(QLineEdit.EchoMode.Normal)
+            action_secret_key.setIcon(QIcon(r"Assets\Icons\eye_off.ico"))  # Ícone de olho aberto
+        else:
+            campo_secret_key.setEchoMode(QLineEdit.EchoMode.Password)
+            action_secret_key.setIcon(QIcon(r"Assets\Icons\eye_on.ico")) 
+      action_secret_key.triggered.connect(alterarOfuscarSecretKey)
+      
+      
       
       def register():
         secret_key = campo_secret_key.text()
@@ -121,7 +144,117 @@ class Interface(QWidget):
       self.GridLayout.addWidget(label_secret_key,3,0)
       self.GridLayout.addWidget(campo_secret_key,4,0)
       self.GridLayout.addWidget(botaoRegistrar,5,0)
-         
+      
+    def download_item(self):
+        index = self.tree_view.currentIndex()
+        if not index.isValid():
+            return  # Verifica se um item válido foi selecionado
+
+        item = self.Standardmodel.itemFromIndex(index)
+        full_path = item.full_path  # Obtém o caminho completo do item
+
+        # Abre um diálogo para escolher o diretório de salvamento
+        save_path = QFileDialog.getExistingDirectory(self, "Escolha o diretório para salvar")
+        if save_path:
+            if item.is_folder:  # Se for uma pasta
+                self.model.startDownload(full_path, save_path, True)
+            else:  # Se for um arquivo
+                self.model.startDownload(full_path, save_path, False)
+
+
+
+    def upload_item(self):
+        upload_path = QFileDialog.getExistingDirectory(self, "Escolha o diretório para subir")
+        index = self.tree_view.currentIndex()
+        if not index.isValid():
+            return  # Verifica se um item válido foi selecionado
+
+        item = self.Standardmodel.itemFromIndex(index)
+        full_path = item.full_path  # Obtém o caminho completo do item
+        #checkUploaded()
+        #self.setCursor(Qt.CursorShape.ArrowCursor)
+        #botao_upload.setText("Realizando upload...")
+        #botao_upload.setEnabled(False)
+        self.model.startUpload(local_folder_path=upload_path,destination_folder=full_path)
+        
+    def create_context_menu(self, position):
+        # Cria o menu de contexto
+        menu = QMenu()
+        
+        # Ação de download
+        download_action = menu.addAction("Download")
+        download_action.triggered.connect(self.download_item)
+        
+        upload_action = menu.addAction("Upload")
+        upload_action.triggered.connect(self.upload_item)
+
+        # Exibe o menu no local do clique
+        menu.exec(self.tree_view.viewport().mapToGlobal(position))
+        
+    def filter_tree(self, text):
+    # Percorre todos os itens na árvore e filtra com base na entrada
+        for i in range(self.Standardmodel.rowCount()):
+            item = self.Standardmodel.item(i)
+            self.filter_item(item, text)
+
+    def filter_item(self, item, text):
+        # Verifica se o item deve ser exibido com base na pesquisa
+        item.setVisible(False)  # Esconde o item inicialmente
+        if text.lower() in item.text().lower():  # Verifica se o texto está no nome do item
+            item.setVisible(True)  # Exibe o item se houver correspondência
+        elif item.hasChildren():  # Se o item tiver filhos, verifica recursivamente
+            for row in range(item.rowCount()):
+                child = item.child(row)
+                self.filter_item(child, text)
+                if child.isVisible():  # Se algum filho for visível, mostra o pai
+                    item.setVisible(True)
+                    
+    def refresh_tree(self):
+      # Limpar o modelo existente
+      self.Standardmodel.clear()  # Limpa todos os itens do modelo padrão
+      self.Standardmodel.setHorizontalHeaderLabels(['equipevideos Bucket'])
+      # Carregar os itens novamente
+      self.load_root() 
+      
+    def load_root(self):
+        #print("Carregando pastas e arquivos do bucket...")  # Adicionando log para verificar o carregamento
+        # Carregar a raiz do bucket
+        root_item = self.Standardmodel.invisibleRootItem()
+        self.Standardmodel.removeRows(0, self.Standardmodel.rowCount())
+        result = self.model.s3_client.list_objects_v2(Bucket=self.model.bucket_name, Delimiter='/')
+
+        folders = result.get('CommonPrefixes', [])
+        files = result.get('Contents', [])
+
+        #print(f"Pastas encontradas: {folders}")  # Verificando se pastas estão sendo retornadas
+        #print(f"Arquivos encontrados: {files}")  # Verificando se arquivos estão sendo retornados
+
+        # Adicionar as pastas na raiz em ordem alfabética
+        folders_sorted = sorted(folders, key=lambda f: f['Prefix'])
+        for folder in folders_sorted:
+            folder_name = folder['Prefix'].split('/')[-2]  # Extrair o nome da pasta
+            #print(f"Adicionando pasta: {folder_name}")
+            folder_item = S3TreeItem(folder_name, True, self.model.bucket_name, folder['Prefix'], self.model)
+            root_item.appendRow(folder_item)
+
+        # Adicionar arquivos na raiz em ordem alfabética
+        files_sorted = sorted(files, key=lambda f: f['Key'])
+        for file in files_sorted:
+            file_name = file['Key'].split('/')[-1]  # Extrair o nome do arquivo
+            #print(f"Adicionando arquivo: {file_name}")
+            file_item = S3TreeItem(file_name, False, self.model.bucket_name, file['Key'], self.model)
+            root_item.appendRow(file_item)
+
+
+
+
+    # Evento chamado quando uma pasta é expandida
+    def on_item_expanded(self, index):
+      item = self.Standardmodel.itemFromIndex(index)
+      if isinstance(item, S3TreeItem) and item.is_folder:
+          item.fetch_children()
+
+                  
     def limpar(self):
         for i in reversed(range(self.GridLayout.count())):  # Usa range reverso para evitar problemas ao remover
           item = self.GridLayout.itemAt(i)  # Obtém o item na posição i

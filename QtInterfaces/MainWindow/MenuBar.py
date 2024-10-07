@@ -1,4 +1,6 @@
-from PyQt6.QtGui import QAction
+import os
+import webbrowser
+from PyQt6.QtGui import QAction,QIcon
 from PyQt6.QtWidgets import QMenu
 
 class MenuBar():
@@ -12,24 +14,27 @@ class MenuBar():
       
     def Arquivo(self):
       self.visualizar_menu = self.menubar.addMenu("Arquivo")
-      self.logs_action = QAction("Logs", self.MainWindow)
+      self.logs_action = QAction(QIcon(r"Assets\Images\logs.png"), "Logs", self.MainWindow)
+      self.repositorion_action = QAction(QIcon(r"Assets\Icons\github.ico"), "Repositório", self.MainWindow)
+      self.atalhos_action = QAction(QIcon(r"Assets\Icons\keyboard.ico"), "Atalhos", self.MainWindow)
+      self.preferences_action = QAction(QIcon(r"Assets\Icons\config.ico"), "Preferências", self.MainWindow)
       self.visualizar_menu.addAction(self.logs_action)
+      self.visualizar_menu.addAction(self.repositorion_action)
+      self.visualizar_menu.addAction(self.atalhos_action)
+      self.visualizar_menu.addAction(self.preferences_action)
+      
+      def abrir_logs():
+        log_file_path = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Logs")
+        webbrowser.open(log_file_path) 
+      self.logs_action.triggered.connect(abrir_logs)
+      def abrir_repositorio():
+        webbrowser.open("https://github.com/DevAudioVisual/AluraVideos")
+      self.repositorion_action.triggered.connect(abrir_repositorio)
+      self.preferences_action.triggered.connect(self.MainWindow.mostrar_configuracoes)
       
     def Visualizar(self):
       self.visualizar_menu = self.menubar.addMenu("Visualizar")
       self.visualizar_menu.addMenu(self.janelas_submenu)
-      
-      self.criar_projeto_action = QAction("Criar Projeto", self.MainWindow)
-      self.limpar_cache_action = QAction("Limpar Cache", self.MainWindow)
-      self.s3_action = QAction("S3", self.MainWindow)
-      self.pm3_action = QAction("PM3", self.MainWindow)
-      self.imagens_pixabay_action = QAction("Imagens PixaBay", self.MainWindow)
-      
-      # self.janelas_submenu.addAction(self.criar_projeto_action)
-      # self.janelas_submenu.addAction(self.limpar_cache_action)
-      # self.janelas_submenu.addAction(self.s3_action)
-      # self.janelas_submenu.addAction(self.pm3_action)
-      # self.janelas_submenu.addAction(self.imagens_pixabay_action)
       
     def Ajuda(self):
       self.ajuda_menu = self.menubar.addMenu("Ajuda")

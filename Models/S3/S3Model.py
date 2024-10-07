@@ -40,36 +40,77 @@ class S3Model(QObject):
         except Exception as e:
             print(e)
             return False
-
-    def start(self, local_folder_path, destination_folder):
-        total_size = sum(os.path.getsize(os.path.join(root, file)) for root, _, files in os.walk(local_folder_path) for file in files)
+    def start(self):
         self.progressdialog = ProgressDialog()
         self.progressdialog_thread = QThread()
         self.progressdialog.moveToThread(self.progressdialog_thread)
-        self.progressdialog.setTotal_size(total_size)
         self.progressdialog.show()
+        self.progressdialog_thread.finished.connect(self.progressdialog_thread.quit)
+        self.progressdialog_thread.finished.connect(self.progressdialog_thread.wait)
         
-
-        # Criar e configurar o worker para upload
         self.worker = S3Worker(self.s3_client, self.bucket_name, self.config)
         self.worker_thread = QThread()
         self.worker.moveToThread(self.worker_thread)
+        self.worker_thread.finished.connect(self.worker_thread.quit)
+        self.worker_thread.finished.connect(self.worker_thread.wait)
 
         # Conectar o sinal de progresso do worker à atualização da interface
         self.worker.progress_updated.connect(self.progressdialog.update_progress)
+        
+    def startDownload(self, folder_key, destination_path, isFolder):
+        self.start()
+        if isFolder:
+            total_size = 0
+            response = self.s3_client.list_objects_v2(Bucket=self.bucket_name, Prefix=folder_key)
+            
+            for obj in response.get('Contents', []):
+                total_size += obj['Size']  # Soma o tamanho de cada arquivo
+            self.progressdialog.setTotal_size(total_size)
+            self.worker_thread.started.connect(lambda: self.worker.download_folder(folder_key, destination_path))
+            self.worker_thread.start()
+        else: 
+            response = self.s3_client.head_object(Bucket=self.bucket_name, Key=folder_key)
+            total_size = response['ContentLength']
 
-        # Iniciar o upload quando a thread começar
+            self.progressdialog.setTotal_size(total_size)
+            self.worker_thread.started.connect(lambda: self.worker.download_file(folder_key, destination_path))
+            self.worker_thread.start()
+            
+        
+    def startUpload(self, local_folder_path, destination_folder):
+        self.start()
+        total_size = sum(os.path.getsize(os.path.join(root, file)) for root, _, files in os.walk(local_folder_path) for file in files)
+        self.progressdialog.setTotal_size(total_size)
+
+        print(local_folder_path, destination_folder)
         self.worker_thread.started.connect(lambda: self.worker.upload_folder(local_folder_path, destination_folder))
-
-        # Start threads
         self.worker_thread.start()
-
+        
     def update(self):
         if self.progressdialog.get_seen_so_far() >= self.progressdialog.getTotal_size():
             print(f"Upload concluído!")
             self.downloaded = True
             return
         QTimer.singleShot(500, self.update)
+        
+    def list_s3_objects(self,prefix=''):
+        result = self.s3_client.list_objects_v2(Bucket=self.bucket_name, Prefix=prefix, Delimiter='/')
+        
+        folders = []
+        files = []
+
+        # Listar pastas
+        if 'CommonPrefixes' in result:
+            for obj in result['CommonPrefixes']:
+                folders.append(obj.get('Prefix'))
+
+        # Listar arquivos
+        if 'Contents' in result:
+            for obj in result['Contents']:
+                if obj['Key'] != prefix:  # Ignorar o próprio prefixo
+                    files.append(obj['Key'])
+
+        return folders, files
 
     def list_folders_s3(self, sort=False):
         folder_names = []
@@ -111,8 +152,11 @@ class S3Model(QObject):
         }
         token = jwt.encode(payload, self.KEY, algorithm="HS256")
         token_dict = {"token": token}
-        LoadConfigs.Config.saveConfigDict("Credentials", json.dumps(token_dict))
+        LoadConfigs.Config.saveConfigDict("Credentials", token_dict)
 
     def Decode(self, token):
         return jwt.decode(token, self.KEY, algorithms=["HS256"])
+    
+    
+
 

@@ -6,6 +6,7 @@ import sys
 from dotenv import load_dotenv
 import threading
 from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QTranslator,QLocale
 from QtInterfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
 from QtInterfaces.MainWindow import MainWindow
 
@@ -15,6 +16,11 @@ def main():
     setup_logging()
     
     app = QApplication(sys.argv) 
+    translator = QTranslator()
+    if translator.load("qtbase_pt_BR", ":/translations"):  # Verifique o caminho correto para o arquivo de tradução
+        app.installTranslator(translator)
+    locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
+    QLocale.setDefault(locale)
     with open(r"Assets\styles\style.css", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)

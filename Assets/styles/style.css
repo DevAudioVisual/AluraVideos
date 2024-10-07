@@ -174,3 +174,23 @@ QToolTip {
   padding: 5px;
   border-radius: 3px;
 }
+
+QTreeView {
+  show-decoration-selected: 1;
+}
+
+QTreeView::item:hover {
+  background: #4B70F5;
+}
+
+
+QTreeView::item:selected {
+  background-color: #4C3BCF; 
+}
+
+/*
+QComboBox QAbstractItemView {
+  border: 2px solid red;
+  selection-background-color: red;
+}
+  */

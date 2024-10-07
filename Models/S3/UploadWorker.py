@@ -23,7 +23,7 @@ class UploadWorker(QRunnable):
                 Callback=progress_callback, Config=self.config
             )
             #QMessageBox.information(None, "Sucesso!", f"Upload concluido!\nLocal de acesso: {self.s3_key}")
-            self.progress_dialog.quit()
+            #self.progress_dialog.quit()
             print(f"Upload concluído para {self.s3_key}")
         except Exception as e:
             print(f"Erro ao carregar o arquivo {self.local_file_path}: {e}")

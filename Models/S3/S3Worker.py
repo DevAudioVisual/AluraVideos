@@ -1,15 +1,8 @@
 import json
 import multiprocessing
 import os
-import time
-import jwt
-from Config import LoadConfigs
-import boto3
-from boto3.s3.transfer import TransferConfig
-from botocore.config import Config
-from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QProgressBar, QMessageBox
-from PyQt6.QtCore import pyqtSignal, QObject, QThread, QTimer, QThreadPool,QRunnable
-
+from PyQt6.QtCore import pyqtSignal, QObject, QThreadPool
+from Models.S3.DownloadWorker import DownloadWorker
 from Models.S3.UploadWorker import UploadWorker
 
 class S3Worker(QObject):
@@ -22,7 +15,72 @@ class S3Worker(QObject):
         self.thread_pool = QThreadPool()
         max_threads = min(multiprocessing.cpu_count(), 10) 
         self.thread_pool.setMaxThreadCount(max_threads)
+        
+    def download_folder(self, folder_key, destination_path):
+        # Listar todos os objetos na pasta do S3
+        objects = self.s3_client.list_objects_v2(Bucket=self.bucket_name, Prefix=folder_key)
 
+        # Cria a pasta principal no caminho de destino
+        main_folder_name = os.path.basename(folder_key.rstrip('/'))  # Nome da pasta principal
+        main_folder_path = os.path.join(destination_path, main_folder_name)
+
+        # Crie a pasta principal se não existir
+        os.makedirs(main_folder_path, exist_ok=True)
+        print(f"Pasta principal criada: {main_folder_path}")
+
+        for obj in objects.get('Contents', []):
+            file_key = obj['Key']
+            
+            # Caminho relativo para a estrutura local
+            relative_path = os.path.relpath(file_key, folder_key)
+            file_path = os.path.join(main_folder_path, relative_path)  # Use o caminho da pasta principal
+
+            # Se for um diretório (termina com /), crie a pasta
+            if file_key.endswith('/'):
+                os.makedirs(file_path, exist_ok=True)  # Cria a pasta se não existir
+                print(f"Pasta criada: {file_path}")
+            else:
+                # Se for um arquivo, faça o download
+                print(f"Baixando {file_key} para {file_path}")
+                # Crie os diretórios pai se não existirem
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+                worker = DownloadWorker(
+                    s3_client=self.s3_client,
+                    bucket_name=self.bucket_name,
+                    file_key=file_key,
+                    file_path=file_path,
+                    config=self.config,
+                    progress_callback=self.progress_updated
+                )
+                self.thread_pool.start(worker)
+                print("######## Threadpool worker")
+
+
+
+    def download_file(self, file_key, destination_path):
+        # Extrai o nome do arquivo a partir do file_key
+        file_name = os.path.basename(file_key)  # Obtém apenas o nome do arquivo
+        file_path = os.path.join(destination_path, file_name)  # Constrói o caminho completo para o arquivo
+
+        # Se for um arquivo, faça o download
+        print(f"Baixando {file_key} para {file_path}")
+        
+        # Crie os diretórios pai se não existirem
+        os.makedirs(destination_path, exist_ok=True)  # Garante que o diretório de destino exista
+
+        # Iniciar o worker para o download
+        worker = DownloadWorker(
+            s3_client=self.s3_client,
+            bucket_name=self.bucket_name,
+            file_key=file_key,
+            file_path=file_path,
+            config=self.config,
+            progress_callback=self.progress_updated
+        )
+        self.thread_pool.start(worker)
+        print("######## Threadpool worker")
+
+        
     def upload_folder(self, local_folder_path, destination_folder):
         folder_name = os.path.basename(local_folder_path)
         destination_folder = destination_folder.rstrip('/')
