@@ -1,11 +1,7 @@
 {
-    "MostrarUsuario": true,
-    "SegundoPlano": false,
-    "OrdemJanelas": [
-        {
-            "Projeto": true,
-            "Limpar Cache": true,
-            "S3": true
-        }
-    ]
+    "Criar Projeto": true,
+    "S3": true,
+    "Imagens Pixabay": true,
+    "Limpar Cache": true,
+    "Renamer": true
 }

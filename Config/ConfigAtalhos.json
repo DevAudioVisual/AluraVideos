@@ -1,5 +1,5 @@
 {
-  "TeclasDeAtalho": true,
+  "TeclasDeAtalho": false,
   "IniciarLimpeza": "ctrl+alt+l",
   "BuscarImagens": "ctrl+alt+i",
   "Fechar": "ctrl+alt+f",

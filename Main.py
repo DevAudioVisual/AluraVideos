@@ -2,15 +2,42 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import signal
-import sys
 from dotenv import load_dotenv
 import threading
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTranslator,QLocale
 from QtInterfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
 from QtInterfaces.MainWindow import MainWindow
+import ctypes
+import sys
+import os
+
+def is_admin():
+    """Verifica se o script está sendo executado como administrador"""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+def run_as_admin():
+    """Tenta reexecutar o script com permissões administrativas sem abrir o CMD"""
+    if not is_admin():
+        # Obter o caminho completo do executável do Python
+        executable = sys.executable
+        
+        # Executa o script novamente como administrador, mas sem abrir o CMD
+        params = ' '.join([f'"{arg}"' for arg in sys.argv])  # Junta os argumentos com aspas
+        
+        # Usar o comando ShellExecuteW com a flag 'runas' para privilégios administrativos
+        ctypes.windll.shell32.ShellExecuteW(
+            None, "runas", executable, params, None, 1)
+        
+        # Encerra o script atual, pois ele será reexecutado com privilégios elevados
+        sys.exit()
 
 def main():
+    #run_as_admin()
+    
     load_dotenv()
     setup_signal_handlers()
     setup_logging()

@@ -2,7 +2,7 @@ import sys
 import threading
 import requests
 import os
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QListWidget, QPushButton, QLabel, QHBoxLayout, QListWidgetItem, QMessageBox, QComboBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QListWidget, QPushButton, QLabel, QHBoxLayout, QListWidgetItem, QMessageBox, QComboBox
 from PyQt6.QtGui import QPixmap, QImage, QCursor
 from PyQt6.QtCore import Qt, QByteArray, QBuffer, QIODevice, QThread, pyqtSignal, QRunnable, QThreadPool
 

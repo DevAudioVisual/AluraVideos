@@ -1,9 +1,7 @@
 import threading
 import keyboard
 import Main
-from Interfaces.Interface import InterfaceMain
 from Models.LimparCache import Limpeza
-from Models.ProcurarAssets import ImagensPixababy
 from Util import Util
 
 class TeclasAtalho():
@@ -34,15 +32,17 @@ class TeclasAtalho():
         
         
     def Mostrar(self):
+        return
         InterfaceMain.Bandeja.show_window() 
     def Esconder(self):
+        return
         InterfaceMain.Bandeja.on_closing()     
     def Fechar(self):
+        return
         InterfaceMain.root.destroy()       
-    def BuscarImagens(self):
-        ImagensPixababy.abrirInterface()    
     def iniciarlimpeza(self):
         #print("Atalho iniciar limpeza")
+        return
         thread = threading.Thread(target=Limpeza.iniciar_limpeza)
         thread.daemon = True
         thread.start()  

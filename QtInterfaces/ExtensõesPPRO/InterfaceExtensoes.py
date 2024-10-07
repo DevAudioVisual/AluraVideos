@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QSpacerItem, QVBoxLayout, QLayout, QWidget, QGridLay
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QCursor
 
+from Models.ExtensoesPPRO.GithubDownloader import GithubDownloader
+
 class Interface(QWidget):
     def __init__(self):
         super().__init__()
@@ -38,12 +40,17 @@ class Interface(QWidget):
         botao_ordinem.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         botao_notabillity.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         
+        download_path = r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions"
+        botao_effector.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Effector").download_sourcecode(download_path))
+        botao_ordinem.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Ordinem").download_sourcecode(download_path))
+        botao_notabillity.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Notability").download_sourcecode(download_path))
+        
         layout.addWidget(label, 0, 0)
-        layout.addWidget(label_effector, 1, 0)
+        #layout.addWidget(label_effector, 1, 0)
         layout.addWidget(botao_effector, 2, 0)
-        layout.addWidget(label_ordinem, 3, 0)
+        #layout.addWidget(label_ordinem, 3, 0)
         layout.addWidget(botao_ordinem, 4, 0)
-        layout.addWidget(label_notabillity, 5, 0)
+        #layout.addWidget(label_notabillity, 5, 0)
         layout.addWidget(botao_notabillity, 6, 0)
         
         main_layout.addLayout(layout)

@@ -34,9 +34,8 @@ class Configs():
     return Configs
   
   def saveConfig(self,config,text_area_editor):
-    editor_content = text_area_editor.get("1.0", tk.END)
     try:
-        data = json.loads(editor_content)
+        data = json.loads(text_area_editor)
         with open(self.file_path[config], 'w', encoding='utf-8') as file:
             json.dump(data, file, indent=4)
     except json.JSONDecodeError:

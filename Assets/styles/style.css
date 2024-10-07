@@ -54,12 +54,11 @@ QProgressBar {
 
 QProgressBar::chunk {
   background-color: #4C3BCF;
-  width: 20px;
+  width: 10px;
   margin: 0.5px;
 }
 QMenu {
   background-color: rgb(66, 66, 66); /* sets background of the menu */
-  border: 1px solid black;
   margin: 2px;
 }
 
@@ -74,9 +73,7 @@ QMenu::item:selected { /* when user selects item using mouse or keyboard */
 }
 QMenu::separator {
   height: 2px;
-  background: teal;
-  margin-left: 10px;
-  margin-right: 5px;
+  background: #4C3BCF;
 }
 QMenu::indicator {
   width: 13px;
@@ -173,6 +170,8 @@ QTabBar::tab:selected, QTabBar::tab:hover {
 QToolTip {
   padding: 5px;
   border-radius: 3px;
+  font-size: 12px;
+  color: white;
 }
 
 QTreeView {
@@ -187,7 +186,6 @@ QTreeView::item:hover {
 QTreeView::item:selected {
   background-color: #4C3BCF; 
 }
-
 /*
 QComboBox QAbstractItemView {
   border: 2px solid red;

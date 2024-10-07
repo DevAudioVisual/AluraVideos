@@ -1,7 +1,7 @@
 {
     "fechar_ao_criar": false,
     "diretorio_padrao": "",
-    "monitorar_area_transferencia": true,
+    "monitorar_area_transferencia": false,
     "checks": [
         {
             "Abrir_Premiere": false,
@@ -11,6 +11,7 @@
     "subpastas": [
         {
             "01_Bruto": true,
+            "02_Audio": true,
             "03_Assets": false,
             "04_Premiere": true,
             "05_AfterEfects": false,
