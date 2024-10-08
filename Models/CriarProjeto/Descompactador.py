@@ -131,6 +131,7 @@ class Descompact(QObject):
     def limpar_texto(self):     
         try: 
             self.arquivo_entrada = os.path.normpath(self.arquivo_entrada)
+            self.diretorio_saida = os.path.normpath(self.diretorio_saida)
             self.novo_caminho_completo = os.path.join(self.diretorio_saida, "arquivovideos.zip")
             os.rename(self.arquivo_entrada, self.novo_caminho_completo)
         except Exception as e:

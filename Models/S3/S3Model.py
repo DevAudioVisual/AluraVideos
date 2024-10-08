@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 import jwt
 from Config import LoadConfigs
 import boto3
@@ -13,7 +14,10 @@ from Models.S3.S3Worker import S3Worker
 class S3Model(QObject):
     def __init__(self):
         super().__init__() 
-        self.KEY = str(os.environ.get('S3_KEY'))
+        caminho_arquivo = os.path.join(os.path.dirname(__file__), 'keys.json')
+        with open(caminho_arquivo, 'r') as f:
+            dados = json.load(f)
+        self.KEY = str(dados['S3'])
         self.s3_client = None
         self.bucket_name = "equipevideos"
         self.downloaded = False

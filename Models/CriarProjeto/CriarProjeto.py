@@ -69,8 +69,7 @@ class ProjectCreator():
                 if self.Downloader and self.Downloader.downloaded == True:
                         print("############ INICIANDO DESCOMPACTAÇAO")
                         self.arquivo_zip = self.Downloader.zip_file
-                        QTimer.singleShot(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida, stackedwidget=self.stackedwidget))
-                        #InterfaceMain.root.after(1000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida))         
+                        QTimer.singleShot(3000, lambda: self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida, stackedwidget=self.stackedwidget))
                 else: 
                     QTimer.singleShot(1000, verificar_termino_download)
                     #InterfaceMain.root.after(1000, verificar_termino_download)       
@@ -97,7 +96,7 @@ class ProjectCreator():
                     verificar_termino_download()
                     verificar_termino()
                 else: 
-                    self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida)   
+                    self.Descompactador.start(arquivo_entrada=self.arquivo_zip,diretorio_saida=self.diretorio_saida,stackedwidget=self.stackedwidget)   
                     verificar_termino()     
 
             self.criar_Arquivos(self.destinoPremiere,self.destinoAfter,self.Premire,self.After,self.nome_projeto)   

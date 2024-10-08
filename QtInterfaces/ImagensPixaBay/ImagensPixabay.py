@@ -1,3 +1,4 @@
+import json
 import sys
 import threading
 import requests
@@ -292,7 +293,10 @@ class SearchThread(QThread):
         self.ordem = ordem
 
     def run(self):
-        api_key = os.environ.get('PIXABABY')
+        caminho_arquivo = os.path.join(os.path.dirname(__file__), 'keys.json')
+        with open(caminho_arquivo, 'r') as f:
+            dados = json.load(f)
+        api_key = dados['PIXABAY']
         if self.tipo == "Vetores":
             url = f"https://pixabay.com/api/?key={api_key}&q={self.query}&image_type=vector&order={
                 self.ordem}&page={self.page}&per_page={self.per_page}"

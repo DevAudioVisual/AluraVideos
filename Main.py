@@ -2,7 +2,6 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import signal
-from dotenv import load_dotenv
 import threading
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTranslator,QLocale
@@ -36,9 +35,8 @@ def run_as_admin():
         sys.exit()
 
 def main():
-    #run_as_admin()
-    
-    load_dotenv()
+    run_as_admin()
+
     setup_signal_handlers()
     setup_logging()
     

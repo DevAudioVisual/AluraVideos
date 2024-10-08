@@ -5,6 +5,8 @@ import os
 from PyQt6.QtWidgets import QLabel, QWidget, QGridLayout, QProgressBar
 from PyQt6.QtCore import pyqtSignal, QObject,QThread,QTimer, Qt
 
+from Util import Util
+
 class DownloadDropApp(QObject):
     progress_updated = pyqtSignal(int, str, str, str)
 
@@ -16,6 +18,8 @@ class DownloadDropApp(QObject):
         self.zip_file = None
         self.url = self.convert_link(url)
         self.downloaded = False
+        self.erroCorrompido = False
+        self.erroTentativas = False
 
         self.velocidade = 0
         self.tempo_restante = 0
@@ -78,8 +82,17 @@ class DownloadDropApp(QObject):
                 self.zip_file = filepath
                 if not self.check_zip_integrity(filepath):
                     print("Arquivo zip corrompido.")
-                    break 
-                self.downloaded = True
+                    Util.LogError("DropDownloader","Arquivo zip corrompido.")
+                    self.erroCorrompido = True
+                    num_widgets = self.stackedwidget.count()
+                    if num_widgets > 1:
+                        for i in range(1, num_widgets):
+                            self.stackedwidget.removeWidget(self.stackedwidget.widget(1))  # Remove sempre o índice 1
+                    self.stackedwidget.setCurrentIndex(0)
+                    break
+                else:
+                    self.downloaded = True
+                    break
 
             except requests.exceptions.RequestException as e:
                 retries += 1
@@ -88,7 +101,15 @@ class DownloadDropApp(QObject):
                     print(f"Tentando novamente em {retry_delay} segundos...")
                     time.sleep(retry_delay)
                 else:
+                    Util.LogError("DropDownloader","Número máximo de tentativas atingido. Download falhou.")
+                    self.erroTentativas = True
                     print("Número máximo de tentativas atingido. Download falhou.")
+                    num_widgets = self.stackedwidget.count()
+                    if num_widgets > 1:
+                        for i in range(1, num_widgets):
+                            self.stackedwidget.removeWidget(self.stackedwidget.widget(1))  # Remove sempre o índice 1
+                    self.stackedwidget.setCurrentIndex(0)
+                    break
 
         self.download_thread.quit()
         self.download_thread.wait()

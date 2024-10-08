@@ -11,6 +11,8 @@ setup.py
 .vscode/
 compilador.iss
 pathnotes.md
+Models/S3/keys.json
+QtInterfaces/ImagensPixaBay/keys.json
 .Python
 interface_invisivel.png
 .github/
