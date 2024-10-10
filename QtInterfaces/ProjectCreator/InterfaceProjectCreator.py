@@ -1,7 +1,7 @@
 import re
 import threading
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QCheckBox,QFileDialog, QMessageBox,QStackedWidget,QVBoxLayout,QGroupBox,QToolButton
-from PyQt6.QtCore import Qt, QThread,QTimer
+from PyQt6.QtCore import Qt,QTimer
 from PyQt6.QtGui import QIcon, QCursor, QAction
 from bs4 import BeautifulSoup
 import pyperclip

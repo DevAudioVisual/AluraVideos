@@ -186,9 +186,13 @@ QTreeView::item:hover {
 QTreeView::item:selected {
   background-color: #4C3BCF; 
 }
+QDateEdit {
+  width: 85px;
+}
 /*
 QComboBox QAbstractItemView {
   border: 2px solid red;
   selection-background-color: red;
 }
+
   */

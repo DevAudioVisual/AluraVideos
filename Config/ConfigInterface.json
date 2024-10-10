@@ -1,7 +1,12 @@
 {
-    "Criar Projeto": true,
-    "S3": true,
-    "Imagens Pixabay": true,
-    "Limpar Cache": true,
-    "Renamer": true
+    "barra_lateral_pequena": false,
+    "Janelas": {
+        "Criar Projeto": [true, 0],
+        "S3": [true, 1],
+        "Vimeo": [true,2],
+        "Imagens Pixabay": [true, 3],
+        "Limpar Cache": [true, 4],
+        "Renamer": [true, 5],
+        "Tarefas": [false, 6]
+    }
 }

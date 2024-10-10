@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QVBoxLayout, QTabWidget,QMenu
 from Config import LoadConfigs
+from Models.Vimeo import VimeoUploader
 from QtInterfaces.ImagensPixaBay import ImagensPixabay
 from QtInterfaces.LimparCache import InterfaceLimparCache
 from QtInterfaces.ProjectCreator import InterfaceProjectCreator
@@ -7,11 +8,14 @@ from QtInterfaces.Renamer import InterfaceRenamer
 from QtInterfaces.S3 import InterfaceS3
 from PyQt6.QtGui import QAction
 
+from QtInterfaces.Tarefas import Tarefas
+from QtInterfaces.Vimeo import VimeoInterface
+
 class Tabs(QTabWidget):
     def __init__(self, menubar):  # Passar a instância de MenuBar
         super().__init__()
         self.config = LoadConfigs.Config
-        self.data = LoadConfigs.Config.getConfigData("ConfigInterface")
+        self.data = self.config.getConfigData("ConfigInterface")["Janelas"]
 
         self.menubar = menubar
 
@@ -20,39 +24,44 @@ class Tabs(QTabWidget):
         self.setMovable(True)
         self.setTabsClosable(False)
         self.tabCloseRequested.connect(self.close_tab)
+        self.tabBar().tabMoved.connect(self.on_tab_moved)
         
         self.janelas = {}
+        self.janelasModulo = {}
         
         #self.setToolTip("Dica: Você pode clicar com o botão direito e fechar guias não desejadas.\nAlém de poder posicionalas ao seu agrado! :D")
         
         
         abas = {
-            "Criar Projeto": {InterfaceProjectCreator.Interface(): self.data["Criar Projeto"]},
-            "S3": {InterfaceS3.Interface(): self.data["S3"]},
-            "PM3": [],
-            "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"]},
-            "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"]},
-            "Renamer": {InterfaceRenamer.Interface(): self.data["Renamer"]}
+            "Criar Projeto": {InterfaceProjectCreator.Interface(): self.data["Criar Projeto"][0]},
+            "S3": {InterfaceS3.Interface(): self.data["S3"][0]},
+            #"PM3": [],
+            "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},
+            "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"][0]},
+            "Renamer": {InterfaceRenamer.Interface(): self.data["Renamer"][0]},
+            #"Tarefas": {Tarefas.Interface(): self.data["Tarefas"][0]},
+            #"Vimeo": {VimeoInterface.Interface(): self.data["Vimeo"][0]}
         }
         abas_para_fechar = {}
         for nome_aba, valor in abas.items():  # Alterado de dict para valor
             if isinstance(valor, dict):  # Verifica se o valor é um dicionário
                 for modulo, ativado in valor.items():
+                    self.janelas[nome_aba] = ativado
+                    self.janelasModulo[nome_aba] = modulo
                     if ativado:
-                        self.addTab(modulo, nome_aba)
-                        self.janelas[nome_aba] = True
+                        self.insertTab(self.data[nome_aba][1],modulo,nome_aba)
                     else:
-                        self.janelas[nome_aba] = False
                         abas_para_fechar[nome_aba] = modulo
             else:
                 # Aqui você pode adicionar um tratamento para o caso de 'PM3'
                 print(f"Valor associado a '{nome_aba}' não é um dicionário: {valor}")
                 
-        #abas_para_fechar[nome_aba] = modulo
         for nome_aba, modulo in abas_para_fechar.items():
-            self.close_tab(self.addTab(modulo,nome_aba))
+            self.close_tab(self.insertTab(self.data[nome_aba][1],modulo,nome_aba))
             
-        
+    def on_tab_moved(self, fromIndex, toIndex):
+        """Imprime o novo índice da tab quando ela é movida."""
+        print(f"Tab movida de {fromIndex} para {toIndex}")    
     def contextMenuEvent(self, event):
         # Obter a referência ao QTabBar
         tab_bar = self.tabBar()
@@ -89,7 +98,10 @@ class Tabs(QTabWidget):
 
     def reopen_tab(self, tab_name):
         if tab_name in self.closed_tabs:
-            self.addTab(self.closed_tabs[tab_name], tab_name)
+            indice = self.data[tab_name][1]
+            if indice < 0: indice = 20
+            self.insertTab(indice,self.closed_tabs[tab_name],tab_name)
+            #self.addTab(self.closed_tabs[tab_name], tab_name)
             self.janelas[tab_name] = True
             self.save()
             del self.closed_tabs[tab_name]
@@ -100,8 +112,12 @@ class Tabs(QTabWidget):
                     self.menubar.janelas_submenu.removeAction(action)
                     break
     def save(self):
-        dict = {
-            "OrdemJanelas": [self.janelas]
-        }
-        self.config.saveConfigDict("ConfigInterface",self.janelas)
+        dict = {}
+        for janela, valor in self.janelas.items():
+            modulo = self.janelasModulo[janela]
+            indice = self.indexOf(modulo)
+            dict[janela] = [valor,indice]
+        dict2 = {}
+        dict2["Janelas"] = dict
+        self.config.saveConfigDict("ConfigInterface",dict2)
         self.config.Load("ConfigInterface")

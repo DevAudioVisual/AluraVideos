@@ -10,14 +10,12 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QObject, QThread, QTimer
 from Models.S3.ProgressDialog import ProgressDialog
 from Models.S3.S3Worker import S3Worker
+from Util.Tokens import Credentials
 
 class S3Model(QObject):
     def __init__(self):
         super().__init__() 
-        caminho_arquivo = os.path.join(os.path.dirname(__file__), 'keys.json')
-        with open(caminho_arquivo, 'r') as f:
-            dados = json.load(f)
-        self.KEY = str(dados['S3'])
+        self.KEY = Credentials().getKeys()["S3"]
         self.s3_client = None
         self.bucket_name = "equipevideos"
         self.downloaded = False

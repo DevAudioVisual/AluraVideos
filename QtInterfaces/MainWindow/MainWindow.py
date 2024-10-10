@@ -1,7 +1,9 @@
-import sys
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton,QApplication
+from re import S
+from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton
 from PyQt6.QtGui import QIcon, QAction
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QThread
+from Config import LoadConfigs
+from Models.AutoUpdate import AutoUpdate
 from QtInterfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.ExtensõesPPRO import InterfaceExtensoes
 from QtInterfaces.MainWindow.MenuBar import MenuBar
@@ -18,10 +20,10 @@ def create_main_window():
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super().__init__()
+        super().__init__() 
         self.setWindowTitle(f'AluraVideos {Util.version}')
         icon = QIcon(r"Assets\Icons\icon.ico")
-        self.setWindowIcon(icon) 
+        self.setWindowIcon(icon)
         
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
@@ -34,15 +36,21 @@ class MainWindow(QMainWindow):
         self.tabs = Tabs(self.menubar)  # Passar a instância de MenuBar para Tabs
         
         self.Navbar()
+        self.barra_pequena = False
  
         
         self.stacked_widget.addWidget(self.tabs)
         self.stacked_widget.addWidget(self.config)
         self.stacked_widget.addWidget(self.extensoes)
+        
+        AutoUpdate.app().check_updates()
 
     def closeEvent(self, event):
         print("################# ENCERRANDO")
-        #sys.exit()    
+        data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
+        data['barra_lateral_pequena'] = self.barra_pequena
+        LoadConfigs.Config.saveConfigDict("ConfigInterface",data)
+        self.tabs.save()
     def Navbar(self):
         # Criar a barra de ferramentas (navbar)
         self.toolbar = QToolBar("", self)
@@ -99,22 +107,27 @@ class MainWindow(QMainWindow):
             button = self.toolbar.widgetForAction(action)
             if button:
                 button.setMinimumWidth(150)
+        
+        if bool(LoadConfigs.Config.getConfigData(config="ConfigInterface",data="barra_lateral_pequena")) == True:
+            self.toggle_sidebar()
 
     def toggle_sidebar(self):
         if self.toolbar.maximumWidth() == self.minimized_sidebar_width:  # Barra lateral minimizada
             self.toolbar.setMaximumWidth(self.original_sidebar_width)  # Expandir
             self.botao_expandir.setText("<")
             self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+            self.barra_pequena = False
             
             for action in self.toolbar.actions():
                 button = self.toolbar.widgetForAction(action)
                 if button:
                     button.setMinimumWidth(150)
             
-        else:  # Barra lateral expandida
+        else: 
             self.toolbar.setMaximumWidth(self.minimized_sidebar_width)  # Minimizar
             self.botao_expandir.setText(">")
             self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+            self.barra_pequena = True
             
             for action in self.toolbar.actions():
                 button = self.toolbar.widgetForAction(action)

@@ -35,7 +35,7 @@ def run_as_admin():
         sys.exit()
 
 def main():
-    run_as_admin()
+    #run_as_admin()
 
     setup_signal_handlers()
     setup_logging()
@@ -56,6 +56,7 @@ def main():
     loading_thread = LoadingThread()
 
     loading_thread.progress_updated.connect(loading_screen.update_progress)
+    loading_thread.etapa.connect(loading_screen.update_etapa)
     loading_thread.finished.connect(loading_screen.close)
     loading_thread.finished.connect(MainWindow.create_main_window)
 
@@ -74,10 +75,8 @@ def handle_interrupt(signum, frame):
     print("Programa interrompido.")
     sys.exit(0)
 
-
 def setup_logging():
-    log_dir = os.path.join(os.path.expanduser(
-        "~"), "Documents", "AluraVideos", "Logs")
+    log_dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Logs")
     os.makedirs(log_dir, exist_ok=True)
 
     log_file = os.path.join(log_dir, "AluraVideos.log")

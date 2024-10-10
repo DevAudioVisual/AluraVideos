@@ -57,7 +57,7 @@ class Interface(QWidget):
         
         self.label_formato = QLabel("Padrão:")
         self.campo_formato = QLineEdit()
-        self.campo_formato.setText("{id}-video{aula}-{video}. ")
+        self.campo_formato.setText("{id}-video{aula}-{video}")
         self.campo_formato.setReadOnly(True)
         
         self.buttonrenomear = QPushButton("Renomear")

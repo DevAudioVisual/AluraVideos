@@ -10,6 +10,7 @@ from PyQt6.QtCore import Qt, QByteArray, QBuffer, QIODevice, QThread, pyqtSignal
 from functools import lru_cache
 
 from Util import Util
+from Util.Tokens import Credentials
 
 image_cache = {}
 threadpool = QThreadPool()
@@ -293,10 +294,7 @@ class SearchThread(QThread):
         self.ordem = ordem
 
     def run(self):
-        caminho_arquivo = os.path.join(os.path.dirname(__file__), 'keys.json')
-        with open(caminho_arquivo, 'r') as f:
-            dados = json.load(f)
-        api_key = dados['PIXABAY']
+        api_key = Credentials().getKeys()["PIXABAY"]
         if self.tipo == "Vetores":
             url = f"https://pixabay.com/api/?key={api_key}&q={self.query}&image_type=vector&order={
                 self.ordem}&page={self.page}&per_page={self.per_page}"

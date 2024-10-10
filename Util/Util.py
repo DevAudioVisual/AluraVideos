@@ -1,6 +1,5 @@
 import logging
 import os
-from pathlib import Path
 import string
 import subprocess
 import sys
@@ -8,7 +7,7 @@ from tkinter import messagebox
 from urllib.parse import urlparse
 import unicodedata
 
-version = "V0.0.4"
+version = "V0.0.0"
 
 def reabrir():
     try:
