@@ -1,6 +1,6 @@
 import os
 from PyQt6.QtGui import QCursor,QStandardItemModel,QAction,QIcon
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QComboBox, QMessageBox, QTreeView,QVBoxLayout,QMenu
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QInputDialog, QMessageBox, QTreeView,QVBoxLayout,QMenu
 from PyQt6.QtCore import Qt,QTimer
 from Models.S3 import S3Model
 from QtInterfaces.S3.S3TreeItem import S3TreeItem
@@ -61,11 +61,6 @@ class Interface(QWidget):
         if self.model.downloaded == True:
           return
         QTimer.singleShot(2000,checkUploaded)
-
-      
-      #self.botao_recarregar = QPushButton("Recarregar Tree")
-      #self.search_input.setPlaceholderText("Buscar pastas ou itens... (EM BREVE)")
-      #self.botao_recarregar.clicked.connect(self.refresh_tree)
       
       self.search_input = QLineEdit()
       self.search_input.setPlaceholderText("Buscar pastas ou itens... (EM BREVE)")
@@ -171,22 +166,78 @@ class Interface(QWidget):
 
         item = self.Standardmodel.itemFromIndex(index)
         full_path = item.full_path  # Obtém o caminho completo do item
-        #checkUploaded()
-        #self.setCursor(Qt.CursorShape.ArrowCursor)
-        #botao_upload.setText("Realizando upload...")
-        #botao_upload.setEnabled(False)
         self.model.startUpload(local_folder_path=upload_path,destination_folder=full_path)
+
+    def rename_item(self):
+        index = self.tree_view.currentIndex()
+        if not index.isValid():
+            return  # Verifica se um item válido foi selecionado
+
+        item = self.Standardmodel.itemFromIndex(index)
+        old_key = item.full_path
+
+        # Caixa de diálogo para inserir o novo nome
+        new_name, ok = QInputDialog.getText(self, "Renomear Item", "Novo nome:", text=item.text())
+        if not ok:
+            return  # Cancelado pelo usuário
+
+        old_path = os.path.dirname(old_key)
+        old_path = os.path.normpath(old_path)
+        new_key = os.path.join(old_path, new_name)
+        new_key = os.path.normpath(new_key)
+
+        try:
+            self.model.s3_client.copy_object(
+                Bucket=self.model.bucket_name,
+                CopySource={'Bucket': self.model.bucket_name, 'Key': old_key},
+                Key=new_key
+            )
+            self.model.s3_client.delete_object(Bucket=self.model.bucket_name, Key=old_key)
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Falha ao renomear o item: {e}")
+            return
+
+        QMessageBox.information(self, "Sucesso!", "Item renomeado com sucesso.")
+        
+        
+    def delete_item(self):
+        index = self.tree_view.currentIndex()
+        if not index.isValid():
+            return  # Verifica se um item válido foi selecionado
+
+        item = self.Standardmodel.itemFromIndex(index)
+        full_path = item.full_path 
+        folder_name = os.path.basename(full_path)
+        
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Question)
+        msg_box.setWindowTitle("Confirmação")
+        msg_box.setText(f"Confirmar remoção da pasta:\n{folder_name}")
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+        ret = msg_box.exec()
+        msg_box.activateWindow()
+        msg_box.raise_()
+        if ret == QMessageBox.StandardButton.Yes:
+            print(full_path)
+            #self.model.s3_client.delete_object(Bucket=self.model.bucket_name, Key=full_path)
+            self.tree_view.model().removeRow(index.row(), index.parent())  
+            QMessageBox().information(None,"Sucesso!","Arquivo excluido com exito.")
         
     def create_context_menu(self, position):
         # Cria o menu de contexto
         menu = QMenu()
-        
+
         # Ação de download
         download_action = menu.addAction("Download")
         download_action.triggered.connect(self.download_item)
-        
+
         upload_action = menu.addAction("Upload")
         upload_action.triggered.connect(self.upload_item)
+        #upload_action = menu.addAction("Renomear")
+        #upload_action.triggered.connect(self.rename_item)
+        #delete_action = menu.addAction("Excluir")
+        #delete_action.triggered.connect(self.delete_item)  # Conecte a um método para excluir
 
         # Exibe o menu no local do clique
         menu.exec(self.tree_view.viewport().mapToGlobal(position))

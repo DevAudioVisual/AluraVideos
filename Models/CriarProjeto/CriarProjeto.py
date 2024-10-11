@@ -6,7 +6,7 @@ from Models.CriarProjeto import Descompactador, DropDownloader
 from QtInterfaces.ProjectCreator import InterfaceProjectCreator
 from Util import TempoVideos, Util
 from PyQt6.QtWidgets import QMessageBox
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer,QCoreApplication
     
 class ProjectCreator():
     def __init__(self, ArquivoVideos, nome_projeto_var, subpasta_vars, CriarEm,abrir_pasta,fechar_ao_criar,abrir_premiere, main_window, stackedwidget):
@@ -102,17 +102,12 @@ class ProjectCreator():
             self.criar_Arquivos(self.destinoPremiere,self.destinoAfter,self.Premire,self.After,self.nome_projeto)   
                 
     def abriroufechar(self):    
-        if self.abrir_premiere == True and self.Premire == True:
+        if self.abrir_premiere == True:
             webbrowser.open(os.path.join(self.destinoPremiere, self.nome_projeto+".prproj"))
         if self.abrir_pasta  == True:
-            QTimer.singleShot(1000, lambda: webbrowser.open(self.caminho_pasta_principal))
-            #InterfaceMain.root.after(1000, lambda: webbrowser.open(self.caminho_pasta_principal)) 
+            webbrowser.open(self.caminho_pasta_principal)
         if self.fechar_ao_criar  == True:
-            return
-            #timer = QTimer()
-            #timer.timeout.connect(updateInterface)
-            #timer.start(1000)
-            #InterfaceMain.root.after(1000, InterfaceMain.root.destroy) 
+            QCoreApplication.instance().quit()
     def download_completo(self,arquivo, tamanho_esperado=None):
         tamanho_anterior = 0
         tempo_ultima_alteracao = time.time()

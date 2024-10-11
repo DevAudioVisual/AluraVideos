@@ -115,7 +115,7 @@ class DownloadDropApp(QObject):
         self.download_thread.wait()
 
         # Encerra a thread de atualização da interface
-        self.update_timer.stop()
+        #self.update_timer.stop()
         self.update_thread.quit()
         self.update_thread.wait()
 

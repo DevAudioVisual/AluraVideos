@@ -159,9 +159,9 @@ class Interface(QWidget):
                                   self.campo_nome,
                                   self.subpasta_vars,
                                   self.campo_dir,
-                                  self.check_AbrirPasta,
-                                  self.check_FecharAoCriar,
-                                  self.check_AbrirPremiere,
+                                  self.check_AbrirPasta.isChecked(),
+                                  self.check_FecharAoCriar.isChecked(),
+                                  self.check_AbrirPremiere.isChecked(),
                                   MainWindow.main_window,
                                   self.stacked_widget
                                   ).create()

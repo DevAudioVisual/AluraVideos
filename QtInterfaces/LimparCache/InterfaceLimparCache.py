@@ -127,8 +127,8 @@ class Interface(QWidget):
             pastas.append(self.get_temp_dir())
           if p == "Prefetch":
             pastas.append("C:\\Windows\\Prefetch")
-          if p == "Adobe Cache":
-            pastas.append(LoadConfigs.Config.getConfigData("ConfigCache","Cache_Adobe"))
+          #if p == "Adobe Cache":
+            #pastas.append(LoadConfigs.Config.getConfigData("ConfigCache","Cache_Adobe"))
           if p == "Lixeira":
             pastas.append("Lixeira")
 

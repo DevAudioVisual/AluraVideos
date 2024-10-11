@@ -2,7 +2,12 @@ from PyQt6.QtWidgets import QWidget, QLabel, QProgressBar,QVBoxLayout
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from Config import LoadConfigs
 from Models.AutoUpdate import AutoUpdate
+from QtInterfaces.ExtensõesPPRO.InterfaceExtensoes import GitRequest
 global Config
+
+versao_effector = None
+versao_ordinem = None
+versao_notabillity = None
 
 class LoadingScreen(QWidget):
     def __init__(self):
@@ -43,7 +48,8 @@ class LoadingThread(QThread):
         super().__init__()
         self.processos = [
             self.carregar_configs,
-            #self.verificar_atualizacoes
+            self.verificar_atualizacoes,
+            #self.versoes_extensões_ppro
         ]
         
     def run(self):
@@ -61,8 +67,16 @@ class LoadingThread(QThread):
 
     def verificar_atualizacoes(self):
         self.etapa.emit("Buscando por atualizações")
-        AutoUpdate.app().check_updates()
+        #AutoUpdate.app().check_updates()
         QThread.msleep(500)
+        
+    def versoes_extensões_ppro(self):
+        self.etapa.emit("Verificando extensões PPRO")
+        global versao_effector,versao_ordinem,versao_notability
+        versao_effector = f"Download Effector V{GitRequest("Effector").initRequest()}"
+        versao_ordinem = f"Download Ordinem V{GitRequest("Ordinem").initRequest()}"
+        versao_notability = f"Download Notability V{GitRequest("Notability").initRequest()}"  
+        QThread.msleep(500) 
     
 
         

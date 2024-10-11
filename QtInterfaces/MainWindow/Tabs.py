@@ -8,9 +8,6 @@ from QtInterfaces.Renamer import InterfaceRenamer
 from QtInterfaces.S3 import InterfaceS3
 from PyQt6.QtGui import QAction
 
-from QtInterfaces.Tarefas import Tarefas
-from QtInterfaces.Vimeo import VimeoInterface
-
 class Tabs(QTabWidget):
     def __init__(self, menubar):  # Passar a instância de MenuBar
         super().__init__()

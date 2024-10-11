@@ -5,7 +5,6 @@
             "Temp": true,
             "PorcentoTemp": true,
             "Prefetch": true,
-            "Adobe Cache": false,
             "Lixeira": true
         }
     ]

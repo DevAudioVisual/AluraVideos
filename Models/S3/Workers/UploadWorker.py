@@ -1,4 +1,6 @@
+from tkinter import messagebox
 from PyQt6.QtCore import QRunnable
+from PyQt6.QtWidgets import QMessageBox
 
 class UploadWorker(QRunnable):
     def __init__(self, s3_client, bucket_name, local_file_path, s3_key, config, progress_callback=None):
@@ -25,5 +27,7 @@ class UploadWorker(QRunnable):
             #QMessageBox.information(None, "Sucesso!", f"Upload concluido!\nLocal de acesso: {self.s3_key}")
             #self.progress_dialog.quit()
             print(f"Upload concluído para {self.s3_key}")
+            messagebox.showinfo("Sucesso!",f"Upload concluído para {self.s3_key}")
+            #QMessageBox.information(None,"Aviso",f"Upload concluído para {self.s3_key}")
         except Exception as e:
             print(f"Erro ao carregar o arquivo {self.local_file_path}: {e}")

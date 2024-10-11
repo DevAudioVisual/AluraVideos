@@ -2,8 +2,8 @@ import json
 import multiprocessing
 import os
 from PyQt6.QtCore import pyqtSignal, QObject, QThreadPool
-from Models.S3.DownloadWorker import DownloadWorker
-from Models.S3.UploadWorker import UploadWorker
+from Models.S3.Workers.DownloadWorker import DownloadWorker
+from Models.S3.Workers.UploadWorker import UploadWorker
 
 class S3Worker(QObject):
     progress_updated = pyqtSignal(int)

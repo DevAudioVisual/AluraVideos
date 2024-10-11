@@ -15,7 +15,7 @@ class Interface(QWidget):
     def __init__(self):
         super().__init__() 
         
-        self.setContentsMargins(10, 20, 10, 10)
+        self.setContentsMargins(10, 10, 10, 10)
         
         self.entrada_videos = {}
         self.dados = {}
@@ -23,9 +23,9 @@ class Interface(QWidget):
         self.df = LoadConfigs.Config.getDataFrame("ConfigCriarProjeto")
         self.config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
         
-        self.label_h1 = QLabel("Renomeador de arquivos")
-        self.label_h1.setObjectName("grande")
-        self.label_h1.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        #self.label_h1 = QLabel("Renomeador de arquivos")
+        #self.label_h1.setObjectName("grande")
+        #self.label_h1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.label_h2 = QLabel("Os videos precisam estar no formato X.X para serem reconhecidos")
         self.label_h2.setObjectName("medio")
@@ -66,7 +66,7 @@ class Interface(QWidget):
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         
-        layout.addWidget(self.label_h1)
+        #layout.addWidget(self.label_h1)
         layout.addWidget(self.label_videos)
         layout.addWidget(self.campo_videos)
         layout.addWidget(self.label_sheets)

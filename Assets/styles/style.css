@@ -3,23 +3,30 @@
   font-weight: bold; 
   font-size: 12px; 
 }
-
-QLabel {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 QLabel#extra-grande {
   font-size: 25px;
 }
 QLabel#grande {
   font-size: 20px;
 }
+QLabel#medio-normal {
+  font-size: 15px;
+  font-weight: normal; 
+}
 QLabel#medio {
   font-size: 15px;
 }
+
 QLabel#pequeno {
-  font-size: 10px;
+  font-size: 12px;
+}
+QLabel#pequeno-normal {
+  font-size: 12px;
+  font-weight: normal;
+}
+QLabel {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 QComboBox {

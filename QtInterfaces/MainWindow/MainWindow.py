@@ -1,9 +1,12 @@
+import os
 from re import S
+from shutil import ExecError
 from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt, QThread
 from Config import LoadConfigs
 from Models.AutoUpdate import AutoUpdate
+from QtInterfaces.Home.Home import Interface
 from QtInterfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.ExtensõesPPRO import InterfaceExtensoes
 from QtInterfaces.MainWindow.MenuBar import MenuBar
@@ -21,17 +24,25 @@ def create_main_window():
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__() 
+        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)
+        
         self.setWindowTitle(f'AluraVideos {Util.version}')
         icon = QIcon(r"Assets\Icons\icon.ico")
         self.setWindowIcon(icon)
         
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
+        self.home = Interface()
+        self.stacked_widget.addWidget(self.home)
+        
+        dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
+        tokens = os.path.join(dir,"tokens.yml")
+        key = os.path.join(dir,"key.key")
+        if not os.path.exists(tokens) or not os.path.exists(key):
+            return
         
         self.extensoes = InterfaceExtensoes.Interface()
         self.config = InterfacePreferencias.Interface()
-        
-        
         self.menubar = MenuBar(self)  # Criar a instância de MenuBar
         self.tabs = Tabs(self.menubar)  # Passar a instância de MenuBar para Tabs
         
@@ -43,14 +54,17 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.config)
         self.stacked_widget.addWidget(self.extensoes)
         
-        AutoUpdate.app().check_updates()
+        #AutoUpdate.app().check_updates()
 
     def closeEvent(self, event):
         print("################# ENCERRANDO")
-        data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
-        data['barra_lateral_pequena'] = self.barra_pequena
-        LoadConfigs.Config.saveConfigDict("ConfigInterface",data)
-        self.tabs.save()
+        try:
+            data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
+            data['barra_lateral_pequena'] = self.barra_pequena
+            LoadConfigs.Config.saveConfigDict("ConfigInterface",data)
+            self.tabs.save()
+        except Exception as e:
+            print(e)
     def Navbar(self):
         # Criar a barra de ferramentas (navbar)
         self.toolbar = QToolBar("", self)
@@ -62,7 +76,8 @@ class MainWindow(QMainWindow):
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.toolbar)
         
         # Adicionar ações à barra de ferramentas
-        acao_home = QAction(QIcon(r"Assets\Images\penguin.png"), "Home", self)
+        acao_home = QAction(QIcon(r"Assets\Icons\icon.ico"), "Home", self)
+        acao_ferramentas = QAction(QIcon(r"Assets\Images\penguin.png"), "Ferramentas", self)
         acao_ppro = QAction(QIcon(r"Assets\Icons\prproj.ico"), "Extensões PPRO", self)
         #acao_configuracoes = QAction(QIcon(r"Assets\Icons\config.ico"), "Configurações", self)
         
@@ -70,6 +85,9 @@ class MainWindow(QMainWindow):
         self.toolbar.widgetForAction(acao_home).setProperty("active",True)
         acao_home.triggered.connect(self.mostrar_home)
         acao_home.triggered.connect(self.atualizar_estilo_botoes)
+        self.toolbar.addAction(acao_ferramentas)
+        acao_ferramentas.triggered.connect(self.mostrar_ferramentas)
+        acao_ferramentas.triggered.connect(self.atualizar_estilo_botoes)
         self.toolbar.addAction(acao_ppro)
         acao_ppro.triggered.connect(self.mostrar_extensoes)
         acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
@@ -151,6 +169,9 @@ class MainWindow(QMainWindow):
             sender_button.style().polish(sender_button)
     
     def mostrar_home(self):
+        self.stacked_widget.setCurrentWidget(self.home)
+    
+    def mostrar_ferramentas(self):
         self.stacked_widget.setCurrentWidget(self.tabs)
 
     def mostrar_configuracoes(self):

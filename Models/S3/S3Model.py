@@ -9,7 +9,7 @@ from botocore.config import Config
 from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QObject, QThread, QTimer
 from Models.S3.ProgressDialog import ProgressDialog
-from Models.S3.S3Worker import S3Worker
+from Models.S3.Workers.S3Worker import S3Worker
 from Util.Tokens import Credentials
 
 class S3Model(QObject):
