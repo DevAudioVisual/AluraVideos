@@ -3,8 +3,9 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 import signal
 import threading
-from PyQt6.QtWidgets import QApplication,QStyleFactory
-from PyQt6.QtCore import QTranslator,QLocale
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QLocale
+from Models.AutoUpdate import AutoUpdate
 from QtInterfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
 from QtInterfaces.MainWindow import MainWindow
 import ctypes
@@ -12,7 +13,6 @@ import sys
 import os
 
 def is_admin():
-    """Verifica se o script está sendo executado como administrador"""
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
@@ -32,18 +32,14 @@ def run_as_admin():
 
 def main():
     run_as_admin()
-
     setup_signal_handlers()
     setup_logging()
     
     app = QApplication(sys.argv) 
-    app.setStyle(QStyleFactory.create('Windows'))
-    translator = QTranslator()
-    if translator.load("qtbase_pt_BR", ":/translations"):  # Verifique o caminho correto para o arquivo de tradução
-        app.installTranslator(translator)
+    app.setStyle("Windows")
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
-    with open(r"Assets\styles\style.css", "r") as f:
+    with open(r"Assets\styles\style.qss", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)
 
@@ -54,6 +50,7 @@ def main():
 
     loading_thread.progress_updated.connect(loading_screen.update_progress)
     loading_thread.etapa.connect(loading_screen.update_etapa)
+    loading_thread.execute_in_main_thread.connect(lambda: AutoUpdate.app().check_updates())  
     loading_thread.finished.connect(loading_screen.close)
     loading_thread.finished.connect(MainWindow.create_main_window)
 

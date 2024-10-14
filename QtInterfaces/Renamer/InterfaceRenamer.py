@@ -22,15 +22,7 @@ class Interface(QWidget):
         
         self.df = LoadConfigs.Config.getDataFrame("ConfigCriarProjeto")
         self.config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
-        
-        #self.label_h1 = QLabel("Renomeador de arquivos")
-        #self.label_h1.setObjectName("grande")
-        #self.label_h1.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
-        self.label_h2 = QLabel("Os videos precisam estar no formato X.X para serem reconhecidos")
-        self.label_h2.setObjectName("medio")
-        self.label_h2.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+                
         self.label_videos = QLabel("Videos:")
         self.campo_videos = QLineEdit()
         self.campo_videos.setPlaceholderText("Busque pelos vídeos para renomear")

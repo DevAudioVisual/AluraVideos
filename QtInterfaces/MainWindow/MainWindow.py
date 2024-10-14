@@ -1,11 +1,11 @@
 import os
 from re import S
-from shutil import ExecError
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton
-from PyQt6.QtGui import QIcon, QAction
-from PyQt6.QtCore import Qt, QThread
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton,QMessageBox
+from PyQt6.QtGui import QIcon, QAction,QPixmap
+from PyQt6.QtCore import Qt, QTranslator
+from winotify import Notification, audio
 from Config import LoadConfigs
-from Models.AutoUpdate import AutoUpdate
+from Models.SystemTray import SystemTrayIcon
 from QtInterfaces.Home.Home import Interface
 from QtInterfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.ExtensõesPPRO import InterfaceExtensoes
@@ -25,10 +25,14 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__() 
         self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)
-        
         self.setWindowTitle(f'AluraVideos {Util.version}')
         icon = QIcon(r"Assets\Icons\icon.ico")
         self.setWindowIcon(icon)
+        
+        translator = QTranslator(self)
+        # Define o idioma para português
+        translator.load("qtbase_pt_BR.qm", ":/translations")  # Caminho para o arquivo de tradução
+        QApplication.instance().installTranslator(translator)
         
         self.stacked_widget = QStackedWidget()
         self.setCentralWidget(self.stacked_widget)
@@ -54,10 +58,31 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.config)
         self.stacked_widget.addWidget(self.extensoes)
         
+        
+        SystemTrayIcon.SystemTrayIcon(self)
         #AutoUpdate.app().check_updates()
 
     def closeEvent(self, event):
-        print("################# ENCERRANDO")
+        if self.isHidden(): QApplication.quit()
+        reply = QMessageBox.question(self, "Fechar",
+            "Minimizar para a bandeja do sistema?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes)
+
+        if reply == QMessageBox.StandardButton.Yes:
+            self.hide()
+            toast = Notification(app_id="AluraVideos",
+                         title="AluraVideos",
+                         msg="AluraVideos está rodando em segundo plano",
+                         icon=r"Assets\Icons\icon.ico",
+                         duration="long")
+            # Define um som para a notificação
+            toast.set_audio(audio.LoopingAlarm, loop=False)
+            
+            toast.show()
+            event.ignore()  # Impede o fechamento da aplicação
+        else:
+            event.accept()  # Fecha a aplicação
         try:
             data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
             data['barra_lateral_pequena'] = self.barra_pequena
@@ -77,7 +102,9 @@ class MainWindow(QMainWindow):
         
         # Adicionar ações à barra de ferramentas
         acao_home = QAction(QIcon(r"Assets\Icons\icon.ico"), "Home", self)
-        acao_ferramentas = QAction(QIcon(r"Assets\Images\penguin.png"), "Ferramentas", self)
+        acao_edicao = QAction(QIcon(r"Assets\Images\penguin.png"), "Ferramentas", self)
+        acao_producao = QAction(QIcon(r"Assets\Images\penguin.png"), "Produção", self)
+        acao_outros = QAction(QIcon(r"Assets\Images\penguin.png"), "Outros", self)
         acao_ppro = QAction(QIcon(r"Assets\Icons\prproj.ico"), "Extensões PPRO", self)
         #acao_configuracoes = QAction(QIcon(r"Assets\Icons\config.ico"), "Configurações", self)
         
@@ -85,36 +112,26 @@ class MainWindow(QMainWindow):
         self.toolbar.widgetForAction(acao_home).setProperty("active",True)
         acao_home.triggered.connect(self.mostrar_home)
         acao_home.triggered.connect(self.atualizar_estilo_botoes)
-        self.toolbar.addAction(acao_ferramentas)
-        acao_ferramentas.triggered.connect(self.mostrar_ferramentas)
-        acao_ferramentas.triggered.connect(self.atualizar_estilo_botoes)
+        
+        self.toolbar.addAction(acao_edicao)
+        acao_edicao.triggered.connect(self.mostrar_ferramentas)
+        acao_edicao.triggered.connect(self.atualizar_estilo_botoes)
+        
         self.toolbar.addAction(acao_ppro)
         acao_ppro.triggered.connect(self.mostrar_extensoes)
         acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
         
-        # self.toolbar.addAction(acao_configuracoes)
-        # acao_configuracoes.triggered.connect(self.mostrar_configuracoes)
-        # acao_configuracoes.triggered.connect(self.atualizar_estilo_botoes)
+
         
         self.botao_expandir = QPushButton("<")
-        #self.toolbar.addWidget(self.botao_expandir)
         self.botao_expandir.clicked.connect(self.toggle_sidebar)
-        
-        
-        botao_expandir_container = QWidget()
-        botao_expandir_layout = QVBoxLayout(botao_expandir_container)
-        botao_expandir_layout.setAlignment(Qt.AlignmentFlag.AlignBottom)  # Alinhar o botão ao fundo
-        botao_expandir_layout.setContentsMargins(0, 0, 0, 0)  # Remover margens extras
-        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        botao_expandir_layout.addItem(spacer)
-        botao_expandir_layout.addWidget(self.botao_expandir)
 
-        # Adicionar o container à toolbar com alinhamento para baixo
-        self.toolbar.addWidget(botao_expandir_container)
-        toolbar_layout = self.toolbar.layout()
+        #spacer = QWidget()
+        #spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        #self.toolbar.addWidget(spacer)
+        self.toolbar.addWidget(self.botao_expandir)
 
         # Alinhar o container ao fundo usando o layout
-        toolbar_layout.setAlignment(botao_expandir_container, Qt.AlignmentFlag.AlignBottom)
 
         self.original_sidebar_width = self.toolbar.maximumWidth()  # Corrigido para self.toolbar
         self.minimized_sidebar_width = 50

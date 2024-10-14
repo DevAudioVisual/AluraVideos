@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QVBoxLayout, QTabWidget,QMenu
 from Config import LoadConfigs
-from Models.Vimeo import VimeoUploader
 from QtInterfaces.ImagensPixaBay import ImagensPixabay
 from QtInterfaces.LimparCache import InterfaceLimparCache
 from QtInterfaces.ProjectCreator import InterfaceProjectCreator
@@ -36,6 +35,7 @@ class Tabs(QTabWidget):
             "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},
             "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"][0]},
             "Renamer": {InterfaceRenamer.Interface(): self.data["Renamer"][0]},
+            #"VideoValidator": {InterfaceVideoValidator.Interface(): self.data["VideoValidator"][0]},
             #"Tarefas": {Tarefas.Interface(): self.data["Tarefas"][0]},
             #"Vimeo": {VimeoInterface.Interface(): self.data["Vimeo"][0]}
         }

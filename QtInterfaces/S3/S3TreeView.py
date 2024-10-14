@@ -8,10 +8,10 @@ class S3TreeView(QTreeView):
         super().__init__()
         self.s3_model = model
         self.setAcceptDrops(True)
-        self.setDragEnabled(True)
+        #self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-
+    """
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():  # Verifica se os itens arrastados são arquivos
             event.acceptProposedAction()
@@ -45,3 +45,4 @@ class S3TreeView(QTreeView):
                   #print(local_path, s3_folder_key)
             else:
                 QMessageBox.information(None,"Aviso","Apenas pastas são permitidas")
+"""

@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import webbrowser
 from PyQt6.QtWidgets import QListWidget, QWidget, QVBoxLayout,QPushButton, QLabel, QFileDialog, QSizePolicy
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtCore import QUrl,Qt,QCoreApplication,QProcess
@@ -52,7 +53,17 @@ class Interface(QWidget):
             label_desc.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label_desc.setObjectName("medio-normal")
             
+            label_ajuda = QLabel("Precisa de ajuda? Acesse a nossa documentação oficial e obtenha algumas dicas! xD")
+            label_ajuda.setWordWrap(True)
+            label_ajuda.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label_ajuda.setObjectName("medio")
+            
+            button_ajuda = QPushButton("Acessar documentação")
+            button_ajuda.clicked.connect(lambda: webbrowser.open("https://www.notion.so/grupoalura/AluraVideos-8589d6eab57744b7a9ccf4080c0b6bca?pvs=25"))
+            
             layoutPrincipal.addWidget(label_desc)
+            layoutPrincipal.addWidget(label_ajuda)
+            layoutPrincipal.addWidget(button_ajuda)
             #layoutPrincipal.addWidget(VimeoPlayer())
         
         self.setLayout(layoutPrincipal)

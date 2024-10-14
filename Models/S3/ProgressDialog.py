@@ -1,5 +1,5 @@
 import time
-from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QProgressBar
+from PyQt6.QtWidgets import QLabel, QDialog, QVBoxLayout, QProgressBar, QMessageBox
 
 class ProgressDialog(QDialog):
     def __init__(self):
@@ -46,7 +46,11 @@ class ProgressDialog(QDialog):
         self.velocidade_download.setText(f"Velocidade: {format_size(speed)}/s")
         self.tempo_restante.setText(f"Tempo Restante: {time.strftime('%H:%M:%S', time.gmtime(remaining_time))}")
         self.total_baixado.setText(f"Tamanho do Arquivo: {format_size(self._seen_so_far)} / {format_size(self.total_size)}")
-
+        
+        if progress >= 100:
+            QMessageBox.information(None,"Sucesso!","Processo concluido com exito.")
+            self.close()
+            
 def format_size(size):
     if size >= 1024**3:  # GB
         return f"{size / (1024**3):.2f} GB"

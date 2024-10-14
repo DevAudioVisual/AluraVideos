@@ -19,7 +19,7 @@ class GithubDownloader:
                 print(f"Pasta '{pasta}' removida com sucesso.")
                 return True
             except PermissionError:
-                QMessageBox.information(None,"Info","Ocorreu um erro no processo de instalação, permissão negada.\nFeche o Premiere Pro e tente novamente.")
+                QMessageBox.information(None,"Info","Ocorreu um erro no processo de instalação, permissão negada.")
                 print(f"Erro: Não foi possível remover a pasta '{pasta}'. Permissão negada. Verifique se a pasta ou algum arquivo dentro dela está em uso.")
                 return False
             except FileNotFoundError:

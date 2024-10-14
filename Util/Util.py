@@ -1,3 +1,4 @@
+import ctypes
 import logging
 import os
 import string
@@ -7,7 +8,12 @@ from tkinter import messagebox
 from urllib.parse import urlparse
 import unicodedata
 
-version = "V0.0.5"
+# version = x.y.z
+# x = major
+# y = minor
+# z = path
+
+version = "V1.0.0"
 
 def reabrir():
     try:

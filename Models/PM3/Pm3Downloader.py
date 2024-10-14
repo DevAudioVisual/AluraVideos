@@ -6,7 +6,7 @@ import requests
 import re
 import os
 from Util import Styles
-import Util.CustomWidgets as ctk
+import z_Old.CustomWidgets as ctk
 from concurrent.futures import ThreadPoolExecutor
 from bs4 import BeautifulSoup
 import tkinter as tk

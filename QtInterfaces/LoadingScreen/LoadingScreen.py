@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QProgressBar,QVBoxLayout
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from Config import LoadConfigs
 from Models.AutoUpdate import AutoUpdate
 from QtInterfaces.ExtensõesPPRO.InterfaceExtensoes import GitRequest
@@ -25,6 +25,11 @@ class LoadingScreen(QWidget):
         self.label = QLabel('Carregando Aluravideos...')
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_text)
+        self.timer.start(500)  # Atualiza a cada 500 milissegundos
+        self.counter = 0
+        
         self.etapa = QLabel('Etapa atual: ')
         self.etapa.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -35,6 +40,13 @@ class LoadingScreen(QWidget):
         layout.addWidget(self.etapa)
         layout.addWidget(self.progressBar)
         
+    def update_text(self):
+        self.counter += 1
+        if self.counter > 3:
+            self.counter = 1
+        ponto = "." * self.counter
+        self.label.setText(f"Carregando Aluravideos{ponto}")
+    
     def update_etapa(self, etapa):
         self.etapa.setText(f"Etapa atual: {etapa}")
     def update_progress(self, value):
@@ -43,10 +55,12 @@ class LoadingScreen(QWidget):
 class LoadingThread(QThread):
     progress_updated = pyqtSignal(int)
     etapa = pyqtSignal(str)
+    execute_in_main_thread = pyqtSignal(object) 
 
     def __init__(self):
         super().__init__()
         self.processos = [
+            #self.carregar_tensorflow,
             self.carregar_configs,
             self.verificar_atualizacoes,
             #self.versoes_extensões_ppro
@@ -56,8 +70,8 @@ class LoadingThread(QThread):
         total_steps = len(self.processos)
         for i, processo in enumerate(self.processos):
             progress = int((i + 1) / total_steps * 100)
-            self.progress_updated.emit(progress)
             processo()
+            self.progress_updated.emit(progress)
 
     def carregar_configs(self):
         self.etapa.emit("Carregando configurações")
@@ -65,9 +79,14 @@ class LoadingThread(QThread):
         LoadConfigs.Config.firtLoad()  # Corrigido: firstLoad
         QThread.msleep(500)
 
+    def carregar_tensorflow(self):
+        self.etapa.emit("Inicializando TensorFlow")
+        import tensorflow as tf 
+        QThread.msleep(500)
+
     def verificar_atualizacoes(self):
         self.etapa.emit("Buscando por atualizações")
-        #AutoUpdate.app().check_updates()
+        self.execute_in_main_thread.emit(self.verificar_atualizacoes) 
         QThread.msleep(500)
         
     def versoes_extensões_ppro(self):

@@ -6,7 +6,6 @@
         "Vimeo": [true,2],
         "Imagens Pixabay": [true, 3],
         "Limpar Cache": [true, 4],
-        "Renamer": [true, 5],
-        "Tarefas": [false, 6]
+        "Renamer": [true, 5]
     }
 }
