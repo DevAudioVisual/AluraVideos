@@ -1,11 +1,12 @@
 import threading
-from PyQt6.QtWidgets import QSpacerItem, QVBoxLayout, QLayout, QWidget, QGridLayout, QLabel, QPushButton, QSizePolicy
-from PyQt6.QtCore import Qt, QThread
+from PyQt6.QtWidgets import QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QLabel, QPushButton, QSizePolicy
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QCursor
 import requests
 from packaging import version
-from Models.ExtensoesPPRO.GithubDownloader import GithubDownloader
-from QtInterfaces.LoadingScreen import LoadingScreen
+import yaml
+from Models.ExtensoesPPRO.GithubDownloader import GithubDownloader, GithubUpdater
+from QtInterfaces.Interfaces.LoadingScreen import LoadingScreen
 from Util import Util
 
 class Interface(QWidget):
@@ -25,16 +26,19 @@ class Interface(QWidget):
         
         global versao_effector,versao_ordinem,versao_notabillity
         
-        label_effector = QLabel("Descrição effector")
-        label_effector.setObjectName("medio")
+        label_effector = QLabel()
+        label_effector.setWordWrap(True)
+        #label_effector.setObjectName("medio")
         botao_effector = QPushButton(f"{LoadingScreen.versao_effector}")
         botao_effector.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        label_ordinem = QLabel("Descrição effector")
-        label_ordinem.setObjectName("medio")
+        label_ordinem = QLabel()
+        label_ordinem.setWordWrap(True)
+        #label_ordinem.setObjectName("medio")
         botao_ordinem = QPushButton(f"{LoadingScreen.versao_ordinem}")
         botao_ordinem.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        label_notabillity = QLabel("Descrição effector")
-        label_notabillity.setObjectName("medio")
+        label_notabillity = QLabel()
+        label_notabillity.setWordWrap(True)
+        #label_notabillity.setObjectName("medio")
         botao_notabillity = QPushButton(f"{LoadingScreen.versao_notabillity}")
         botao_notabillity.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         
@@ -51,14 +55,15 @@ class Interface(QWidget):
         botao_ordinem.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Ordinem").download_sourcecode(download_path))
         botao_notabillity.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Notability").download_sourcecode(download_path))
         
-        layout.addWidget(label, 0, 0)
-        #layout.addWidget(label_effector, 1, 0)
-        layout.addWidget(botao_effector, 2, 0)
-        #layout.addWidget(label_ordinem, 3, 0)
-        layout.addWidget(botao_ordinem, 4, 0)
-        #layout.addWidget(label_notabillity, 5, 0)
-        layout.addWidget(botao_notabillity, 6, 0)
         
+        layout.addWidget(label, 0, 0)
+        layout.addWidget(label_effector, 1, 0)
+        layout.addWidget(botao_effector, 2, 0)
+        layout.addWidget(label_ordinem, 3, 0)
+        layout.addWidget(botao_ordinem, 4, 0)
+        layout.addWidget(label_notabillity, 5, 0)
+        layout.addWidget(botao_notabillity, 6, 0)
+                    
         main_layout.addLayout(layout)
 
         # Spacer to push footer to the bottom
@@ -82,9 +87,34 @@ class Interface(QWidget):
         self.setLayout(main_layout)
         
         def updateNames():
-            botao_effector.setText(f"Download Effector {GitRequest("Effector").initRequest()}")
-            botao_ordinem.setText(f"Download Ordinem {GitRequest("Ordinem").initRequest()}")
-            botao_notabillity.setText(f"Download Notability {GitRequest("Notability").initRequest()}")
+            notas_effector, version_effector = GitRequest("Effector").initRequest()
+            notas_ordinem, version_ordinem = GitRequest("Ordinem").initRequest()
+            notas_notabillity, version_notabillity = GitRequest("Notability").initRequest()
+            
+            botao_effector.setText(f"Download Effector V{version_effector}")
+            botao_ordinem.setText(f"Download Ordinem V{version_ordinem}")
+            botao_notabillity.setText(f"Download Notability V{version_notabillity}")
+
+            versao_atual_ordinem = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Ordinem\version.yml")
+            versao_atual_effector = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Effector\version.yml")
+            versao_atual_notability = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Notability\version.yml")
+            updater = GithubUpdater(versao_atual_ordinem,versao_atual_effector,versao_atual_notability).verificar_atualizacoes()
+            
+            if updater:
+                for repo, versao in updater.items():
+                    if repo == "Effector":
+                        label_effector.setText(f"Atualização disponivel!\nNotas de atualização:\n{notas_effector.replace('- ', '\n-')}")
+                        botao_effector.setText(f"Atualizar Effector {versao}")
+
+                    if repo == "Ordinem": 
+                        label_ordinem.setText(f"Atualização disponivel!\nNotas de atualização:\n{notas_ordinem.replace('- ', '\n-')}")
+                        botao_ordinem.setText(f"Atualizar Ordinem versão {versao}")
+ 
+                    if repo == "Notability":                       
+                        label_notabillity.setText(f"Atualização disponivel!\nNotas de atualização:\n{notas_notabillity.replace('- ', '\n-')}")
+                        botao_notabillity.setText(f"Atualizar Notability {versao}")
+                        
+                    
  
         threading.Thread(target=updateNames,daemon=True).start()
 
@@ -104,7 +134,15 @@ class GitRequest():
             latest_tag_name = release_data["tag_name"]
             release_notes = release_data["body"]
             release_version = version.parse(latest_tag_name.lstrip("V"))
-            return release_version
+            return release_notes, release_version
         except requests.exceptions.RequestException as e:
             Util.LogError(func="PPRO", mensagem=f"Erro na requisição extensão ppro: {self.repo_name} {e}")
-            return "Erro"
+            return "Erro", "Erro"
+
+def versaoAtual(arquivo):
+    try:
+        with open(arquivo, 'r') as f:
+            dados = yaml.safe_load(f)
+            return dados['version']
+    except FileNotFoundError:
+        return 0.0

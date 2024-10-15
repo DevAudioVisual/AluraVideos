@@ -1,10 +1,10 @@
 import os
-from PyQt6.QtGui import QCursor,QStandardItemModel,QAction,QIcon
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QInputDialog, QMessageBox, QTreeView,QVBoxLayout,QMenu
+from PyQt6.QtGui import QCursor,QStandardItemModel,QIcon
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QInputDialog, QMessageBox,QVBoxLayout,QMenu
 from PyQt6.QtCore import Qt,QTimer
 from Models.S3 import S3Model
-from QtInterfaces.S3.S3TreeItem import S3TreeItem
-from QtInterfaces.S3.S3TreeView import S3TreeView
+from QtInterfaces.Interfaces.S3.S3TreeItem import S3TreeItem
+from QtInterfaces.Interfaces.S3.S3TreeView import S3TreeView
 
 
 class Interface(QWidget):

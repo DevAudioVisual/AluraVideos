@@ -14,10 +14,13 @@ class MenuBar():
       
     def Arquivo(self):
       self.visualizar_menu = self.menubar.addMenu("Arquivo")
+      self.atalhos_action = QAction(QIcon(r"Assets\Icons\shortcut.ico"), "Atalhos (Em breve)", self.MainWindow)
       self.logs_action = QAction(QIcon(r"Assets\Images\logs.png"), "Logs", self.MainWindow)
       self.repositorion_action = QAction(QIcon(r"Assets\Icons\github.ico"), "Repositório", self.MainWindow)
       self.notion_action = QAction(QIcon(r"Assets\Icons\notion.ico"), "Documentação", self.MainWindow)
       self.preferences_action = QAction(QIcon(r"Assets\Icons\config.ico"), "Preferências", self.MainWindow)
+      
+      self.visualizar_menu.addAction(self.atalhos_action)
       self.visualizar_menu.addAction(self.logs_action)
       self.visualizar_menu.addAction(self.repositorion_action)
       self.visualizar_menu.addAction(self.notion_action)
@@ -25,6 +28,8 @@ class MenuBar():
       self.visualizar_menu.addAction(self.preferences_action)
       
 
+      #self.atalhos_action.triggered.connect(self.MainWindow.mostrar_atalhos)
+      
       self.logs_action.triggered.connect(lambda: webbrowser.open(os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos", "Logs")) ) 
       self.repositorion_action.triggered.connect(lambda: webbrowser.open("https://github.com/DevAudioVisual/AluraVideos"))
       self.notion_action.triggered.connect(lambda: webbrowser.open("https://www.notion.so/grupoalura/AluraVideos-8589d6eab57744b7a9ccf4080c0b6bca?pvs=25"))

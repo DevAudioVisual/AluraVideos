@@ -1,13 +1,17 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QProgressBar,QVBoxLayout
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from Config import LoadConfigs
-from Models.AutoUpdate import AutoUpdate
-from QtInterfaces.ExtensõesPPRO.InterfaceExtensoes import GitRequest
+from Models.Atalhos.Atalhos import TeclasAtalho
+from WebSocket import WebSocket
 global Config
 
 versao_effector = None
 versao_ordinem = None
 versao_notabillity = None
+
+notes_effector = None
+notes_ordinem = None
+notes_notability = None
 
 class LoadingScreen(QWidget):
     def __init__(self):
@@ -61,8 +65,10 @@ class LoadingThread(QThread):
         super().__init__()
         self.processos = [
             #self.carregar_tensorflow,
+            self.carregar_web_socket,
             self.carregar_configs,
             self.verificar_atualizacoes,
+            #self.carregar_atalhos,
             #self.versoes_extensões_ppro
         ]
         
@@ -72,7 +78,16 @@ class LoadingThread(QThread):
             progress = int((i + 1) / total_steps * 100)
             processo()
             self.progress_updated.emit(progress)
-
+    def carregar_atalhos(self):
+        self.etapa.emit("Carregando teclas de atalho")
+        TeclasAtalho().registrarAtalhos()
+        QThread.msleep(500)
+            
+    def carregar_web_socket(self):
+        self.etapa.emit("Iniciando Web Sockets")
+        WebSocket.startServer()
+        QThread.msleep(500)
+        
     def carregar_configs(self):
         self.etapa.emit("Carregando configurações")
         LoadConfigs.Config = LoadConfigs.Configs()
@@ -89,13 +104,5 @@ class LoadingThread(QThread):
         self.execute_in_main_thread.emit(self.verificar_atualizacoes) 
         QThread.msleep(500)
         
-    def versoes_extensões_ppro(self):
-        self.etapa.emit("Verificando extensões PPRO")
-        global versao_effector,versao_ordinem,versao_notability
-        versao_effector = f"Download Effector V{GitRequest("Effector").initRequest()}"
-        versao_ordinem = f"Download Ordinem V{GitRequest("Ordinem").initRequest()}"
-        versao_notability = f"Download Notability V{GitRequest("Notability").initRequest()}"  
-        QThread.msleep(500) 
-    
 
         

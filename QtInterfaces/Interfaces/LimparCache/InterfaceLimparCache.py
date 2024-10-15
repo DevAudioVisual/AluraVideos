@@ -79,6 +79,7 @@ class Interface(QWidget):
         layout.addWidget(label,0,0)
         
         self.checkbox_vars = []
+        self.checkbox_dict = {}
         self.Pastas = LoadConfigs.Config.getDataFrame("ConfigCache")
         row = 1
         for key, criar in self.Pastas['Pastas'].iloc[0].items():
@@ -86,7 +87,9 @@ class Interface(QWidget):
             check = QCheckBox(key)
             check.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             check.setChecked(bool(criar))
+            check.clicked.connect(self.updateConfig)
             self.checkbox_vars.append(check)
+            self.checkbox_dict[key] = check
             check.clicked.connect(self.update_selected_keys)
             layout.addWidget(check,row,0)
             
@@ -103,6 +106,16 @@ class Interface(QWidget):
         layout.addWidget(botaoLimpar,row,0)
         
         self.setLayout(layout)
+        
+    def updateConfig(self):
+        config = LoadConfigs.Config.getConfigData("ConfigCache")
+        
+        pastas = {}
+        for pasta, var in self.checkbox_dict.items():
+            pastas[pasta] = var.isChecked()
+        config["Pastas"] = [pastas]
+                
+        LoadConfigs.Config.saveConfigDict("ConfigCache",config)    
         
     def update_selected_keys(self):
         for checks in self.checkbox_vars:
@@ -127,8 +140,8 @@ class Interface(QWidget):
             pastas.append(self.get_temp_dir())
           if p == "Prefetch":
             pastas.append("C:\\Windows\\Prefetch")
-          #if p == "Adobe Cache":
-            #pastas.append(LoadConfigs.Config.getConfigData("ConfigCache","Cache_Adobe"))
+          if p == "Adobe Cache":
+            pastas.append(LoadConfigs.Config.getConfigData("ConfigCache","Cache_Adobe"))
           if p == "Lixeira":
             pastas.append("Lixeira")
 

@@ -1,16 +1,16 @@
 import os
 from re import S
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QSpacerItem, QToolBar, QSizePolicy,QWidget, QPushButton,QStackedWidget,QToolButton,QMessageBox
-from PyQt6.QtGui import QIcon, QAction,QPixmap
+from PyQt6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton,QStackedWidget,QToolButton     
+from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt, QTranslator
-from winotify import Notification, audio
 from Config import LoadConfigs
 from Models.SystemTray import SystemTrayIcon
-from QtInterfaces.Home.Home import Interface
-from QtInterfaces.Preferencias import InterfacePreferencias
-from QtInterfaces.ExtensõesPPRO import InterfaceExtensoes
-from QtInterfaces.MainWindow.MenuBar import MenuBar
-from QtInterfaces.MainWindow.Tabs import Tabs
+from QtInterfaces.Interfaces.Atalhos import InterfaceAtalhos
+from QtInterfaces.Interfaces.Home.Home import Interface
+from QtInterfaces.Interfaces.Preferencias import InterfacePreferencias
+from QtInterfaces.Interfaces.ExtensõesPPRO import InterfaceExtensoes
+from QtInterfaces.Interfaces.MainWindow.MenuBar import MenuBar
+from QtInterfaces.Interfaces.MainWindow.Tabs import Tabs
 from Util import Util
 
 global main_window
@@ -45,8 +45,9 @@ class MainWindow(QMainWindow):
         if not os.path.exists(tokens) or not os.path.exists(key):
             return
         
-        self.extensoes = InterfaceExtensoes.Interface()
+        self.extensoes = None
         self.config = InterfacePreferencias.Interface()
+        self.atalhos = InterfaceAtalhos.Interface()
         self.menubar = MenuBar(self)  # Criar a instância de MenuBar
         self.tabs = Tabs(self.menubar)  # Passar a instância de MenuBar para Tabs
         
@@ -56,33 +57,37 @@ class MainWindow(QMainWindow):
         
         self.stacked_widget.addWidget(self.tabs)
         self.stacked_widget.addWidget(self.config)
-        self.stacked_widget.addWidget(self.extensoes)
+        self.stacked_widget.addWidget(self.atalhos)
+        
+        if Util.verificar_premiere_pro():
+            self.extensoes = InterfaceExtensoes.Interface()
+            self.stacked_widget.addWidget(self.extensoes)
         
         
         SystemTrayIcon.SystemTrayIcon(self)
         #AutoUpdate.app().check_updates()
 
     def closeEvent(self, event):
-        if self.isHidden(): QApplication.quit()
-        reply = QMessageBox.question(self, "Fechar",
-            "Minimizar para a bandeja do sistema?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.Yes)
+        # if self.isHidden(): QApplication.quit()
+        # reply = QMessageBox.question(self, "Fechar",
+        #     "Minimizar para a bandeja do sistema?",
+        #     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        #     QMessageBox.StandardButton.Yes)
 
-        if reply == QMessageBox.StandardButton.Yes:
-            self.hide()
-            toast = Notification(app_id="AluraVideos",
-                         title="AluraVideos",
-                         msg="AluraVideos está rodando em segundo plano",
-                         icon=r"Assets\Icons\icon.ico",
-                         duration="long")
-            # Define um som para a notificação
-            toast.set_audio(audio.LoopingAlarm, loop=False)
+        # if reply == QMessageBox.StandardButton.Yes:
+        #     self.hide()
+        #     toast = Notification(app_id="AluraVideos",
+        #                  title="AluraVideos",
+        #                  msg="AluraVideos está rodando em segundo plano",
+        #                  icon=r"Assets\Icons\icon.ico",
+        #                  duration="long")
+        #     # Define um som para a notificação
+        #     toast.set_audio(audio.LoopingAlarm, loop=False)
             
-            toast.show()
-            event.ignore()  # Impede o fechamento da aplicação
-        else:
-            event.accept()  # Fecha a aplicação
+        #     toast.show()
+        #     event.ignore()  # Impede o fechamento da aplicação
+        # else:
+        #     event.accept()  # Fecha a aplicação
         try:
             data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
             data['barra_lateral_pequena'] = self.barra_pequena
@@ -193,6 +198,9 @@ class MainWindow(QMainWindow):
 
     def mostrar_configuracoes(self):
         self.stacked_widget.setCurrentWidget(self.config)
+        
+    def mostrar_atalhos(self):
+        self.stacked_widget.setCurrentWidget(self.atalhos)
         
     def mostrar_extensoes(self):
         self.stacked_widget.setCurrentWidget(self.extensoes)

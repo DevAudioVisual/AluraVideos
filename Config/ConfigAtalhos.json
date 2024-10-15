@@ -1,8 +1,12 @@
 {
   "TeclasDeAtalho": false,
-  "IniciarLimpeza": "ctrl+alt+l",
-  "BuscarImagens": "ctrl+alt+i",
-  "Fechar": "ctrl+alt+f",
-  "Mostrar": "ctrl+alt+s",
-  "Esconder": "ctrl+alt+h"
+  "Geral: Limpar Cache": "",
+  "Geral: Mostrar": "",
+  "Geral: Esconder": "",
+  "Geral: Fechar": "",
+  "Premiere: Vinheta": "ctrl+a",
+  "Premiere: Transicao Curta": "ctrl+c",
+  "Premiere: Transicao Longa": "ctrl+v",
+  "Premiere: Lower Third": "ctrl+b",
+  "Premiere: Palavra Chave": "ctrl+d"
 }

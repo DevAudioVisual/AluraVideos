@@ -1,10 +1,10 @@
-from PyQt6.QtWidgets import QVBoxLayout, QTabWidget,QMenu
+from PyQt6.QtWidgets import QTabWidget,QMenu
 from Config import LoadConfigs
-from QtInterfaces.ImagensPixaBay import ImagensPixabay
-from QtInterfaces.LimparCache import InterfaceLimparCache
-from QtInterfaces.ProjectCreator import InterfaceProjectCreator
-from QtInterfaces.Renamer import InterfaceRenamer
-from QtInterfaces.S3 import InterfaceS3
+from QtInterfaces.Interfaces.ImagensPixaBay import ImagensPixabay
+from QtInterfaces.Interfaces.LimparCache import InterfaceLimparCache
+from QtInterfaces.Interfaces.ProjectCreator import InterfaceProjectCreator
+from QtInterfaces.Interfaces.Renamer import InterfaceRenamer
+from QtInterfaces.Interfaces.S3 import InterfaceS3
 from PyQt6.QtGui import QAction
 
 class Tabs(QTabWidget):

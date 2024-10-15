@@ -1,6 +1,6 @@
 import re
 import threading
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QCheckBox,QFileDialog, QMessageBox,QStackedWidget,QVBoxLayout,QGroupBox,QToolButton
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QCheckBox,QFileDialog, QMessageBox,QStackedWidget,QVBoxLayout,QGroupBox
 from PyQt6.QtCore import Qt,QTimer
 from PyQt6.QtGui import QIcon, QCursor, QAction
 from bs4 import BeautifulSoup
@@ -9,7 +9,7 @@ from unidecode import unidecode
 import requests
 from Config import LoadConfigs
 from Models.CriarProjeto import CriarProjeto
-from QtInterfaces.MainWindow import MainWindow
+from QtInterfaces.Interfaces.MainWindow import MainWindow
 global Config
 
 class Interface(QWidget):
@@ -63,6 +63,7 @@ class Interface(QWidget):
             if file_name:
                 print(f"Pasta selecionado: {file_name}")
                 self.campo_dir.setText(rf"{file_name}")
+                self.updateConfig()
         dir_action.triggered.connect(open_folder_dialog)
         
         label_videos = QLabel("Arquivo de vídeos (Arquivo ZIP ou URL)")
@@ -94,14 +95,17 @@ class Interface(QWidget):
         self.group_processos.setLayout(self.layout_processos)
         
         self.check_AbrirPremiere = QCheckBox("Abrir Premiere ao finalizar")
+        self.check_AbrirPremiere.clicked.connect(self.updateConfig)
         self.check_AbrirPremiere.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.check_AbrirPremiere.setChecked(bool(checks_vars["Abrir_Premiere"]))
         
         self.check_AbrirPasta = QCheckBox("Abrir pasta do projeto ao finalizar")
+        self.check_AbrirPasta.clicked.connect(self.updateConfig)
         self.check_AbrirPasta.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.check_AbrirPasta.setChecked(bool(checks_vars["Abrir_pasta_do_projeto"]))
         
         self.check_FecharAoCriar = QCheckBox("Fechar ao criar")
+        self.check_FecharAoCriar.clicked.connect(self.updateConfig)
         self.check_FecharAoCriar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.check_FecharAoCriar.setChecked(bool(self.config["fechar_ao_criar"]))
         
@@ -143,6 +147,7 @@ class Interface(QWidget):
             checkbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             self.subpasta_vars[subpasta] = checkbox
             checkbox.setChecked(bool(criar))
+            checkbox.clicked.connect(self.updateConfig)
             layoutSubpastas.addWidget(checkbox,row,coluna_atual)
             row += 1
             if row == 3:
@@ -153,7 +158,22 @@ class Interface(QWidget):
         layout.addWidget(self.BotaoCriar,15,0,2,2) 
 
         return layout
+    def updateConfig(self):
+        config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
         
+        config["fechar_ao_criar"] = self.check_FecharAoCriar.isChecked()
+        config["checks"] = [{
+                "Abrir_Premiere": self.check_AbrirPremiere.isChecked(),
+                "Abrir_pasta_do_projeto": self.check_AbrirPasta.isChecked()
+                }]   
+        subpastas = {}
+        for subpasta, var in self.subpasta_vars.items():
+            subpastas[subpasta] = var.isChecked()
+        config["subpastas"] = [subpastas]
+        
+        config["diretorio_padrao"] = self.campo_dir.text()
+                
+        LoadConfigs.Config.saveConfigDict("ConfigCriarProjeto",config)
     def create(self):
       CriarProjeto.ProjectCreator(self.campo_videos,
                                   self.campo_nome,

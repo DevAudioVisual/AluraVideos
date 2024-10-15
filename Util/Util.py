@@ -7,13 +7,42 @@ import sys
 from tkinter import messagebox
 from urllib.parse import urlparse
 import unicodedata
+import winreg
 
 # version = x.y.z
 # x = major
 # y = minor
 # z = path
 
-version = "V1.0.0"
+version = "V1.0.1"
+
+def verificar_premiere_pro():
+        """Verifica se o Adobe Premiere Pro está instalado no computador."""
+        try:
+            # Caminho da chave do registro para o Adobe Premiere Pro
+            caminho_chave = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+            
+            # Abre a chave do registro
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, caminho_chave) as chave:
+                # Itera sobre as subchaves
+                for i in range(winreg.QueryInfoKey(chave)[0]):
+                    try:
+                        # Obtém o nome da subchave
+                        nome_subchave = winreg.EnumKey(chave, i)
+                        
+                        # Abre a subchave
+                        with winreg.OpenKey(chave, nome_subchave) as subchave:
+                            # Verifica se o nome do programa é "Adobe Premiere Pro"
+                            nome_programa = winreg.QueryValueEx(subchave, "DisplayName")[0]
+                            if "adobe" in nome_programa.lower():
+                                return True
+                    except:
+                        pass
+            return False
+        except Exception as e:
+            print(f"Erro ao verificar a instalação do Premiere Pro: {e}")
+            return False
+
 
 def reabrir():
     try:

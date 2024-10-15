@@ -4,10 +4,10 @@ import os
 import signal
 import threading
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QLocale
+from PyQt6.QtCore import QLocale,QThread
 from Models.AutoUpdate import AutoUpdate
-from QtInterfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
-from QtInterfaces.MainWindow import MainWindow
+from QtInterfaces.Interfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
+from QtInterfaces.Interfaces.MainWindow import MainWindow
 import ctypes
 import sys
 import os
@@ -25,13 +25,12 @@ def run_as_admin():
         # Executa o script novamente como administrador, mas sem abrir o CMD
         params = ' '.join([f'"{arg}"' for arg in sys.argv])  # Junta os argumentos com aspas
         # Usar o comando ShellExecuteW com a flag 'runas' para privilégios administrativos
-        ctypes.windll.shell32.ShellExecuteW(
-            None, "runas", executable, params, None, 1)      
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, params, None, 1)      
         # Encerra o script atual, pois ele será reexecutado com privilégios elevados
         sys.exit()
 
 def main():
-    run_as_admin()
+    #run_as_admin()
     setup_signal_handlers()
     setup_logging()
     
@@ -39,7 +38,7 @@ def main():
     app.setStyle("Windows")
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
-    with open(r"Assets\styles\style.qss", "r") as f:
+    with open(r"QtInterfaces\Styles\style.qss", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)
 
