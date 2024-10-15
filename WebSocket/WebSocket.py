@@ -18,7 +18,7 @@ async def enviar_mensagem(uri, mensagem):
 def startServer():
     websocket_server = WebSocketServer()
     websocket_server.start()
-    keyboard.add_hotkey('ctrl+alt+s', lambda: asyncio.run(enviar_mensagem("ws://localhost:8765", "executar_funcao_js")))
+    keyboard.add_hotkey('ctrl+alt+shift+x', lambda: asyncio.run(enviar_mensagem("ws://localhost:8765", "executar_funcao_js")))
 
 
 class WebSocketServer(QThread):
