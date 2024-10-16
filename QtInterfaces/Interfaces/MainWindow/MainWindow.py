@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton,QSt
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt, QTranslator
 from Config import LoadConfigs
-from Models.Atalhos.Atalhos import TeclasAtalho
 from Models.SystemTray import SystemTrayIcon
 from QtInterfaces.Interfaces.Atalhos import InterfaceAtalhos
 from QtInterfaces.Interfaces.Home.Home import Interface
@@ -25,7 +24,7 @@ def create_main_window():
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__() 
-        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)
+        #self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)
         self.setWindowTitle(f'AluraVideos {Util.version}')
         icon = QIcon(r"Assets\Icons\icon.ico")
         self.setWindowIcon(icon)
@@ -64,8 +63,8 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.extensoes)
         
         
-        SystemTrayIcon.SystemTrayIcon(self)
-        TeclasAtalho().registrarAtalhos()
+        #SystemTrayIcon.SystemTrayIcon(self)
+        #TeclasAtalho().registrarAtalhos()
 
     def closeEvent(self, event):
         # if self.isHidden(): QApplication.quit()

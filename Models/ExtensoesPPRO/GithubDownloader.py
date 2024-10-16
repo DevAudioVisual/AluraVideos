@@ -29,8 +29,8 @@ class GithubUpdater:
 
                     # Carrega o YAML e processa a versão
                     dados_yaml = yaml.safe_load(conteudo)
-                    versao_github = dados_yaml.lower()
-                    versao_github = versao_github.replace("Version: ","")
+                    versao_github = str(dados_yaml).lower()
+                    versao_github = str(versao_github).replace("Version: ","")
                     versao_repositorio = str(versao_repositorio).replace("Version: ","")
 
                     if versao_github:

@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton
 from PyQt6.QtCore import Qt,QTimer
 from PyQt6.QtGui import QIcon, QCursor, QAction
 from bs4 import BeautifulSoup
-import pyperclip
 from unidecode import unidecode
 import requests
 from Config import LoadConfigs
@@ -33,8 +32,6 @@ class Interface(QWidget):
 
         self.ultimo_texto = ""
         self.numero = 0
-        #if self.config["monitorar_area_transferencia"] == True:
-            #QTimer.singleShot(1000, self.monitorCopiarDrop)
     
     def layoutPrincipal(self):
         layout = QGridLayout()
@@ -211,14 +208,6 @@ class Interface(QWidget):
         self.update()  # Atualiza a interface explicitamente
     def mensagem(self):
         QMessageBox.information(None,"Info","Link dropbox detectado na área de transferência!\nInserido em criar projeto.")
-    def monitorCopiarDrop(self):
-        if self.campo_videos.text() == "":
-            texto = pyperclip.paste()
-            if texto != self.ultimo_texto and "https://www.dropbox.com" in texto:
-                self.ultimo_texto = texto
-                self.setTextCampoVideos(texto)
-                self.mensagem()
-        QTimer.singleShot(2000, self.monitorCopiarDrop)
 
       
 def obter_nome_pasta(url):

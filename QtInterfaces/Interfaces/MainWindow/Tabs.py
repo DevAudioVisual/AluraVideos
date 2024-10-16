@@ -3,7 +3,7 @@ from Config import LoadConfigs
 from QtInterfaces.Interfaces.ImagensPixaBay import ImagensPixabay
 from QtInterfaces.Interfaces.LimparCache import InterfaceLimparCache
 from QtInterfaces.Interfaces.ProjectCreator import InterfaceProjectCreator
-from QtInterfaces.Interfaces.Renamer import InterfaceRenamer
+from QtInterfaces.Interfaces.Renamer import InterfaceRenamerSheets, InterfaceRenamerTabs
 from QtInterfaces.Interfaces.S3 import InterfaceS3
 from PyQt6.QtGui import QAction
 
@@ -34,7 +34,7 @@ class Tabs(QTabWidget):
             #"PM3": [],
             "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},
             "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"][0]},
-            "Renamer": {InterfaceRenamer.Interface(): self.data["Renamer"][0]},
+            "Renamer": {InterfaceRenamerTabs.Tabs(): self.data["Renamer"][0]},
             #"VideoValidator": {InterfaceVideoValidator.Interface(): self.data["VideoValidator"][0]},
             #"Tarefas": {Tarefas.Interface(): self.data["Tarefas"][0]},
             #"Vimeo": {VimeoInterface.Interface(): self.data["Vimeo"][0]}

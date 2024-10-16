@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QProgressBar,QVBoxLayout
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from Config import LoadConfigs
-from Models.Atalhos.Atalhos import TeclasAtalho
 from WebSocket import WebSocket
 global Config
 
@@ -26,7 +25,7 @@ class LoadingScreen(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
-        self.label = QLabel('Carregando Aluravideos...')
+        self.label = QLabel('Carregando Aluravideos')
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.timer = QTimer(self)
@@ -47,7 +46,7 @@ class LoadingScreen(QWidget):
     def update_text(self):
         self.counter += 1
         if self.counter > 3:
-            self.counter = 1
+            self.counter = 0
         ponto = "." * self.counter
         self.label.setText(f"Carregando Aluravideos{ponto}")
     
@@ -81,28 +80,28 @@ class LoadingThread(QThread):
     def carregar_atalhos(self):
         self.etapa.emit("Carregando teclas de atalho")
         self.execute_in_main_thread2.emit(self.carregar_atalhos) 
-        QThread.msleep(500)
+        #QThread.msleep(500)
             
     def carregar_web_socket(self):
         self.etapa.emit("Iniciando Web Sockets")
         WebSocket.startServer()
-        QThread.msleep(500)
+        #QThread.msleep(500)
         
     def carregar_configs(self):
         self.etapa.emit("Carregando configurações")
         LoadConfigs.Config = LoadConfigs.Configs()
         LoadConfigs.Config.firtLoad()  # Corrigido: firstLoad
-        QThread.msleep(500)
+        #QThread.msleep(500)
 
     def carregar_tensorflow(self):
         self.etapa.emit("Inicializando TensorFlow")
-        import tensorflow as tf 
-        QThread.msleep(500)
+        #import tensorflow as tf 
+        #QThread.msleep(500)
 
     def verificar_atualizacoes(self):
         self.etapa.emit("Buscando por atualizações")
         self.execute_in_main_thread.emit(self.verificar_atualizacoes) 
-        QThread.msleep(500)
+        #QThread.msleep(500)
         
 
         

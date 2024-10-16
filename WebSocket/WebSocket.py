@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtNetwork import QTcpServer, QTcpSocket
 
-class WebSocketServer(QThread):
+class WebSocketServerss(QThread):
     message_received = pyqtSignal(str)
 
     def __init__(self):
