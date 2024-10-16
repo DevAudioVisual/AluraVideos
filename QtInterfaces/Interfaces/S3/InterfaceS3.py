@@ -300,10 +300,11 @@ class Interface(QWidget):
 
 
     # Evento chamado quando uma pasta é expandida
+    # No on_item_expanded
     def on_item_expanded(self, index):
-      item = self.Standardmodel.itemFromIndex(index)
-      if isinstance(item, S3TreeItem) and item.is_folder:
-          item.fetch_children()
+        item = self.Standardmodel.itemFromIndex(index)
+        if isinstance(item, S3TreeItem) and item.is_folder:
+            item.fetch_children()  # Carrega os filhos apenas quando a pasta é expandida
 
                   
     def limpar(self):

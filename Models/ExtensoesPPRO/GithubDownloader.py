@@ -12,7 +12,7 @@ class GithubUpdater:
         self.repositorios = {
             "Ordinem": {"url": "https://api.github.com/repos/DevAudioVisual/Ordinem/contents/version.yml", "versao": versao_atual_ordinem},
             "Effector": {"url": "https://api.github.com/repos/DevAudioVisual/Effector/contents/version.yml", "versao": versao_atual_effector},
-            "Notabillity": {"url": "https://api.github.com/repos/DevAudioVisual/Notability/contents/version.yml", "versao": versao_atual_notabillity}
+            "Notability": {"url": "https://api.github.com/repos/DevAudioVisual/Notability/contents/version.yml", "versao": versao_atual_notabillity}
         }
 
     def verificar_atualizacoes(self):
@@ -29,7 +29,9 @@ class GithubUpdater:
 
                     # Carrega o YAML e processa a versão
                     dados_yaml = yaml.safe_load(conteudo)
-                    versao_github = dados_yaml.get("version")
+                    versao_github = dados_yaml.lower()
+                    versao_github = versao_github.replace("Version: ","")
+                    versao_repositorio = str(versao_repositorio).replace("Version: ","")
 
                     if versao_github:
                         versao_github = version.parse(str(versao_github)) # Converte para string antes de analisar
@@ -44,32 +46,12 @@ class GithubUpdater:
 
         return repositorios_desatualizados # Retorna o dicionário
 
-    def executar_acoes(self):
-        desatualizados = self.verificar_atualizacoes()
-        if desatualizados:
-            print("Os seguintes repositórios estão desatualizados:")
-            for repo, versao in desatualizados.items():
-                print(f"{repo} - Versão disponível: {versao}")
-                if repo == "Ordinem":
-                    # Ações específicas para Ordinem
-                    print("Executando ação para Ordinem...")
-                    # Coloque aqui o código para a ação desejada
-                elif repo == "Effector":
-                    # Ações específicas para Effector
-                    print("Executando ação para Effector...")
-                    # Coloque aqui o código para a ação desejada
-                elif repo == "Notabillity":
-                    # Ações específicas para Notabillity
-                    print("Executando ação para Notabillity...")
-                    # Coloque aqui o código para a ação desejada
-        else:
-            print("Todos os repositórios estão atualizados!")
-
 
 class GithubDownloader:
     def __init__(self, repo_owner, repo_name):
         self.repo_owner = repo_owner
         self.repo_name = repo_name
+        self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
     def VerificarExistente(self,download_path):
         pasta = self.encontrar_pasta_teste(download_path,self.repo_name)
         if pasta:

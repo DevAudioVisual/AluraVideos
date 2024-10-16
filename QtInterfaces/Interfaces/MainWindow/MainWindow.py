@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton,QSt
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt, QTranslator
 from Config import LoadConfigs
+from Models.Atalhos.Atalhos import TeclasAtalho
 from Models.SystemTray import SystemTrayIcon
 from QtInterfaces.Interfaces.Atalhos import InterfaceAtalhos
 from QtInterfaces.Interfaces.Home.Home import Interface
@@ -59,13 +60,12 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.config)
         self.stacked_widget.addWidget(self.atalhos)
         
-        if Util.verificar_premiere_pro():
-            self.extensoes = InterfaceExtensoes.Interface()
-            self.stacked_widget.addWidget(self.extensoes)
+        self.extensoes = InterfaceExtensoes.Interface()
+        self.stacked_widget.addWidget(self.extensoes)
         
         
         SystemTrayIcon.SystemTrayIcon(self)
-        #AutoUpdate.app().check_updates()
+        TeclasAtalho().registrarAtalhos()
 
     def closeEvent(self, event):
         # if self.isHidden(): QApplication.quit()

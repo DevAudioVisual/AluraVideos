@@ -1,16 +1,20 @@
+import asyncio
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
 import signal
 import threading
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QLocale,QThread
+from PyQt6.QtCore import QLocale
+import qtsass
 from Models.AutoUpdate import AutoUpdate
 from QtInterfaces.Interfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
 from QtInterfaces.Interfaces.MainWindow import MainWindow
 import ctypes
 import sys
 import os
+
+from WebSocket.WebSocket import WebSocketServer
 
 def is_admin():
     try:
@@ -38,6 +42,7 @@ def main():
     app.setStyle("Windows")
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
+    qtsass.compile_filename(r'QtInterfaces\Styles\style.scss', r'QtInterfaces\Styles\style.qss')
     with open(r"QtInterfaces\Styles\style.qss", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)
@@ -57,6 +62,13 @@ def main():
     app.aboutToQuit.connect(loading_thread.quit)
 
     loading_thread.start()
+
+    def on_message_received(message):
+        print(f"Mensagem recebida na janela principal: {message}")
+    websocket_server = WebSocketServer()
+    websocket_server.message_received.connect(on_message_received)
+    websocket_server.start()
+
 
     sys.exit(app.exec())
     

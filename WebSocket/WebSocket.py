@@ -1,38 +1,30 @@
-from PyQt6.QtWebSockets import QWebSocketServer,QWebSocket
-from PyQt6.QtNetwork import QHostAddress
-from PyQt6.QtCore import QThread
-import asyncio
-import keyboard
-import websockets
-
-async def enviar_mensagem(uri, mensagem):
-  """Conecta a um servidor WebSocket, envia uma mensagem e fecha a conexão."""
-  async with websockets.connect(uri) as websocket:
-    await websocket.send(mensagem)
-    print(f"Mensagem enviada: {mensagem}")
-
-    # Opcional: Aguardar uma resposta do servidor
-    resposta = await websocket.recv()
-    print(f"Resposta recebida: {resposta}")
-
-def startServer():
-    websocket_server = WebSocketServer()
-    websocket_server.start()
-    keyboard.add_hotkey('ctrl+alt+shift+x', lambda: asyncio.run(enviar_mensagem("ws://localhost:8765", "executar_funcao_js")))
-
+from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtNetwork import QTcpServer, QTcpSocket
 
 class WebSocketServer(QThread):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    message_received = pyqtSignal(str)
 
-    async def handler(self, websocket, path):
-        async for message in websocket:
-            print(f"Mensagem recebida: {message}")
-            await websocket.send(f"Você enviou: {message}")
+    def __init__(self):
+        super().__init__()
+        self.server = QTcpServer()
+        self.server.newConnection.connect(self.on_new_connection)
+
+    def on_new_connection(self):
+        client_socket = self.server.nextPendingConnection()
+        client_socket.readyRead.connect(lambda: self.on_data_received(client_socket))
+        client_socket.disconnected.connect(lambda: self.on_client_disconnected(client_socket))
+
+    def on_data_received(self, client_socket: QTcpSocket):
+        data = client_socket.readAll().data().decode("utf-8")
+        print(f"Mensagem recebida: {data}")
+        self.message_received.emit(data)  # Emite o sinal quando uma mensagem é recebida
+
+    def on_client_disconnected(self, client_socket: QTcpSocket):
+        print("Cliente desconectado")
+        client_socket.deleteLater()
 
     def run(self):
-        async def main():
-            async with websockets.serve(self.handler, "localhost", 8765):
-                await asyncio.Future()  # executa para sempre
-
-        asyncio.run(main())
+        if not self.server.listen(port=8081):  # Porta onde o servidor estará ouvindo
+            print("Erro ao iniciar o servidor:", self.server.errorString())
+        else:
+            print("Servidor WebSocket iniciado na porta 8081")

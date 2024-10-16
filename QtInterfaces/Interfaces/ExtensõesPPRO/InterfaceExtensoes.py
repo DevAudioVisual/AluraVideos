@@ -16,107 +16,108 @@ class Interface(QWidget):
         
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(10, 20, 10, 10)  # Defina as margens desejadas
+        main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         
         layout = QGridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         layout.setContentsMargins(10, 20, 10, 10)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         
-        label = QLabel("Faça download das extensões para o Adobe Premiere pro aqui.")
-        label.setObjectName("grande")
-        
-        global versao_effector,versao_ordinem,versao_notabillity
-        
-        label_effector = QLabel()
-        label_effector.setWordWrap(True)
-        #label_effector.setObjectName("medio")
-        botao_effector = QPushButton(f"{LoadingScreen.versao_effector}")
-        botao_effector.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        label_ordinem = QLabel()
-        label_ordinem.setWordWrap(True)
-        #label_ordinem.setObjectName("medio")
-        botao_ordinem = QPushButton(f"{LoadingScreen.versao_ordinem}")
-        botao_ordinem.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        label_notabillity = QLabel()
-        label_notabillity.setWordWrap(True)
-        #label_notabillity.setObjectName("medio")
-        botao_notabillity = QPushButton(f"{LoadingScreen.versao_notabillity}")
-        botao_notabillity.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        
-        botao_effector.setIcon(QIcon(r"Assets\Icons\download.ico"))
-        botao_ordinem.setIcon(QIcon(r"Assets\Icons\download.ico"))
-        botao_notabillity.setIcon(QIcon(r"Assets\Icons\download.ico"))
-        
-        botao_effector.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        botao_ordinem.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        botao_notabillity.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        
-        download_path = r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions"
-        botao_effector.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Effector").download_sourcecode(download_path))
-        botao_ordinem.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Ordinem").download_sourcecode(download_path))
-        botao_notabillity.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Notability").download_sourcecode(download_path))
-        
-        
-        layout.addWidget(label, 0, 0)
-        layout.addWidget(label_effector, 1, 0)
-        layout.addWidget(botao_effector, 2, 0)
-        layout.addWidget(label_ordinem, 3, 0)
-        layout.addWidget(botao_ordinem, 4, 0)
-        layout.addWidget(label_notabillity, 5, 0)
-        layout.addWidget(botao_notabillity, 6, 0)
-                    
-        main_layout.addLayout(layout)
-
-        # Spacer to push footer to the bottom
-        spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-        main_layout.addItem(spacer)
-        
-        # Footer layout
-        layoutFooter = QVBoxLayout()
-        layoutFooter.setAlignment(Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignHCenter)
-        layoutFooter.setContentsMargins(10, 20, 10, 10)
-        
-        label_footer = QLabel("Criadas por Denis Santos para o time de Vídeos da Alura Online.")
-        label_footer.setObjectName("pequeno-normal")
-        
-        # Add footer label to the footer layout
-        layoutFooter.addWidget(label_footer)
-        
-        # Add footer layout to the main layout at the bottom
-        main_layout.addLayout(layoutFooter)
-        
-        self.setLayout(main_layout)
-        
-        def updateNames():
-            notas_effector, version_effector = GitRequest("Effector").initRequest()
-            notas_ordinem, version_ordinem = GitRequest("Ordinem").initRequest()
-            notas_notabillity, version_notabillity = GitRequest("Notability").initRequest()
+        if not Util.verificar_premiere_pro():
+            label = QLabel("<font color='red'>Adobe Premiere Pro não encontrado.</font>")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
+            label.setObjectName("grande")
+            main_layout.addWidget(label)
+            self.setLayout(main_layout)
+        else:
+            label = QLabel("Faça download das extensões para o Adobe Premiere pro aqui.")
+            label.setObjectName("grande")
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
             
-            botao_effector.setText(f"Download Effector V{version_effector}")
-            botao_ordinem.setText(f"Download Ordinem V{version_ordinem}")
-            botao_notabillity.setText(f"Download Notability V{version_notabillity}")
-
-            versao_atual_ordinem = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Ordinem\version.yml")
-            versao_atual_effector = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Effector\version.yml")
-            versao_atual_notability = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Notability\version.yml")
-            updater = GithubUpdater(versao_atual_ordinem,versao_atual_effector,versao_atual_notability).verificar_atualizacoes()
+            global versao_effector,versao_ordinem,versao_notabillity
             
-            if updater:
-                for repo, versao in updater.items():
-                    if repo == "Effector":
-                        label_effector.setText(f"Atualização disponivel!\nNotas de atualização:\n{notas_effector.replace('- ', '\n-')}")
-                        botao_effector.setText(f"Atualizar Effector {versao}")
 
-                    if repo == "Ordinem": 
-                        label_ordinem.setText(f"Atualização disponivel!\nNotas de atualização:\n{notas_ordinem.replace('- ', '\n-')}")
-                        botao_ordinem.setText(f"Atualizar Ordinem versão {versao}")
- 
-                    if repo == "Notability":                       
-                        label_notabillity.setText(f"Atualização disponivel!\nNotas de atualização:\n{notas_notabillity.replace('- ', '\n-')}")
-                        botao_notabillity.setText(f"Atualizar Notability {versao}")
+            botao_effector = QPushButton(f"{LoadingScreen.versao_effector}")
+            botao_effector.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            botao_ordinem = QPushButton(f"{LoadingScreen.versao_ordinem}")
+            botao_ordinem.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            botao_notabillity = QPushButton(f"{LoadingScreen.versao_notabillity}")
+            botao_notabillity.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            
+            botao_effector.setIcon(QIcon(r"Assets\Icons\download.ico"))
+            botao_ordinem.setIcon(QIcon(r"Assets\Icons\download.ico"))
+            botao_notabillity.setIcon(QIcon(r"Assets\Icons\download.ico"))
+            
+            botao_effector.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+            botao_ordinem.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+            botao_notabillity.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+            
+            download_path = r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions"
+            botao_effector.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Effector").download_sourcecode(download_path))
+            botao_ordinem.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Ordinem").download_sourcecode(download_path))
+            botao_notabillity.clicked.connect(lambda: GithubDownloader("DevAudioVisual","Notability").download_sourcecode(download_path))
+            
+            layout.addWidget(label, 0, 0)
+            #layout.addWidget(label_effector, 1, 0)
+            layout.addWidget(botao_effector, 2, 0)
+            #layout.addWidget(label_ordinem, 3, 0)
+            layout.addWidget(botao_ordinem, 4, 0)
+            #layout.addWidget(label_notabillity, 5, 0)
+            layout.addWidget(botao_notabillity, 6, 0)
                         
-                    
- 
-        threading.Thread(target=updateNames,daemon=True).start()
+            main_layout.addLayout(layout)
+
+            # Spacer to push footer to the bottom
+            spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+            main_layout.addItem(spacer)
+            
+            # Footer layout
+            layoutFooter = QVBoxLayout()
+            layoutFooter.setAlignment(Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignHCenter)
+            layoutFooter.setContentsMargins(10, 20, 10, 10)
+            
+            label_footer = QLabel("Criadas por Denis Santos para o time de Vídeos da Alura Online.")
+            label_footer.setObjectName("pequeno-normal")
+            
+            # Add footer label to the footer layout
+            layoutFooter.addWidget(label_footer)
+            
+            # Add footer layout to the main layout at the bottom
+            main_layout.addLayout(layoutFooter)
+            
+            self.setLayout(main_layout)
+            
+            def updateNames():
+                notas_effector, version_effector = GitRequest("Effector").initRequest()
+                notas_ordinem, version_ordinem = GitRequest("Ordinem").initRequest()
+                notas_notabillity, version_notabillity = GitRequest("Notability").initRequest()
+                
+                botao_effector.setText(f"Download Effector V{version_effector}")
+                botao_ordinem.setText(f"Download Ordinem V{version_ordinem}")
+                botao_notabillity.setText(f"Download Notability V{version_notabillity}")
+
+                versao_atual_ordinem = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Ordinem\version.yml")
+                versao_atual_effector = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Effector\version.yml")
+                versao_atual_notability = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Notability\version.yml")
+                print(versao_atual_ordinem,versao_atual_effector,versao_atual_notability)
+                updater = GithubUpdater(versao_atual_ordinem,versao_atual_effector,versao_atual_notability).verificar_atualizacoes()
+                
+                if updater:
+                    for repo, versao in updater.items():
+                        if repo == "Effector":
+                            if versao_atual_effector != 0:
+                                botao_effector.setText(f"Atualizar Effector V{versao}")
+
+                        if repo == "Ordinem": 
+                            if versao_atual_ordinem != 0:
+                                botao_ordinem.setText(f"Atualizar Ordinem V{versao}")
+    
+                        if repo == "Notability":      
+                            if versao_atual_notability != 0:                 
+                                botao_notabillity.setText(f"Atualizar Notability V{versao}")
+                            
+                        
+            threading.Thread(target=updateNames,daemon=True).start()
 
 
 class GitRequest():
@@ -143,6 +144,6 @@ def versaoAtual(arquivo):
     try:
         with open(arquivo, 'r') as f:
             dados = yaml.safe_load(f)
-            return dados['version']
+            return dados["Version"]
     except FileNotFoundError:
-        return 0.0
+        return 0

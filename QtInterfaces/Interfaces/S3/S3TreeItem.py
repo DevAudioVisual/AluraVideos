@@ -22,31 +22,36 @@ class S3TreeItem(QStandardItem):
     # Carregar o conteúdo da pasta quando ela for expandida
     def fetch_children(self):
         if self.fetched:
-            return  # Se já buscamos os itens, não buscar novamente
+            return
 
-        #print(f"Buscando subitens em {self.full_path} no bucket {self.bucket_name}")
-        
         try:
-            result = self.model.s3_client.list_objects_v2(Bucket=self.bucket_name, Prefix=self.full_path, Delimiter='/')
-            folders = result.get('CommonPrefixes', [])
-            files = result.get('Contents', [])
-
+            paginator = self.model.s3_client.get_paginator('list_objects_v2')
+            page_iterator = paginator.paginate(Bucket=self.bucket_name, Prefix=self.full_path, Delimiter='/')
+            
             # Remover o item filho "falso"
             self.removeRows(0, self.rowCount())
 
-            # Adicionar subpastas
-            for folder in folders:
-                folder_name = folder['Prefix'].split('/')[-2]  # Extrair o nome da subpasta
-                folder_item = S3TreeItem(folder_name, True, self.bucket_name, folder['Prefix'], self.model)
-                self.appendRow(folder_item)
+            # Iterar por todas as páginas do paginator
+            for page in page_iterator:
+                folders = page.get('CommonPrefixes', [])
+                files = page.get('Contents', [])
 
-            # Adicionar arquivos
-            for file in files:
-                if file['Key'] != self.full_path:  # Ignorar o próprio prefixo
-                    file_name = file['Key'].split('/')[-1]
-                    file_item = S3TreeItem(file_name, False, self.bucket_name, file['Key'], self.model)
-                    self.appendRow(file_item)
+                # Adicionar subpastas
+                for folder in folders:
+                    folder_name = folder['Prefix'].split('/')[-2]
+                    folder_item = S3TreeItem(folder_name, True, self.bucket_name, folder['Prefix'], self.model)
+                    self.appendRow(folder_item)
 
-            self.fetched = True  # Marcar como "fetch" realizado
+                # Adicionar arquivos
+                for file in files:
+                    if file['Key'] != self.full_path:
+                        file_name = file['Key'].split('/')[-1]
+                        file_item = S3TreeItem(file_name, False, self.bucket_name, file['Key'], self.model)
+                        self.appendRow(file_item)
+
+            # Se passou por todas as páginas com sucesso, marque como "fetched"
+            self.fetched = True
+
         except Exception as e:
             print(f"Erro ao buscar subitens da pasta {self.full_path}: {e}")
+

@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap');
+
+* {
+  font-family: "Helvetica", "Inter", sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+$cor_background: #4C3BCF;
+$cor_texto: #6c757d;
+$cor_hover: #4B70F5;
+
+@mixin botoes_clicaveis() {
+  background-color: $cor_background;
+  color: white;
+  border-radius: 7px;
+  padding: 5px 10px;
+  min-width: 6em;
+  font-size: 12px;
+  &:hover{
+    background-color: $cor_hover;
+  }
+}
+@mixin labels($fonte, $tamanho, $weight) {
+  color: white;
+  font-family: $fonte, Helvetica, Arial, sans-serif;
+  font-size: $tamanho;
+  font-weight: $weight;
+  padding: 10px 0
+}
+QLabel { 
+  @include labels("Helvetica Neue", 12px, bold);
+  
+  &#extra-grande { @include labels("Chakra Petch", 30px, bold); }
+  &#grande { @include labels("Chakra Petch", 25px, bold); }
+  &#medio { @include labels("Helvetica Neue", 15px, bold); }
+  &#medio-normal { @include labels("Helvetica Neue", 15px, normal); }
+  &#pequeno { @include labels("Helvetica Neue", 12px, bold); }
+  &#pequeno-normal { @include labels("Helvetica Neue", 12px, normal); }
+}
+
+QPushButton,QComboBox {@include botoes_clicaveis();}
+
+QComboBox:editable {
+  color: white;
+  background: teal;
+}
+
+QProgressBar {  /* Agrupando estilos de QProgressBar */
+  border: 2px solid grey;
+  border-radius: 5px;
+  text-align: center;
+}
+QProgressBar::chunk {
+  background-color: $cor_background;
+  width: 10px;
+  margin: 0.5px;
+}
+
+QMenu {  /* Agrupando estilos de QMenu */
+  background-color: rgb(66, 66, 66);
+  margin: 2px;
+}
+QMenu::item {
+  padding: 2px 25px 2px 20px;
+  border: 1px solid transparent;
+  background-color: transparent;
+}
+QMenu::item:selected { background-color: $cor_hover; }
+QMenu::indicator {
+  width: 13px;
+  height: 13px;
+}
+
+QMenuBar {  /* Agrupando estilos de QMenuBar */
+  background-color: transparent;
+  spacing: 3px;
+}
+QMenuBar::item {
+  padding: 1px 4px;
+  background: transparent;
+  border-radius: 4px;
+}
+QMenuBar::item:hover, QMenuBar::item:selected { background-color: $cor_hover; } 
+QMenuBar::item:pressed { background: $cor_background; }
+
+QToolBar {
+  background-color: teal;
+  width: 100%;
+  padding: 5px;
+}
+
+QToolButton {  /* Agrupando estilos de QToolButton */
+  float: left;
+  border-radius: 6px;
+  padding: 5px;
+  width: 100%;
+}
+QToolButton[active="true"], QToolButton:hover { background-color: $cor_hover; }
+
+QLineEdit {  /* Agrupando estilos de QLineEdit */
+  border-radius: 7px;
+  padding: 5px 10px;
+  background-color: rgb(66, 66, 66);
+}
+QLineEdit:focus { selection-background-color: $cor_hover; }
+
+QTabBar::scroller { /* the width of the scroll buttons */
+  width: 20px;
+}
+QTabWidget::tab-bar { left: 5px; } /* move to the right by 5px */
+
+QTabBar::tab {  /* Agrupando estilos de QTabBar */
+  background: transparent;
+  border-radius: 3px;
+  min-width: 8ex;
+  padding: 3px;
+  margin-left: 3px;
+}
+QTabBar::tab:selected, QTabBar::tab:hover { 
+  background: $cor_hover; 
+}
+
+QToolTip {
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: $cor_texto;
+}
+
+QTreeView {  /* Agrupando estilos de QTreeView */
+  show-decoration-selected: 1;
+}
+QTreeView::item:hover { background: $cor_hover; }
+QTreeView::item:selected { background-color: $cor_background; }
+
+QDateEdit { width: 85px; }

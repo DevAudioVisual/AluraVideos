@@ -60,12 +60,12 @@ class LoadingThread(QThread):
     progress_updated = pyqtSignal(int)
     etapa = pyqtSignal(str)
     execute_in_main_thread = pyqtSignal(object) 
-
+    execute_in_main_thread2 = pyqtSignal(object) 
     def __init__(self):
         super().__init__()
         self.processos = [
             #self.carregar_tensorflow,
-            self.carregar_web_socket,
+            #self.carregar_web_socket,
             self.carregar_configs,
             self.verificar_atualizacoes,
             #self.carregar_atalhos,
@@ -80,7 +80,7 @@ class LoadingThread(QThread):
             self.progress_updated.emit(progress)
     def carregar_atalhos(self):
         self.etapa.emit("Carregando teclas de atalho")
-        TeclasAtalho().registrarAtalhos()
+        self.execute_in_main_thread2.emit(self.carregar_atalhos) 
         QThread.msleep(500)
             
     def carregar_web_socket(self):

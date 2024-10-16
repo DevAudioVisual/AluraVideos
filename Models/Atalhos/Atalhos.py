@@ -1,13 +1,17 @@
+import asyncio
 import threading
 import keyboard
+import socketio
+import websockets
 from Config import LoadConfigs
 from Util import Util
+from PyQt6.QtCore import QThread, pyqtSignal
 from WebSocket import WebSocket
 
 class TeclasAtalho():
     def __init__(self):
         super().__init__()
-        
+        self.sio = socketio.Client()
     def registrarAtalhos(self):
         atalho = LoadConfigs.Config.getConfigData("ConfigAtalhos")
         if atalho["TeclasDeAtalho"] != True:
@@ -33,13 +37,20 @@ class TeclasAtalho():
                     print(f"Atalho: {atalhos} registrado com o comando: {teclas}")
                 else: print(f"Atalho: {atalhos} não registrado")
             except Exception as e:
-                Util.LogError("Atalho",f"Ocorreu um erro ao atribuir o atalho: {atalhos}")            
+                Util.LogError("Atalho",f"Ocorreu um erro ao atribuir o atalho: {atalhos}")                       
 
-    
+    async def send_trigger_to_node(self, trigger):
+        uri = "ws://localhost:8081"  # Endereço do servidor WebSocket
+
+        try:
+            async with websockets.connect(uri) as websocket:
+                await websocket.send("executar_acao")
+                print("Gatilho enviado ao Node.js!")
+        except Exception as e:
+            print(f"Erro ao enviar o gatilho: {e}")
         
-    def atalhoPremiere(self,atalho):
-        global server
-        WebSocket.server.sendMessageToAll(atalho)
+    def atalhoPremiere(self, trigger):
+        asyncio.run(self.send_trigger_to_node(trigger))
         
     def Mostrar(self):
         return
@@ -57,7 +68,22 @@ class TeclasAtalho():
         thread.daemon = True
         thread.start()  
 
+       
+class WebSocketServer(QThread):
+    trigger_received = pyqtSignal(str)
 
+    async def handler(self, websocket, path):
+        message = await websocket.recv()
+        print(f"Mensagem recebida do cliente WebSocket: {message}")
+        self.trigger_received.emit(message)  # Emite um sinal quando o trigger é recebido
 
-            
-            
+    async def start_server(self):
+        async with websockets.serve(self.handler, "localhost", 8081):
+            await asyncio.Future()  # Mantém o servidor rodando
+
+    def run(self):
+        # Inicializa o loop do asyncio na thread separada
+        print("######### Iniciando servidor WebSocket")
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(self.start_server())

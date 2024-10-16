@@ -56,12 +56,12 @@ class Interface(QWidget):
             layoutPrincipal.addWidget(self.campo_tokens)
             layoutPrincipal.addWidget(salvar)
         else:  
-            label_desc = QLabel("AluraVideos é um software desenvolvido por Samuel Mariano para o time de AudioVisual da Alura Online. Cujo seu principal objetivo é otimizar e automatizar processos do dia-dia.")
+            label_desc = QLabel("\n\nAluraVideos é um software desenvolvido por Samuel Mariano para o time de AudioVisual da Alura Online. Cujo seu principal objetivo é otimizar e automatizar processos do dia-dia.")
             label_desc.setWordWrap(True)
             label_desc.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label_desc.setObjectName("medio-normal")
             
-            label_ajuda = QLabel("Precisa de ajuda? Acesse a nossa documentação oficial e obtenha algumas dicas! xD")
+            label_ajuda = QLabel("\nPrecisa de ajuda? Acesse a nossa documentação oficial e obtenha algumas dicas! xD\n")
             label_ajuda.setWordWrap(True)
             label_ajuda.setAlignment(Qt.AlignmentFlag.AlignCenter)
             label_ajuda.setObjectName("medio")
