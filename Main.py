@@ -1,4 +1,3 @@
-import asyncio
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import os
@@ -11,7 +10,9 @@ from QtInterfaces.Interfaces.LoadingScreen.LoadingScreen import LoadingScreen, L
 from QtInterfaces.Interfaces.MainWindow import MainWindow
 import ctypes
 import sys
+import qtsass
 import os
+from Util import Tokens
 
 def is_admin():
     try:
@@ -21,13 +22,9 @@ def is_admin():
 
 def run_as_admin():
     if not is_admin():
-        # Obter o caminho completo do executável do Python
         executable = sys.executable
-        # Executa o script novamente como administrador, mas sem abrir o CMD
-        params = ' '.join([f'"{arg}"' for arg in sys.argv])  # Junta os argumentos com aspas
-        # Usar o comando ShellExecuteW com a flag 'runas' para privilégios administrativos
+        params = ' '.join([f'"{arg}"' for arg in sys.argv])
         ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, params, None, 1)      
-        # Encerra o script atual, pois ele será reexecutado com privilégios elevados
         sys.exit()
 
 def main():
@@ -36,10 +33,11 @@ def main():
     setup_logging()
     
     app = QApplication(sys.argv) 
-    app.setStyle("Windows")
+    #app.setStyle("Windows")
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
-    #qtsass.compile_filename(r'QtInterfaces\Styles\style.scss', r'QtInterfaces\Styles\style.qss')
+    
+    qtsass.compile_filename(r'style.scss', r'style.qss')
     with open(r"style.qss", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)
@@ -51,7 +49,10 @@ def main():
 
     loading_thread.progress_updated.connect(loading_screen.update_progress)
     loading_thread.etapa.connect(loading_screen.update_etapa)
-    loading_thread.execute_in_main_thread.connect(lambda: AutoUpdate.app().check_updates())  
+    def _updates():
+        if Tokens.LoadKeys():
+            AutoUpdate.app().check_updates()
+    loading_thread.execute_in_main_thread.connect(lambda: _updates())  
     loading_thread.finished.connect(loading_screen.close)
     loading_thread.finished.connect(MainWindow.create_main_window)
 

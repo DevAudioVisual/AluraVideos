@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap");
 * {
-  font-family: "Helvetica", "Inter", sans-serif;
+  font-family: "Helvetica Neue", "Inter", sans-serif;
   font-weight: bold;
   font-size: 12px; }
 
@@ -51,8 +51,7 @@ QPushButton, QComboBox {
   background-color: #4C3BCF;
   color: white;
   border-radius: 7px;
-  padding: 5px 10px;
-  min-width: 6em;
+  padding: 7px 12px;
   font-size: 12px; }
   QPushButton:hover, QComboBox:hover {
     background-color: #4B70F5; }
@@ -122,12 +121,14 @@ QToolButton[active="true"], QToolButton:hover {
 
 QLineEdit {
   /* Agrupando estilos de QLineEdit */
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 5px 10px;
+  border: 2px solid #424242;
   background-color: #424242; }
 
-QLineEdit:focus {
-  selection-background-color: #4B70F5; }
+QLineEdit:focus, QLineEdit:hover {
+  selection-background-color: #4B70F5;
+  border-color: #4B70F5; }
 
 QTabBar::scroller {
   /* the width of the scroll buttons */
@@ -166,3 +167,22 @@ QTreeView::item:selected {
 
 QDateEdit {
   width: 85px; }
+
+QSlider::groove:horizontal {
+  border: 1px;
+  border-radius: 10px;
+  background: #424242; }
+
+QSlider::groove:horizontal:hover {
+  border-color: #4B70F5; }
+
+QSlider::handle:horizontal {
+  background: #4C3BCF;
+  border: 1px solid #4C3BCF;
+  border-radius: 5px;
+  width: 13px;
+  height: 20px; }
+
+QSlider::handle:horizontal:hover {
+  border: 1px solid #4B70F5;
+  background: #4B70F5; }

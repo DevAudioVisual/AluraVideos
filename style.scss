@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap');
 
 * {
-  font-family: "Helvetica", "Inter", sans-serif;
+  font-family: "Helvetica Neue", "Inter", sans-serif;
   font-weight: bold;
   font-size: 12px;
 }
@@ -14,8 +14,7 @@ $cor_hover: #4B70F5;
   background-color: $cor_background;
   color: white;
   border-radius: 7px;
-  padding: 5px 10px;
-  min-width: 6em;
+  padding: 7px 12px;
   font-size: 12px;
   &:hover{
     background-color: $cor_hover;
@@ -99,11 +98,15 @@ QToolButton {  /* Agrupando estilos de QToolButton */
 QToolButton[active="true"], QToolButton:hover { background-color: $cor_hover; }
 
 QLineEdit {  /* Agrupando estilos de QLineEdit */
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 5px 10px;
+  border: 2px solid rgb(66, 66, 66);
   background-color: rgb(66, 66, 66);
 }
-QLineEdit:focus { selection-background-color: $cor_hover; }
+QLineEdit:focus, QLineEdit:hover { 
+  selection-background-color: $cor_hover; 
+  border-color: $cor_hover;
+}
 
 QTabBar::scroller { /* the width of the scroll buttons */
   width: 20px;
@@ -135,3 +138,25 @@ QTreeView::item:hover { background: $cor_hover; }
 QTreeView::item:selected { background-color: $cor_background; }
 
 QDateEdit { width: 85px; }
+
+QSlider::groove:horizontal {
+  border: 1px;
+  border-radius: 10px;
+  background: rgb(66, 66, 66);
+}
+
+QSlider::groove:horizontal:hover {
+  border-color: $cor_hover;
+}
+
+QSlider::handle:horizontal {
+  background: $cor_background;
+  border: 1px solid $cor_background;
+  border-radius: 5px;
+  width: 13px;
+  height: 20px;
+}
+QSlider::handle:horizontal:hover {
+  border: 1px solid $cor_hover;
+  background: $cor_hover;
+}

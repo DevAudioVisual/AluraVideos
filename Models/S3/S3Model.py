@@ -36,7 +36,7 @@ class S3Model(QObject):
             secret_key = self.Decode(LoadConfigs.Config.getConfigData("Credentials", "token"))['secret_key']
             self.s3_client = boto3.client(
                 's3', aws_access_key_id=access_key, aws_secret_access_key=secret_key,
-                config=Config(max_pool_connections=20)
+                config=Config(max_pool_connections=1000)
             )
             return True
         except Exception as e:

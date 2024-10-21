@@ -73,18 +73,12 @@ class TabelaDialog(QDialog):
         header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         # Botão para salvar a tabela
-        botao_salvar = QPushButton("Salvar Tabela")
-        layout.addWidget(botao_salvar)
-        botao_salvar.clicked.connect(lambda: salvar_tabela(nome_arquivo, self.tabela))
+        #botao_salvar = QPushButton("Salvar Tabela")
+        #layout.addWidget(botao_salvar)
+        #botao_salvar.clicked.connect(lambda: salvar_tabela(nome_arquivo, self.tabela))
 
 def salvar_tabela(nome_arquivo_original, tabela):
-    """
-    Permite ao usuário salvar a tabela em um novo arquivo.
 
-    Args:
-        nome_arquivo_original (str): Nome do arquivo CSV original (temporário).
-        tabela (QTableWidget): A tabela a ser salva.
-    """
     try:
         # Abre a caixa de diálogo para salvar o arquivo
         opcoes = QFileDialog.DontUseNativeDialog  # Corrigido: acessa a opção diretamente

@@ -1,8 +1,7 @@
-
 import os
 import re
 import time
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QScrollArea, QPushButton ,QFileDialog,QVBoxLayout
+import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from bs4 import BeautifulSoup
@@ -10,8 +9,9 @@ import pandas as pd
 import requests
 from Config import LoadConfigs
 global Config
+from tkinter import filedialog
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__() 
         
@@ -23,42 +23,43 @@ class Interface(QWidget):
         self.df = LoadConfigs.Config.getDataFrame("ConfigCriarProjeto")
         self.config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
                 
-        self.label_videos = QLabel("Videos:")
-        self.campo_videos = QLineEdit()
+        self.label_videos = cw.Label("Videos:")
+        self.campo_videos = cw.LineEdit()
         self.campo_videos.setPlaceholderText("Busque pelos vídeos para renomear")
         self.campo_videos.setClearButtonEnabled(True)
-        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),QLineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),cw.LineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_videos.setToolTip("Buscar")
         self.action_campo_videos.triggered.connect(self.buscarVideos)
         
-        self.label_sheets = QLabel("Planilha:")
-        self.campo_sheets = QLineEdit()
+        self.label_sheets = cw.Label("Planilha de referência: (Matriz ou planejamento)")
+        self.campo_sheets = cw.LineEdit()
         self.campo_sheets.setPlaceholderText("Digite o link para a planilha")
         self.campo_sheets.setClearButtonEnabled(True)
-        self.action_campo_sheets = self.campo_sheets.addAction(QIcon(r"Assets\Images\forms.png"),QLineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_sheets = self.campo_sheets.addAction(QIcon(r"Assets\Images\forms.png"),cw.LineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_sheets.setToolTip("Pesquisar")
         self.action_campo_sheets.triggered.connect(lambda: self.buscar_na_planilha())
         
-        self.label_id = QLabel("ID do curso:")
-        self.campo_id = QLineEdit()
+        self.label_id = cw.Label("ID do curso:")
+        self.campo_id = cw.LineEdit()
         self.campo_id.setPlaceholderText("Digite o ID do curso ou busque pela planilha")
         self.campo_id.setClearButtonEnabled(True)
         
-        self.label_sufixo = QLabel("Sufixo:")
-        self.campo_sufixo = QLineEdit()
+        self.label_sufixo = cw.Label("Sufixo:")
+        self.campo_sufixo = cw.LineEdit()
         self.campo_sufixo.setPlaceholderText("Digite o ID do curso ou busque pela planilha")
         self.campo_sufixo.setClearButtonEnabled(True)
         
-        self.label_formato = QLabel("Padrão:")
-        self.campo_formato = QLineEdit()
+        self.label_formato = cw.Label("Padrão:")
+        self.campo_formato = cw.LineEdit()
         self.campo_formato.setText("{id}-video{aula}-{video}")
         self.campo_formato.setReadOnly(True)
         
-        self.buttonrenomear = QPushButton("Renomear")
+        self.buttonrenomear = cw.PushButton("Renomear")
         self.buttonrenomear.clicked.connect(self.renomear)
         
-        layout = QVBoxLayout()
+        layout = cw.VBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         
-        #layout.addWidget(self.label_h1)
         layout.addWidget(self.label_videos)
         layout.addWidget(self.campo_videos)
         layout.addWidget(self.label_sheets)
@@ -71,24 +72,21 @@ class Interface(QWidget):
         layout.addWidget(self.campo_formato)
         
         
-        scroll_area = QScrollArea(self)
+        scroll_area = cw.ScrollArea(self)
         scroll_area.setWidgetResizable(True)
         layout.addWidget(scroll_area)
 
         # Widget de conteúdo para a área de rolagem
-        widget_conteudo = QWidget()
+        widget_conteudo = cw.Widget()
         scroll_area.setWidget(widget_conteudo)
 
         # Layout do widget de conteúdo
-        layout_conteudo = QVBoxLayout(widget_conteudo)  
+        layout_conteudo = cw.VBoxLayout(widget_conteudo)  
 
         # Seu layout2 (com os outros layouts)
-        self.layout2 = QGridLayout()
-        self.layout2.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
-        self.layoutvideos = QVBoxLayout()
-        self.layoutvideos.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
-        self.layoutnovosvideos = QVBoxLayout()
-        self.layoutnovosvideos.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        self.layout2 = cw.GridLayout()
+        self.layoutvideos = cw.VBoxLayout()
+        self.layoutnovosvideos = cw.VBoxLayout()
         self.layout2.addLayout(self.layoutvideos, 0, 0)
         self.layout2.addLayout(self.layoutnovosvideos, 0, 1)
 
@@ -152,19 +150,21 @@ class Interface(QWidget):
                 print(nome_aula)
                 
     def buscarVideos(self):
-        options = QFileDialog.Option.ReadOnly
         # Define os filtros para arquivos de vídeo
         filters = "Arquivos de Vídeo (*.mp4 *.avi *.mov *.mkv);;Todos os Arquivos (*)"
         # Abre a caixa de diálogo para seleção de múltiplos arquivos
-        file_names, _ = QFileDialog.getOpenFileNames(self, "Selecionar Vídeos", "", filters, options=options)
+        file_names = filedialog.askopenfilenames(
+        initialdir="/",
+        title="Selecione os arquivos de vídeo",
+        filetypes=(("Arquivos de vídeo", "*.mp4 *.avi *.mkv *.mov"),("Todos os arquivos", "*.*")))
         if file_names:
             self.campo_videos.setText(file_names[0])
             for file_name in file_names:
-                campo_video = QLineEdit()
+                campo_video = cw.LineEdit()
                 campo_video.setText(os.path.basename(file_name))
                 campo_video.setReadOnly(True)
                 
-                campo_video_novo = QLineEdit()
+                campo_video_novo = cw.LineEdit()
                 self.layoutvideos.addWidget(campo_video)
                 self.layoutnovosvideos.addWidget(campo_video_novo)
                 self.entrada_videos[os.path.basename(file_name)] = campo_video_novo

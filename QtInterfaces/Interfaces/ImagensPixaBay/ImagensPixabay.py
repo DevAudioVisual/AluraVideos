@@ -3,12 +3,10 @@ import sys
 import threading
 import requests
 import os
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QListWidget, QPushButton, QLabel, QHBoxLayout, QListWidgetItem, QMessageBox, QComboBox
 from PyQt6.QtGui import QPixmap, QImage, QCursor
 from PyQt6.QtCore import Qt, QByteArray, QBuffer, QIODevice, QThread, pyqtSignal, QRunnable, QThreadPool
-
+import Util.CustomWidgets as cw
 from functools import lru_cache
-
 from Util import Util
 from Util.Tokens import Credentials
 
@@ -63,27 +61,27 @@ class ImageDownloader(QRunnable):
                               f"Erro ao baixar ou exibir imagem: {e}", False)
 
         # # Indicador de carregamento
-        # self.loading_label = QLabel()
+        # self.loading_label = cw.Label()
         # movie = QMovie("loading.gif")  # Substitua pelo caminho da sua animação de carregamento
         # self.loading_label.setMovie(movie)
         # movie.start()
         # layout.addWidget(self.loading_label)
 
 
-class AssetItem(QWidget):
+class AssetItem(cw.Widget):
     def __init__(self, url, title):
         super().__init__()
-        layout = QHBoxLayout()
+        layout = cw.HBoxLayout()
 
         # Imagem de pré-visualização
-        self.image_label = QLabel()
+        self.image_label = cw.Label()
         self.image_label.setFixedSize(100, 75)
         self.image_label.setObjectName("image_label")
         layout.addWidget(self.image_label)
 
         # Informações do asset
-        info_layout = QVBoxLayout()
-        self.title_label = QLabel(title)
+        info_layout = cw.VBoxLayout()
+        self.title_label = cw.Label(title)
         self.title_label.setObjectName("title_label")
         info_layout.addWidget(self.title_label)
         layout.addLayout(info_layout)
@@ -108,21 +106,21 @@ class AssetItem(QWidget):
                           f"Erro ao carregar imagem do cache: {e}", False)
 
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Buscador de imagens")
 
-        layout = QVBoxLayout()
+        layout = cw.VBoxLayout()
 
         # Campo de busca e botão de pesquisa
-        search_layout = QHBoxLayout()
-        self.search_bar = QLineEdit()
+        search_layout = cw.HBoxLayout()
+        self.search_bar = cw.LineEdit()
         self.search_bar.setPlaceholderText("O que você deseja buscar?")
         search_layout.addWidget(self.search_bar)
         #self.setFixedSize(800, 600)
 
-        self.tipoImagem = QComboBox()
+        self.tipoImagem = cw.ComboBox()
         self.tipoImagem.addItem("Imagens")
         self.tipoImagem.addItem("Vetores")
         self.texto_selecionado = "Imagens"
@@ -134,7 +132,7 @@ class Interface(QWidget):
         self.tipoImagem.currentIndexChanged.connect(on_combobox_changed)
         search_layout.addWidget(self.tipoImagem)
 
-        self.Ordem = QComboBox()
+        self.Ordem = cw.ComboBox()
         self.Ordem.addItem("popular")
         self.Ordem.addItem("latest")
         self.texto_selecionado_Ordem = "popular"
@@ -146,31 +144,31 @@ class Interface(QWidget):
         self.Ordem.currentIndexChanged.connect(on_combobox_changed_ordem)
         search_layout.addWidget(self.Ordem)
 
-        self.search_button = QPushButton("Pesquisar")
+        self.search_button = cw.PushButton("Pesquisar")
         self.search_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.search_button.clicked.connect(self.search_assets)
         search_layout.addWidget(self.search_button)
         layout.addLayout(search_layout)
 
         # Lista de resultados
-        self.asset_list = QListWidget()
+        self.asset_list = cw.ListWidget()
         layout.addWidget(self.asset_list)
 
         # Botão de download
-        self.download_button = QPushButton("Baixar")
+        self.download_button = cw.PushButton("Baixar")
         self.download_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.download_button.clicked.connect(self.download_asset)
         layout.addWidget(self.download_button)
 
         # Botões de paginação
-        pagination_layout = QHBoxLayout()
-        self.previous_button = QPushButton("Página anterior")
+        pagination_layout = cw.HBoxLayout()
+        self.previous_button = cw.PushButton("Página anterior")
         self.previous_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.previous_button.setEnabled(False)
         self.previous_button.clicked.connect(self.previous_page)
         pagination_layout.addWidget(self.previous_button)
 
-        self.next_button = QPushButton("Próxima página")
+        self.next_button = cw.PushButton("Próxima página")
         self.next_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.next_button.setEnabled(False)
         self.next_button.clicked.connect(self.next_page)
@@ -209,7 +207,7 @@ class Interface(QWidget):
         self.total_hits = total_hits
         self.asset_list.clear()
         for hit in hits:
-            item = QListWidgetItem(self.asset_list)
+            item = cw.ListWidgetItem(self.asset_list)
             # Usa largeImageURL para a imagem completa
             asset_widget = AssetItem(hit["largeImageURL"], hit["tags"])
             item.setSizeHint(asset_widget.sizeHint())
@@ -274,7 +272,7 @@ class Interface(QWidget):
                     f.write(response.content)
 
                 print(f"Imagem baixada com sucesso em: {filepath}")
-                QMessageBox.information(
+                cw.MessageBox.information(
                     self, "Download Concluído", f"Imagem baixada com sucesso em:\n {filepath}")
             except requests.exceptions.RequestException as e:
                 Util.LogError("ImagensPixaBaby",

@@ -5,7 +5,7 @@ import tempfile
 import subprocess
 import time
 from packaging import version
-from Util import Util
+from Util import Tokens, Util
 from PyQt6.QtCore import QThread, pyqtSignal,QCoreApplication,Qt
 from PyQt6.QtWidgets import QMessageBox, QProgressDialog
 
@@ -71,7 +71,7 @@ class app():
         self.repo_owner = "DevAudioVisual"
         self.repo_name = "AluraVideos"
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
-        self.headers = {"Accept": "application/vnd.github+json"}
+        self.headers = {"Authorization": f"Bearer {Tokens.GITHUB}","Accept": "application/vnd.github+json"}
         self.current_version = version.parse(Util.version.lstrip("V"))  # Certifique-se de que Util.version esteja definido
 
         self.response = None

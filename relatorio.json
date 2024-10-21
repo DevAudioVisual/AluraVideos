@@ -1,0 +1,874 @@
+{
+    "3994-video1.1-Apresenta\u00e7\u00e3o Nayanne Batista.mp4": {
+        "Speech": [
+            {
+                "timecode": "00:01",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:02",
+                "score": "0.994"
+            },
+            {
+                "timecode": "00:02",
+                "score": "0.932"
+            },
+            {
+                "timecode": "00:03",
+                "score": "0.989"
+            },
+            {
+                "timecode": "00:03",
+                "score": "0.986"
+            },
+            {
+                "timecode": "00:04",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:04",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:05",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:05",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:06",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:06",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:07",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:07",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:08",
+                "score": "0.985"
+            },
+            {
+                "timecode": "00:08",
+                "score": "0.981"
+            },
+            {
+                "timecode": "00:09",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:09",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:10",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:10",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:11",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:11",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:12",
+                "score": "0.995"
+            },
+            {
+                "timecode": "00:12",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:12",
+                "score": "0.986"
+            },
+            {
+                "timecode": "00:13",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:13",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:14",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:14",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:15",
+                "score": "0.983"
+            },
+            {
+                "timecode": "00:15",
+                "score": "0.994"
+            },
+            {
+                "timecode": "00:16",
+                "score": "0.960"
+            },
+            {
+                "timecode": "00:16",
+                "score": "0.993"
+            },
+            {
+                "timecode": "00:17",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:17",
+                "score": "0.988"
+            },
+            {
+                "timecode": "00:18",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:18",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:19",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:19",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:20",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:20",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:21",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:21",
+                "score": "0.995"
+            },
+            {
+                "timecode": "00:22",
+                "score": "0.985"
+            },
+            {
+                "timecode": "00:22",
+                "score": "0.971"
+            },
+            {
+                "timecode": "00:23",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:23",
+                "score": "0.994"
+            },
+            {
+                "timecode": "00:24",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:24",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:24",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:25",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:25",
+                "score": "0.950"
+            },
+            {
+                "timecode": "00:26",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:26",
+                "score": "0.852"
+            },
+            {
+                "timecode": "00:27",
+                "score": "0.993"
+            },
+            {
+                "timecode": "00:27",
+                "score": "0.994"
+            },
+            {
+                "timecode": "00:28",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:28",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:29",
+                "score": "0.991"
+            },
+            {
+                "timecode": "00:29",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:30",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:30",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:31",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:31",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:32",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:32",
+                "score": "0.810"
+            },
+            {
+                "timecode": "00:33",
+                "score": "0.932"
+            },
+            {
+                "timecode": "00:33",
+                "score": "0.978"
+            },
+            {
+                "timecode": "00:34",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:34",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:35",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:35",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:36",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:36",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:36",
+                "score": "0.981"
+            },
+            {
+                "timecode": "00:37",
+                "score": "0.995"
+            },
+            {
+                "timecode": "00:37",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:38",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:38",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:39",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:39",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:40",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:40",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:41",
+                "score": "0.995"
+            },
+            {
+                "timecode": "00:41",
+                "score": "0.980"
+            },
+            {
+                "timecode": "00:42",
+                "score": "0.983"
+            },
+            {
+                "timecode": "00:42",
+                "score": "0.990"
+            },
+            {
+                "timecode": "00:43",
+                "score": "0.993"
+            },
+            {
+                "timecode": "00:43",
+                "score": "0.994"
+            },
+            {
+                "timecode": "00:44",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:44",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:45",
+                "score": "0.989"
+            },
+            {
+                "timecode": "00:45",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:46",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:46",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:47",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:47",
+                "score": "0.993"
+            },
+            {
+                "timecode": "00:48",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:48",
+                "score": "0.991"
+            },
+            {
+                "timecode": "00:48",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:49",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:49",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:50",
+                "score": "0.991"
+            },
+            {
+                "timecode": "00:50",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:51",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:51",
+                "score": "0.978"
+            },
+            {
+                "timecode": "00:52",
+                "score": "0.988"
+            },
+            {
+                "timecode": "00:52",
+                "score": "0.999"
+            },
+            {
+                "timecode": "00:53",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:53",
+                "score": "0.991"
+            },
+            {
+                "timecode": "00:54",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:54",
+                "score": "0.985"
+            },
+            {
+                "timecode": "00:55",
+                "score": "0.990"
+            },
+            {
+                "timecode": "00:55",
+                "score": "0.993"
+            },
+            {
+                "timecode": "00:56",
+                "score": "0.996"
+            },
+            {
+                "timecode": "00:56",
+                "score": "0.997"
+            },
+            {
+                "timecode": "00:57",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:57",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:58",
+                "score": "0.998"
+            },
+            {
+                "timecode": "00:58",
+                "score": "1.000"
+            },
+            {
+                "timecode": "00:59",
+                "score": "0.990"
+            },
+            {
+                "timecode": "00:59",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:00",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:00",
+                "score": "0.979"
+            },
+            {
+                "timecode": "01:00",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:01",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:01",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:02",
+                "score": "0.995"
+            },
+            {
+                "timecode": "01:02",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:03",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:03",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:04",
+                "score": "0.994"
+            },
+            {
+                "timecode": "01:04",
+                "score": "0.994"
+            },
+            {
+                "timecode": "01:05",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:05",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:06",
+                "score": "0.933"
+            },
+            {
+                "timecode": "01:06",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:07",
+                "score": "0.995"
+            },
+            {
+                "timecode": "01:07",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:08",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:08",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:09",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:09",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:10",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:10",
+                "score": "0.984"
+            },
+            {
+                "timecode": "01:11",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:11",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:12",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:12",
+                "score": "0.994"
+            },
+            {
+                "timecode": "01:12",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:13",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:13",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:14",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:14",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:15",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:15",
+                "score": "0.876"
+            },
+            {
+                "timecode": "01:16",
+                "score": "0.978"
+            },
+            {
+                "timecode": "01:16",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:17",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:17",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:18",
+                "score": "0.981"
+            },
+            {
+                "timecode": "01:18",
+                "score": "0.983"
+            },
+            {
+                "timecode": "01:19",
+                "score": "0.991"
+            },
+            {
+                "timecode": "01:19",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:20",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:20",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:21",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:21",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:22",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:22",
+                "score": "0.924"
+            },
+            {
+                "timecode": "01:23",
+                "score": "0.987"
+            },
+            {
+                "timecode": "01:23",
+                "score": "0.987"
+            },
+            {
+                "timecode": "01:24",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:24",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:24",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:25",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:25",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:26",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:26",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:27",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:27",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:28",
+                "score": "0.990"
+            },
+            {
+                "timecode": "01:28",
+                "score": "0.947"
+            },
+            {
+                "timecode": "01:29",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:29",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:30",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:30",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:31",
+                "score": "0.975"
+            },
+            {
+                "timecode": "01:31",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:32",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:32",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:33",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:33",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:34",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:34",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:35",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:35",
+                "score": "0.989"
+            },
+            {
+                "timecode": "01:36",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:36",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:36",
+                "score": "0.998"
+            },
+            {
+                "timecode": "01:37",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:37",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:38",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:38",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:39",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:39",
+                "score": "0.996"
+            },
+            {
+                "timecode": "01:40",
+                "score": "0.997"
+            },
+            {
+                "timecode": "01:40",
+                "score": "0.999"
+            },
+            {
+                "timecode": "01:41",
+                "score": "1.000"
+            },
+            {
+                "timecode": "01:41",
+                "score": "0.995"
+            },
+            {
+                "timecode": "01:42",
+                "score": "0.902"
+            }
+        ],
+        "Silence": [
+            {
+                "timecode": "01:42",
+                "score": "1.000"
+            }
+        ],
+        "Music": [
+            {
+                "timecode": "01:44",
+                "score": "0.925"
+            },
+            {
+                "timecode": "01:44",
+                "score": "0.965"
+            },
+            {
+                "timecode": "01:45",
+                "score": "0.981"
+            },
+            {
+                "timecode": "01:45",
+                "score": "0.980"
+            },
+            {
+                "timecode": "01:46",
+                "score": "0.827"
+            }
+        ]
+    }
+}

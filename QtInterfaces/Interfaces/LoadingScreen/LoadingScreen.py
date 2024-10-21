@@ -1,7 +1,7 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QProgressBar,QVBoxLayout
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from Config import LoadConfigs
 from WebSocket import WebSocket
+import Util.CustomWidgets as cw
 global Config
 
 versao_effector = None
@@ -12,7 +12,7 @@ notes_effector = None
 notes_ordinem = None
 notes_notability = None
 
-class LoadingScreen(QWidget):
+class LoadingScreen(cw.Widget):
     def __init__(self):
         super().__init__()
         self.setFixedSize(300, 200)
@@ -21,11 +21,11 @@ class LoadingScreen(QWidget):
             Qt.WindowType.WindowStaysOnTopHint | 
             Qt.WindowType.FramelessWindowHint)
         
-        layout = QVBoxLayout()
+        layout = cw.VBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
-        self.label = QLabel('Carregando Aluravideos')
+        self.label = cw.Label('Carregando Aluravideos')
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         self.timer = QTimer(self)
@@ -33,10 +33,10 @@ class LoadingScreen(QWidget):
         self.timer.start(500)  # Atualiza a cada 500 milissegundos
         self.counter = 0
         
-        self.etapa = QLabel('Etapa atual: ')
+        self.etapa = cw.Label('Etapa atual: ')
         self.etapa.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.progressBar = QProgressBar()
+        self.progressBar = cw.ProgressBar()
         self.progressBar.setValue(0)
         
         layout.addWidget(self.label)
@@ -63,12 +63,12 @@ class LoadingThread(QThread):
     def __init__(self):
         super().__init__()
         self.processos = [
-            #self.carregar_tensorflow,
             #self.carregar_web_socket,
             self.carregar_configs,
             self.verificar_atualizacoes,
             #self.carregar_atalhos,
             #self.versoes_extensões_ppro
+            self.carregar_tensorflow,
         ]
         
     def run(self):
@@ -95,7 +95,7 @@ class LoadingThread(QThread):
 
     def carregar_tensorflow(self):
         self.etapa.emit("Inicializando TensorFlow")
-        #import tensorflow as tf 
+        import tensorflow
         #QThread.msleep(500)
 
     def verificar_atualizacoes(self):

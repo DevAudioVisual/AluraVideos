@@ -1,6 +1,6 @@
 import ctypes
 import os
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QProgressBar, QPushButton,QCheckBox,QMessageBox
+import Util.CustomWidgets as cw
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt,QThread, pyqtSignal
 from Config import LoadConfigs
@@ -67,15 +67,15 @@ class CleanerThread(QThread):
         else:
             print("Erro ao esvaziar a Lixeira.")
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__()
         
-        layout = QGridLayout()
+        layout = cw.GridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         layout.setContentsMargins(10, 20, 10, 10)
         
-        label = QLabel("Pastas para limpar:")
+        label = cw.Label("Pastas para limpar:")
         layout.addWidget(label,0,0)
         
         self.checkbox_vars = []
@@ -84,7 +84,7 @@ class Interface(QWidget):
         row = 1
         for key, criar in self.Pastas['Pastas'].iloc[0].items():
             row += 1
-            check = QCheckBox(key)
+            check = cw.CheckBox(key)
             check.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             check.setChecked(bool(criar))
             check.clicked.connect(self.updateConfig)
@@ -94,13 +94,13 @@ class Interface(QWidget):
             layout.addWidget(check,row,0)
             
         row += 1
-        self.progressBar = QProgressBar(self)
+        self.progressBar = cw.ProgressBar(self)
         self.progressBar.setGeometry(20, 60, 160, 20)
         self.progressBar.setValue(0)
         layout.addWidget(self.progressBar,row,0)
         
         row += 1
-        botaoLimpar = QPushButton("Limpar")   
+        botaoLimpar = cw.PushButton("Limpar")   
         botaoLimpar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         botaoLimpar.clicked.connect(self.limpar_pastas)
         layout.addWidget(botaoLimpar,row,0)
@@ -151,7 +151,7 @@ class Interface(QWidget):
         self.thread.start()
         
     def limpeza_concluida(self):
-        QMessageBox.information(None, "Sucesso!", "Limpeza concluida com sucesso!")
+        cw.MessageBox.information(None, "Sucesso!", "Limpeza concluida com sucesso!")
         self.progressBar.setValue(0)
         print("Limpeza concluida")    
       

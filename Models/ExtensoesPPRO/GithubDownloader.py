@@ -7,30 +7,54 @@ from PyQt6.QtWidgets import QMessageBox
 import yaml
 from packaging import version
 
+from Util import Tokens
+from Util.Tokens import Credentials
+
 class GithubUpdater:
     def __init__(self, versao_atual_ordinem, versao_atual_effector, versao_atual_notabillity):
+        def _query(repo):
+            return f"""
+                query {{
+                    repository(owner: "DevAudioVisual", name: "{repo}") {{
+                        object(expression: "master:version.yml") {{
+                            ... on Blob {{
+                                text
+                            }}
+                        }}
+                    }}
+                }}
+            """
         self.repositorios = {
-            "Ordinem": {"url": "https://api.github.com/repos/DevAudioVisual/Ordinem/contents/version.yml", "versao": versao_atual_ordinem},
-            "Effector": {"url": "https://api.github.com/repos/DevAudioVisual/Effector/contents/version.yml", "versao": versao_atual_effector},
-            "Notability": {"url": "https://api.github.com/repos/DevAudioVisual/Notability/contents/version.yml", "versao": versao_atual_notabillity}
+
+            "Ordinem": {"query": _query("Ordinem"), "versao": versao_atual_ordinem},
+            
+            "Effector": {"query": _query("Effector"), "versao": versao_atual_effector},
+            
+            "Notability": {"query": _query("Notability"), "versao": versao_atual_notabillity}
         }
+        global GITHUB
+        token = Tokens.GITHUB
+        self.headers = {"Authorization": f"Bearer {token}"}
+        
+        self.url = "https://api.github.com/graphql"
 
     def verificar_atualizacoes(self):
         repositorios_desatualizados = {} # Dicionário para armazenar repositórios e suas versões
         for nome, dados in self.repositorios.items():
-            url = dados["url"]
+            query = dados["query"]
             versao_repositorio = dados["versao"]
             try:
-                resposta = requests.get(url)
+                resposta = requests.post(self.url, headers=self.headers, json={"query": query})
                 resposta.raise_for_status()
                 if resposta.status_code == 200:
-                    conteudo_base64 = resposta.json()["content"]
-                    conteudo = base64.b64decode(conteudo_base64).decode("utf-8")
+                    data = resposta.json()
+                    version_yml_content = data['data']['repository']['object']['text']
 
                     # Carrega o YAML e processa a versão
-                    dados_yaml = yaml.safe_load(conteudo)
+                    dados_yaml = yaml.safe_load(version_yml_content)
+                    dados_yaml = dados_yaml.get("Version")
                     versao_github = str(dados_yaml).lower()
-                    versao_github = str(versao_github).replace("Version: ","")
+                    versao_github = str(versao_github).replace("version: ","")
                     versao_repositorio = str(versao_repositorio).replace("Version: ","")
 
                     if versao_github:

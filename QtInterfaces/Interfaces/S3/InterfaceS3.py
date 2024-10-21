@@ -1,18 +1,19 @@
 import os
+from tkinter import filedialog
 from PyQt6.QtGui import QCursor,QStandardItemModel,QIcon
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton,QFileDialog,QInputDialog, QMessageBox,QVBoxLayout,QMenu
+import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt,QTimer
 from Models.S3 import S3Model
 from QtInterfaces.Interfaces.S3.S3TreeItem import S3TreeItem
 from QtInterfaces.Interfaces.S3.S3TreeView import S3TreeView
 
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__()
         
         self.model = S3Model.S3Model()
-        self.GridLayout = QGridLayout()
+        self.GridLayout = cw.GridLayout()
         self.GridLayout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self.GridLayout.setContentsMargins(10, 20, 10, 10)
         self.start()
@@ -21,7 +22,7 @@ class Interface(QWidget):
     def start(self):
       self.limpar()    
       if self.model.hasToken(): 
-        bota_iniciar_conexao = QPushButton("Iniciar Conexão")
+        bota_iniciar_conexao = cw.PushButton("Iniciar Conexão")
         bota_iniciar_conexao.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         bota_iniciar_conexao.clicked.connect(lambda: bota_iniciar_conexao.setEnabled(False))
         bota_iniciar_conexao.clicked.connect(self.startconnection)
@@ -38,14 +39,14 @@ class Interface(QWidget):
         
     def hasCredentials(self):
       if self.model.setS3Client() == False:
-        label_erro = QLabel("Erro de conexão ou credenciais inválidas.")
+        label_erro = cw.Label("Erro de conexão ou credenciais inválidas.")
         def Reset():
           self.model.resetCredentials()
           self.limpar()
           self.noCredentials()
-        botao_tentar_novamente = QPushButton("Tentar novamente")
+        botao_tentar_novamente = cw.PushButton("Tentar novamente")
         botao_tentar_novamente.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        botao_registrar_novas_credenciais = QPushButton("Registrar novas credenciais")
+        botao_registrar_novas_credenciais = cw.PushButton("Registrar novas credenciais")
         botao_registrar_novas_credenciais.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         botao_tentar_novamente.clicked.connect(self.start)
         botao_registrar_novas_credenciais.clicked.connect(Reset)
@@ -54,7 +55,7 @@ class Interface(QWidget):
         self.GridLayout.addWidget(botao_registrar_novas_credenciais,1,1)
         return
       
-      label_h1 = QLabel("Amazon S3")    
+      label_h1 = cw.Label("Amazon S3")    
       label_h1.setObjectName("grande")  
       
       def checkUploaded():
@@ -62,9 +63,9 @@ class Interface(QWidget):
           return
         QTimer.singleShot(2000,checkUploaded)
       
-      self.search_input = QLineEdit()
+      self.search_input = cw.LineEdit()
       self.search_input.setPlaceholderText("Buscar pastas ou itens... (EM BREVE)")
-      search_input_action = self.search_input.addAction(QIcon(r"Assets\Icons\reload.ico"), QLineEdit.ActionPosition.TrailingPosition)
+      search_input_action = self.search_input.addAction(QIcon(r"Assets\Icons\reload.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
       search_input_action.triggered.connect(self.refresh_tree)
       #self.search_input.textChanged.connect(self.filter_tree)
       
@@ -76,7 +77,7 @@ class Interface(QWidget):
       self.tree_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
       self.tree_view.customContextMenuRequested.connect(self.create_context_menu)  # Conecta o menu ao clique direito
       
-      layout = QVBoxLayout()
+      layout = cw.VBoxLayout()
       layout.addWidget(label_h1)
       layout.addWidget(self.search_input)
       layout.addWidget(self.tree_view)
@@ -88,36 +89,36 @@ class Interface(QWidget):
       self.GridLayout.addLayout(layout,1,0,1,1)
         
     def noCredentials(self):
-      label_h1 = QLabel("Você não possui credenciais associadas ao AluraVideos.\nPor favor as associe agora.")
+      label_h1 = cw.Label("Você não possui credenciais associadas ao AluraVideos.\nPor favor as associe agora.")
       label_h1.setObjectName("grande")
       label_h1.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-      label_access_key = QLabel("Access Key:")
-      campo_access_key = QLineEdit()
+      label_access_key = cw.Label("Access Key:")
+      campo_access_key = cw.LineEdit()
       campo_access_key.setPlaceholderText("Digite a sua access key")
       campo_access_key.setClearButtonEnabled(True)
-      campo_access_key.setEchoMode(QLineEdit.EchoMode.Password)
-      action_access_key = campo_access_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), QLineEdit.ActionPosition.TrailingPosition)
+      campo_access_key.setEchoMode(cw.LineEdit.EchoMode.Password)
+      action_access_key = campo_access_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
       def alterarOfuscarAccessKey():
-        if campo_access_key.echoMode() == QLineEdit.EchoMode.Password:
-            campo_access_key.setEchoMode(QLineEdit.EchoMode.Normal)
+        if campo_access_key.echoMode() == cw.LineEdit.EchoMode.Password:
+            campo_access_key.setEchoMode(cw.LineEdit.EchoMode.Normal)
             action_access_key.setIcon(QIcon(r"Assets\Icons\eye_off.ico"))  # Ícone de olho aberto
         else:
-            campo_access_key.setEchoMode(QLineEdit.EchoMode.Password)
+            campo_access_key.setEchoMode(cw.LineEdit.EchoMode.Password)
             action_access_key.setIcon(QIcon(r"Assets\Icons\eye_on.ico")) 
       action_access_key.triggered.connect(alterarOfuscarAccessKey)
           
-      label_secret_key = QLabel("Secret Key:")
-      campo_secret_key = QLineEdit()
+      label_secret_key = cw.Label("Secret Key:")
+      campo_secret_key = cw.LineEdit()
       campo_secret_key.setPlaceholderText("Digite a sua secret key")
       campo_secret_key.setClearButtonEnabled(True)
-      campo_secret_key.setEchoMode(QLineEdit.EchoMode.Password)
-      action_secret_key = campo_secret_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), QLineEdit.ActionPosition.TrailingPosition)
+      campo_secret_key.setEchoMode(cw.LineEdit.EchoMode.Password)
+      action_secret_key = campo_secret_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
       def alterarOfuscarSecretKey():
-        if campo_secret_key.echoMode() == QLineEdit.EchoMode.Password:
-            campo_secret_key.setEchoMode(QLineEdit.EchoMode.Normal)
+        if campo_secret_key.echoMode() == cw.LineEdit.EchoMode.Password:
+            campo_secret_key.setEchoMode(cw.LineEdit.EchoMode.Normal)
             action_secret_key.setIcon(QIcon(r"Assets\Icons\eye_off.ico"))  # Ícone de olho aberto
         else:
-            campo_secret_key.setEchoMode(QLineEdit.EchoMode.Password)
+            campo_secret_key.setEchoMode(cw.LineEdit.EchoMode.Password)
             action_secret_key.setIcon(QIcon(r"Assets\Icons\eye_on.ico")) 
       action_secret_key.triggered.connect(alterarOfuscarSecretKey)
       
@@ -129,7 +130,7 @@ class Interface(QWidget):
         if self.model.registerCredentials(secret_key=secret_key,access_key=access_key):
             self.limpar()
             self.hasCredentials()
-      botaoRegistrar = QPushButton("Registrar")
+      botaoRegistrar = cw.PushButton("Registrar")
       botaoRegistrar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))  
       botaoRegistrar.clicked.connect(register)
       
@@ -149,7 +150,7 @@ class Interface(QWidget):
         full_path = item.full_path  # Obtém o caminho completo do item
 
         # Abre um diálogo para escolher o diretório de salvamento
-        save_path = QFileDialog.getExistingDirectory(self, "Escolha o diretório para salvar")
+        save_path = filedialog.askdirectory()
         if save_path:
             if item.is_folder:  # Se for uma pasta
                 self.model.startDownload(full_path, save_path, True)
@@ -159,7 +160,7 @@ class Interface(QWidget):
 
 
     def upload_item(self):
-        upload_path = QFileDialog.getExistingDirectory(self, "Escolha o diretório para subir")
+        upload_path = filedialog.askdirectory()
         index = self.tree_view.currentIndex()
         if not index.isValid():
             return  # Verifica se um item válido foi selecionado
@@ -177,7 +178,7 @@ class Interface(QWidget):
         old_key = item.full_path
 
         # Caixa de diálogo para inserir o novo nome
-        new_name, ok = QInputDialog.getText(self, "Renomear Item", "Novo nome:", text=item.text())
+        new_name, ok = cw.InputDialog.getText(self, "Renomear Item", "Novo nome:", text=item.text())
         if not ok:
             return  # Cancelado pelo usuário
 
@@ -194,10 +195,10 @@ class Interface(QWidget):
             )
             self.model.s3_client.delete_object(Bucket=self.model.bucket_name, Key=old_key)
         except Exception as e:
-            QMessageBox.critical(self, "Erro", f"Falha ao renomear o item: {e}")
+            cw.MessageBox.critical(self, "Erro", f"Falha ao renomear o item: {e}")
             return
 
-        QMessageBox.information(self, "Sucesso!", "Item renomeado com sucesso.")
+        cw.MessageBox.information(self, "Sucesso!", "Item renomeado com sucesso.")
         
         
     def delete_item(self):
@@ -209,24 +210,24 @@ class Interface(QWidget):
         full_path = item.full_path 
         folder_name = os.path.basename(full_path)
         
-        msg_box = QMessageBox()
-        msg_box.setIcon(QMessageBox.Icon.Question)
+        msg_box = cw.MessageBox()
+        msg_box.setIcon(cw.MessageBox.Icon.Question)
         msg_box.setWindowTitle("Confirmação")
         msg_box.setText(f"Confirmar remoção da pasta:\n{folder_name}")
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+        msg_box.setStandardButtons(cw.MessageBox.StandardButton.Yes | cw.MessageBox.StandardButton.No)
+        msg_box.setDefaultButton(cw.MessageBox.StandardButton.Yes)
         ret = msg_box.exec()
         msg_box.activateWindow()
         msg_box.raise_()
-        if ret == QMessageBox.StandardButton.Yes:
+        if ret == cw.MessageBox.StandardButton.Yes:
             print(full_path)
             #self.model.s3_client.delete_object(Bucket=self.model.bucket_name, Key=full_path)
             self.tree_view.model().removeRow(index.row(), index.parent())  
-            QMessageBox().information(None,"Sucesso!","Arquivo excluido com exito.")
+            cw.MessageBox().information(None,"Sucesso!","Arquivo excluido com exito.")
         
     def create_context_menu(self, position):
         # Cria o menu de contexto
-        menu = QMenu()
+        menu = cw.Menu()
 
         # Ação de download
         download_action = menu.addAction("Download")

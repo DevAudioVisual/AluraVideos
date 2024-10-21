@@ -1,17 +1,16 @@
 import os
-from re import S
-from PyQt6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton,QStackedWidget,QToolButton     
+import Util.CustomWidgets as cw
 from PyQt6.QtGui import QIcon, QAction
 from PyQt6.QtCore import Qt, QTranslator
+from PyQt6.QtWidgets import QMainWindow,QApplication,QStackedWidget,QToolBar,QToolButton
 from Config import LoadConfigs
-from Models.SystemTray import SystemTrayIcon
 from QtInterfaces.Interfaces.Atalhos import InterfaceAtalhos
 from QtInterfaces.Interfaces.Home.Home import Interface
 from QtInterfaces.Interfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.Interfaces.ExtensõesPPRO import InterfaceExtensoes
 from QtInterfaces.Interfaces.MainWindow.MenuBar import MenuBar
 from QtInterfaces.Interfaces.MainWindow.Tabs import Tabs
-from Util import Util
+from Util import Tokens, Util
 
 global main_window
 main_window = None
@@ -44,6 +43,8 @@ class MainWindow(QMainWindow):
         key = os.path.join(dir,"key.key")
         if not os.path.exists(tokens) or not os.path.exists(key):
             return
+        
+        
         
         self.extensoes = None
         self.config = InterfacePreferencias.Interface()
@@ -127,7 +128,7 @@ class MainWindow(QMainWindow):
         
 
         
-        self.botao_expandir = QPushButton("<")
+        self.botao_expandir = cw.PushButton("<")
         self.botao_expandir.clicked.connect(self.toggle_sidebar)
 
         #spacer = QWidget()

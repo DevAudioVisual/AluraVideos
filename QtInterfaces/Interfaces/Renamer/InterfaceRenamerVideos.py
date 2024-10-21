@@ -1,7 +1,8 @@
 import os
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QMessageBox, QLineEdit
+import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
+from tkinter import filedialog
 
 def renomear_arquivos(numeros_aulas, nomes_aulas):
     try:
@@ -40,34 +41,33 @@ def renomear_arquivos(numeros_aulas, nomes_aulas):
                 print(f"Erro ao renomear {nome_arquivo_antigo}: {e}")
 
     except Exception as e:
-        QMessageBox.critical(None, "Erro", f"Ocorreu um erro ao renomear os arquivos:\n{e}")
+        cw.MessageBox.critical(None, "Erro", f"Ocorreu um erro ao renomear os arquivos:\n{e}")
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__()
 
         self.setContentsMargins(10, 10, 10, 10)
 
-        layout = QVBoxLayout()
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
+        layout = cw.VBoxLayout()
 
 
-        self.label_videos = QLabel("Videos para renomear:")
-        self.campo_videos = QLineEdit()
+        self.label_videos = cw.Label("Videos para renomear:")
+        self.campo_videos = cw.LineEdit()
         self.campo_videos.setPlaceholderText("Diga os vídeos para renomear")
         self.campo_videos.setClearButtonEnabled(True)
-        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),QLineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),cw.LineEdit.ActionPosition.TrailingPosition)
         self.action_campo_videos.triggered.connect(self.selecionar_pasta_numeros)     
         
-        self.label_reference = QLabel("Videos de referência:")
-        self.campo_reference = QLineEdit()
+        self.label_reference = cw.Label("Videos de referência:")
+        self.campo_reference = cw.LineEdit()
         self.campo_reference.setPlaceholderText("Diga os vídeos de referência")
         self.campo_reference.setClearButtonEnabled(True)
-        self.action_campo_reference = self.campo_reference.addAction(QIcon(r"Assets\Images\folder.png"),QLineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_reference = self.campo_reference.addAction(QIcon(r"Assets\Images\folder.png"),cw.LineEdit.ActionPosition.TrailingPosition)
         self.action_campo_reference.triggered.connect(self.selecionar_pasta_nomes)     
         
 
-        self.botao_renomear = QPushButton("Renomear Arquivos")
+        self.botao_renomear = cw.PushButton("Renomear Arquivos")
         self.botao_renomear.clicked.connect(self.renomear)
         
         
@@ -78,18 +78,21 @@ class Interface(QWidget):
         layout.addWidget(self.botao_renomear)
 
         self.setLayout(layout)
+        
+        self.pasta_nomes = None
+        self.pasta_numeros = None
 
     def selecionar_pasta_numeros(self):
-        self.pasta_numeros = QFileDialog.getExistingDirectory(self, "Selecione a pasta com os arquivos de números das aulas")
+        self.pasta_numeros = filedialog.askdirectory()
         self.campo_videos.setText(self.pasta_numeros)
 
     def selecionar_pasta_nomes(self):
-        self.pasta_nomes = QFileDialog.getExistingDirectory(self, "Selecione a pasta com os arquivos de nomes completos das aulas")
+        self.pasta_nomes = filedialog.askdirectory()
         self.campo_reference.setText(self.pasta_nomes)
 
     def renomear(self):
         if not self.pasta_numeros or not self.pasta_nomes:
-            QMessageBox.warning(None, "Aviso", "Selecione ambas as pastas com os números e os nomes das aulas.")
+            cw.MessageBox.warning(None, "Aviso", "Selecione ambas as pastas com os números e os nomes das aulas.")
             return
 
         try:
@@ -98,6 +101,6 @@ class Interface(QWidget):
             nomes_aulas = [os.path.join(self.pasta_nomes, f) for f in os.listdir(self.pasta_nomes) if os.path.isfile(os.path.join(self.pasta_nomes, f))]
             
             renomear_arquivos(numeros_aulas, nomes_aulas)
-            QMessageBox.information(None, "Sucesso", "Arquivos renomeados com sucesso!")
+            cw.MessageBox.information(None, "Sucesso", "Arquivos renomeados com sucesso!")
         except Exception as e:
-            QMessageBox.critical(None, "Erro", f"Ocorreu um erro ao renomear os arquivos:\n{e}")
+            cw.MessageBox.critical(None, "Erro", f"Ocorreu um erro ao renomear os arquivos:\n{e}")

@@ -1,7 +1,7 @@
 import re
 import threading
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QLineEdit, QPushButton, QCheckBox,QFileDialog, QMessageBox,QStackedWidget,QVBoxLayout,QGroupBox
-from PyQt6.QtCore import Qt,QTimer
+import Util.CustomWidgets as cw
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QCursor, QAction
 from bs4 import BeautifulSoup
 from unidecode import unidecode
@@ -10,23 +10,25 @@ from Config import LoadConfigs
 from Models.CriarProjeto import CriarProjeto
 from QtInterfaces.Interfaces.MainWindow import MainWindow
 global Config
+import tkinter as tk
+from tkinter import filedialog
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__() 
         self.df = LoadConfigs.Config.getDataFrame("ConfigCriarProjeto")
         self.config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
-        self.stacked_widget = QStackedWidget(self)
+        self.stacked_widget = cw.StackedWidget(self)
         
-        self.campo_videos = QLineEdit()
-        self.campo_nome = QLineEdit()
+        self.campo_videos = cw.LineEdit()
+        self.campo_nome = cw.LineEdit()
         
-        self.widgetLayoutPrincipal = QWidget()
+        self.widgetLayoutPrincipal = cw.Widget()
         self.widgetLayoutPrincipal.setLayout(self.layoutPrincipal())
         self.stacked_widget.addWidget(self.widgetLayoutPrincipal)
         
         
-        layout = QVBoxLayout()
+        layout = cw.VBoxLayout()
         layout.addWidget(self.stacked_widget)
         self.setLayout(layout)
 
@@ -34,49 +36,47 @@ class Interface(QWidget):
         self.numero = 0
     
     def layoutPrincipal(self):
-        layout = QGridLayout()
-        layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
-        layout.setContentsMargins(10, 20, 10, 10)
+        layout = cw.GridLayout()
 
-        label_nome = QLabel("Nome do projeto:")
+        label_nome = cw.Label("Nome do projeto:")
         label_nome.setObjectName("medio")
         self.campo_nome.setClearButtonEnabled(True)
         self.campo_nome.setPlaceholderText("Digite o nome do projeto")
         #self.campo_nome.setText("00_Novo Projeto")
         
-        label_dir = QLabel("Diretório de criação:")
+        label_dir = cw.Label("Diretório de criação:")
         label_dir.setObjectName("medio")
-        self.campo_dir = QLineEdit()
+        self.campo_dir = cw.LineEdit()
         self.campo_dir.setText(self.config["diretorio_padrao"])
         self.campo_dir.setPlaceholderText("Diga onde o projeto será criado.")
         self.campo_dir.setClearButtonEnabled(True)
-        dir_action = self.campo_dir.addAction(QIcon(r"Assets\Images\folder.png"), QLineEdit.ActionPosition.TrailingPosition)
+        dir_action = self.campo_dir.addAction(QIcon(r"Assets\Images\folder.png"), cw.LineEdit.ActionPosition.TrailingPosition)
         
         tool_button = self.campo_dir.findChildren(QAction)[0] 
         tool_button.setToolTip("Buscar vídeos")
         
         def open_folder_dialog():
-            file_name = QFileDialog.getExistingDirectory(self, "Selecione uma pasta")
+            file_name = filedialog.askdirectory()
             if file_name:
                 print(f"Pasta selecionado: {file_name}")
                 self.campo_dir.setText(rf"{file_name}")
                 self.updateConfig()
         dir_action.triggered.connect(open_folder_dialog)
         
-        label_videos = QLabel("Arquivo de vídeos (Arquivo ZIP ou URL)")
+        label_videos = cw.Label("Arquivo de vídeos (Arquivo ZIP ou URL)")
         label_videos.setObjectName("medio")
         self.campo_videos.setPlaceholderText("Digite a URL ou o local dos arquivos.")
         self.campo_videos.setClearButtonEnabled(True)
         #self.campo_videos.findChildren(QAction)[0].setIcon(QIcon(r"Assets\Images\folder.png"))
-        buscar_videos_action = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"), QLineEdit.ActionPosition.TrailingPosition)
+        buscar_videos_action = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"), cw.LineEdit.ActionPosition.TrailingPosition)
         
         def open_file_dialog_videos():
-            file_name, _ = QFileDialog.getOpenFileName(self, "Selecionar Arquivo", "", "Todos os Arquivos (*)")
+            file_name = filedialog.askopenfilename()
             if file_name:
                 print(f"Arquivo selecionado: {file_name}")
                 self.campo_videos.setText(rf"{file_name}")
         buscar_videos_action.triggered.connect(open_file_dialog_videos)
-        BotaoVideosDrop = QPushButton("Buscar Nome  ")
+        BotaoVideosDrop = cw.PushButton("Buscar Nome  ")
         BotaoVideosDrop.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         BotaoVideosDrop.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         BotaoVideosDrop.setIcon(QIcon(r"Assets\Icons\dropbox.ico"))
@@ -87,27 +87,26 @@ class Interface(QWidget):
         for ch, ci in checks:
             checks_vars[ch] = ci
         
-        self.group_processos = QGroupBox("Processos")
-        self.layout_processos = QGridLayout()
+        self.group_processos = cw.GroupBox("Processos")
+        self.layout_processos = cw.GridLayout()
         self.group_processos.setLayout(self.layout_processos)
         
-        self.check_AbrirPremiere = QCheckBox("Abrir Premiere ao finalizar")
+        self.check_AbrirPremiere = cw.CheckBox("Abrir Premiere ao finalizar")
         self.check_AbrirPremiere.clicked.connect(self.updateConfig)
         self.check_AbrirPremiere.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.check_AbrirPremiere.setChecked(bool(checks_vars["Abrir_Premiere"]))
         
-        self.check_AbrirPasta = QCheckBox("Abrir pasta do projeto ao finalizar")
+        self.check_AbrirPasta = cw.CheckBox("Abrir pasta do projeto ao finalizar")
         self.check_AbrirPasta.clicked.connect(self.updateConfig)
         self.check_AbrirPasta.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.check_AbrirPasta.setChecked(bool(checks_vars["Abrir_pasta_do_projeto"]))
         
-        self.check_FecharAoCriar = QCheckBox("Fechar ao criar")
+        self.check_FecharAoCriar = cw.CheckBox("Fechar ao criar")
         self.check_FecharAoCriar.clicked.connect(self.updateConfig)
         self.check_FecharAoCriar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.check_FecharAoCriar.setChecked(bool(self.config["fechar_ao_criar"]))
         
-        self.BotaoCriar = QPushButton("Criar")
-        self.BotaoCriar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.BotaoCriar = cw.PushButton("Criar")
         self.BotaoCriar.clicked.connect(self.create)
          
         layout.addWidget(label_nome,0,0)
@@ -130,8 +129,8 @@ class Interface(QWidget):
         coluna_atual = 0
         row = 0
 
-        self.subpastas_group_box = QGroupBox("Sub-pastas")
-        layoutSubpastas = QGridLayout()
+        self.subpastas_group_box = cw.GroupBox("Sub-pastas")
+        layoutSubpastas = cw.GridLayout()
         self.subpastas_group_box.setLayout(layoutSubpastas)
 
         #layoutSubpastas.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
@@ -140,7 +139,7 @@ class Interface(QWidget):
         layout.addWidget(self.subpastas_group_box,9,0,2,2)
 
         for subpasta, criar in self.df['subpastas'].iloc[0].items():
-            checkbox = QCheckBox(f"{subpasta}")
+            checkbox = cw.CheckBox(f"{subpasta}")
             checkbox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             self.subpasta_vars[subpasta] = checkbox
             checkbox.setChecked(bool(criar))
@@ -184,7 +183,7 @@ class Interface(QWidget):
                                   ).create()
     def setNomeProjeto(self):
             if not self.campo_videos.text().startswith("https://www.dropbox.com"):
-                QMessageBox.warning(None, "Aviso", "Link dropbox inválido ou inexistente.")
+                cw.MessageBox.warning(None, "Aviso", "Link dropbox inválido ou inexistente.")
                 return
             def buscar():
                 self.setCursor(Qt.CursorShape.WaitCursor)
@@ -207,7 +206,7 @@ class Interface(QWidget):
         self.setNomeProjeto()
         self.update()  # Atualiza a interface explicitamente
     def mensagem(self):
-        QMessageBox.information(None,"Info","Link dropbox detectado na área de transferência!\nInserido em criar projeto.")
+        cw.MessageBox.information(None,"Info","Link dropbox detectado na área de transferência!\nInserido em criar projeto.")
 
       
 def obter_nome_pasta(url):

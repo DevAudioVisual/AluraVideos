@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QTreeView, QAbstractItemView, QMessageBox
+from PyQt6.QtWidgets import QTreeView, QAbstractItemView
 import os
 
 

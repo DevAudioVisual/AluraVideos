@@ -3,21 +3,20 @@ import cv2
 import os
 import tempfile
 import subprocess
+import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 import time
-
+import re
 from Util import Util
 
+# Carregar o classificador de rosto pré-treinado
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-class VideoAnalyse():
-  def __init__(self, analise_videos = "", checkFPS = True, checkEnquadramento = True):
+class app():
+  def __init__(self,ref_video = "", analise_videos_dir = ""):
     self.video_side = None
-    self.ref_video = analise_videos[0]
-    self.analise_videos = analise_videos
-    self.checkFPS = checkFPS
-    self.checkEnquadramento = checkEnquadramento
-    
+    self.ref_video = ref_video
+    self.analise_videos_dir = analise_videos_dir
   def extract_frames(self,video_path, temp_dir, side='both'):
       """Extrai frames de um vídeo, considerando o lado especificado se for ultrawide."""
       if side not in ['left', 'right', 'both']:
@@ -44,6 +43,7 @@ class VideoAnalyse():
           command.extend(['-vf', crop_area])
       command.extend(['-vf', 'fps=1', os.path.join(temp_dir, 'frame_%04d.png')])
 
+      print("######################################## ",command)
       print(f"Extracting frames from {video_path}...", end='\r')
       try:
           subprocess.call(command)
@@ -142,49 +142,84 @@ class VideoAnalyse():
 
       return anomaly_detected, anomaly_messages  
 
+  def analyze_audio(self,video_path):
+      """Analisa o áudio do vídeo para clipping, nível de ruído (média de dB) e volume máximo."""
+      audio_info = {'clipping': None, 'noise': None, 'max_volume': None, 'avg_volume': None} # Add 'avg_volume'
+
+      try:
+          # Analisar clipping, nível de ruído e volume máximo
+          command_audio_analysis = [
+              f'{Util.pegarFFMPEG()}', '-i', video_path, '-af', 'volumedetect',
+              '-f', 'null', '-'
+          ]
+          result_audio_analysis = subprocess.check_output(command_audio_analysis, stderr=subprocess.STDOUT, text=True)
+
+          clipping_match = re.search(r'Clip detected:\s*(\w+)', result_audio_analysis)
+          max_volume_match = re.search(r'max_volume:\s*(-?\d+\.\d+)\s*dB', result_audio_analysis)
+
+          audio_info['clipping'] = clipping_match.group(1) if clipping_match else 'Não'
+          audio_info['max_volume'] = max_volume_match.group(1) if max_volume_match else 'N/A'
+
+      except subprocess.CalledProcessError as e:
+          print(f"Error analyzing audio: {e}")
+          audio_info['clipping'] = 'N/A'
+          audio_info['max_volume'] = 'N/A'
+
+      return audio_info
+
   def process_video(self,video_path, ref_centers, roi, temp_dir, crop_x=0, crop_y=0, log_file='log.txt'):
       print(f"Processing video {video_path}...", end='\r')
-      if self.checkEnquadramento: 
-        #self.extract_frames(video_path, temp_dir, side=self.video_side)
-        analise_centers = self.track_instructor(temp_dir, crop_x=crop_x, crop_y=crop_y)
+      self.extract_frames(video_path, temp_dir, side=self.video_side)
+      analise_centers = self.track_instructor(temp_dir, crop_x=crop_x, crop_y=crop_y)
 
       # Analisar se há anomalias no enquadramento
+      anomaly_detected, anomaly_messages = self.analyze_centralization(ref_centers, analise_centers, roi, video_path, log_file) # Receive anomaly_messages
+
+      # Analisar o áudio
+      audio_info = self.analyze_audio(video_path)
 
       # Escrever resultados no log, combining audio and video
       with open(log_file, "a", encoding="utf-8") as f:
           f.write(f"\n{'*'*20} Vídeo: {os.path.basename(video_path)} {'*'*20}\n")
           
-          if self.checkFPS:
-            variacoes = self.verificar_variacao_frames(video_path, self.ref_video)
-            f.write(f"Análise do framerate:\n")
-            if variacoes:
-              for variacao in variacoes:
-                f.write(f"   - Variação detectada em {variacao['timecode']}, duração de {variacao['frames']} frames, FPS calculado: {variacao['fps_calculado']:.2f}\n")
-            else:
-              f.write(f"   - Nenhuma variação detectada.\n") 
+          variacoes = self.verificar_variacao_frames(video_path, self.ref_video)
+          f.write(f"Análise do framerate:\n")
+          if variacoes:
+            for variacao in variacoes:
+              f.write(f"   - Variação detectada em {variacao['timecode']}, duração de {variacao['frames']} frames, FPS calculado: {variacao['fps_calculado']:.2f}\n")
+          else:
+            f.write(f"   - Nenhuma variação detectada.\n") 
           
-          if self.checkEnquadramento:
-            anomaly_detected, anomaly_messages = self.analyze_centralization(ref_centers, analise_centers, roi, video_path, log_file) # Receive anomaly_messages
-            f.write(f"Análise de Enquadramento:\n")
-            if anomaly_detected:
-                f.write(f"   - Anomalias detectadas:\n")
-                for msg in anomaly_messages:
-                    f.write(msg + '\n')
-            else:
-                f.write(f"   - Nenhuma anomalia detectada.\n")
+          f.write(f"Análise de Enquadramento:\n")
+          if anomaly_detected:
+              f.write(f"   - Anomalias detectadas:\n")
+              for msg in anomaly_messages:
+                  f.write(msg + '\n')
+          else:
+              f.write(f"   - Nenhuma anomalia detectada.\n")
+
+          
+          #avg_voice_volume, avg_noise_level = ValidarAudio.calcular_volume_medio_video(video_path, None, None)
+          
+          f.write(f"Análise de Áudio:\n")
+          f.write(f"   - Clipping: {audio_info['clipping']}\n")
+          f.write(f"   - Volume Máximo (dB): {audio_info['max_volume']}\n")
+          #f.write(f"   - Volume Médio (dB): {avg_voice_volume}\n")
+          #f.write(f"   - Ruido Médio (dB): {avg_noise_level}\n")
 
 
-  def process_videos_in_parallel(self, videos, ref_centers, roi, crop_x=0, crop_y=0):
+  def process_videos_in_parallel(self,videos_dir, ref_centers, roi, crop_x=0, crop_y=0):
+      video_paths = [os.path.join(videos_dir, f) for f in os.listdir(videos_dir) if f.lower().endswith(('.mp4', '.mov', '.avi'))]
       start_time = time.time()
 
-      log_file = os.path.join(os.path.dirname(videos[0]), 'log.txt')
+      log_file = os.path.join(videos_dir, 'log.txt')
       with open(log_file, "w", encoding="utf-8") as f:
           f.write(f"{'='*40}\n")
           f.write(f"Relatório de Análise de Vídeos\n")
           f.write(f"{'='*40}\n")
-      num_threads = os.cpu_count()
-      with ThreadPoolExecutor(max_workers=num_threads) as executor:
-          futures = [executor.submit(self.process_video, video_path, ref_centers, roi, tempfile.mkdtemp(), crop_x, crop_y, log_file) for video_path in videos]
+
+      with ThreadPoolExecutor(max_workers=10) as executor:
+          futures = [executor.submit(self.process_video, video_path, ref_centers, roi, tempfile.mkdtemp(), crop_x, crop_y, log_file) for video_path in video_paths]
           for future in futures:
               future.result()  # Esperar até que todos os vídeos sejam processados
 
@@ -285,8 +320,8 @@ class VideoAnalyse():
         ref_centers = self.track_instructor(ref_temp_dir, crop_x, crop_y)
 
         # Processar vídeos em paralelo
-        analise_videos = self.analise_videos
-        self.process_videos_in_parallel(analise_videos, ref_centers, roi, crop_x, crop_y)
+        analise_videos_dir = self.analise_videos_dir
+        self.process_videos_in_parallel(analise_videos_dir, ref_centers, roi, crop_x, crop_y)
         messagebox.showinfo("Aviso","Validação concluida,\nArquivo de logs gerado")
 
 

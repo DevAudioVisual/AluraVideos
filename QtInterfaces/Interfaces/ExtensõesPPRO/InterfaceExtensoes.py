@@ -1,5 +1,4 @@
 import threading
-from PyQt6.QtWidgets import QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QLabel, QPushButton, QSizePolicy
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QCursor
 import requests
@@ -7,42 +6,40 @@ from packaging import version
 import yaml
 from Models.ExtensoesPPRO.GithubDownloader import GithubDownloader, GithubUpdater
 from QtInterfaces.Interfaces.LoadingScreen import LoadingScreen
-from Util import Util
+from Util import Tokens, Util
+import Util.CustomWidgets as cw
 
-class Interface(QWidget):
+class Interface(cw.Widget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Extensões PPRO")
         
-        main_layout = QVBoxLayout()
+        main_layout = cw.VBoxLayout()
         main_layout.setContentsMargins(10, 20, 10, 10)  # Defina as margens desejadas
         main_layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         
-        layout = QGridLayout()
+        layout = cw.GridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         layout.setContentsMargins(10, 20, 10, 10)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         
         if not Util.verificar_premiere_pro():
-            label = QLabel("<font color='red'>Adobe Premiere Pro não encontrado.</font>")
+            label = cw.Label("<font color='red'>Adobe Premiere Pro não encontrado.</font>")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
             label.setObjectName("grande")
             main_layout.addWidget(label)
             self.setLayout(main_layout)
         else:
-            label = QLabel("Faça download das extensões para o Adobe Premiere pro aqui.")
+            label = cw.Label("Faça download das extensões para o Adobe Premiere pro aqui.")
             label.setObjectName("grande")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
             
             global versao_effector,versao_ordinem,versao_notabillity
             
 
-            botao_effector = QPushButton(f"{LoadingScreen.versao_effector}")
-            botao_effector.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            botao_ordinem = QPushButton(f"{LoadingScreen.versao_ordinem}")
-            botao_ordinem.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            botao_notabillity = QPushButton(f"{LoadingScreen.versao_notabillity}")
-            botao_notabillity.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            botao_effector = cw.PushButton(f"{LoadingScreen.versao_effector}")
+            botao_ordinem = cw.PushButton(f"{LoadingScreen.versao_ordinem}")
+            botao_notabillity = cw.PushButton(f"{LoadingScreen.versao_notabillity}")
             
             botao_effector.setIcon(QIcon(r"Assets\Icons\download.ico"))
             botao_ordinem.setIcon(QIcon(r"Assets\Icons\download.ico"))
@@ -68,15 +65,15 @@ class Interface(QWidget):
             main_layout.addLayout(layout)
 
             # Spacer to push footer to the bottom
-            spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+            spacer = cw.SpacerItem(20, 40, cw.SizePolicy.Policy.Minimum, cw.SizePolicy.Policy.Expanding)
             main_layout.addItem(spacer)
             
             # Footer layout
-            layoutFooter = QVBoxLayout()
+            layoutFooter = cw.VBoxLayout()
             layoutFooter.setAlignment(Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignHCenter)
             layoutFooter.setContentsMargins(10, 20, 10, 10)
             
-            label_footer = QLabel("Criadas por Denis Santos para o time de Vídeos da Alura Online.")
+            label_footer = cw.Label("Criadas por Denis Santos para o time de Vídeos da Alura Online.")
             label_footer.setObjectName("pequeno-normal")
             
             # Add footer label to the footer layout
@@ -99,7 +96,6 @@ class Interface(QWidget):
                 versao_atual_ordinem = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Ordinem\version.yml")
                 versao_atual_effector = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Effector\version.yml")
                 versao_atual_notability = versaoAtual(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\Notability\version.yml")
-                print(versao_atual_ordinem,versao_atual_effector,versao_atual_notability)
                 updater = GithubUpdater(versao_atual_ordinem,versao_atual_effector,versao_atual_notability).verificar_atualizacoes()
                 
                 if updater:
@@ -125,7 +121,7 @@ class GitRequest():
         self.repo_owner = "DevAudioVisual"
         self.repo_name = repo_name
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
-        self.headers = {"Accept": "application/vnd.github+json"}
+        self.headers = {"Authorization": f"Bearer {Tokens.GITHUB}","Accept": "application/vnd.github+json"}
         
     def initRequest(self):
         try:
