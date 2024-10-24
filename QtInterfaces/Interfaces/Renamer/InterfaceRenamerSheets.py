@@ -1,27 +1,26 @@
 import os
 import re
+import tempfile
 import time
+from Util import Util
 import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
-from Config import LoadConfigs
-global Config
 from tkinter import filedialog
 
 class Interface(cw.Widget):
     def __init__(self):
         super().__init__() 
         
+        self.carregando = False
+        
         self.setContentsMargins(10, 10, 10, 10)
         
         self.entrada_videos = {}
         self.dados = {}
-        
-        self.df = LoadConfigs.Config.getDataFrame("ConfigCriarProjeto")
-        self.config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
                 
         self.label_videos = cw.Label("Videos:")
         self.campo_videos = cw.LineEdit()
@@ -46,7 +45,7 @@ class Interface(cw.Widget):
         
         self.label_sufixo = cw.Label("Sufixo:")
         self.campo_sufixo = cw.LineEdit()
-        self.campo_sufixo.setPlaceholderText("Digite o ID do curso ou busque pela planilha")
+        self.campo_sufixo.setPlaceholderText("Digite um sufixo se necessário")
         self.campo_sufixo.setClearButtonEnabled(True)
         
         self.label_formato = cw.Label("Padrão:")
@@ -132,7 +131,7 @@ class Interface(cw.Widget):
             #messagebox.showinfo("Sucesso", "Vídeos renomeados com sucesso!")
         else:
             print("Erro")
-            #messagebox.showerror("Erro", "Não foi possivel renomear os arquivos.")   
+            #Util.LogError("RenamerSheets",f"Erro ao renomear o arquivo {caminho_antigo}")
     def atualizar_entradas_videos(self):
         for arquivo, entrada_nome in self.entrada_videos.items():
             nome_sem_extensao, _ = os.path.splitext(os.path.basename(arquivo))
@@ -148,6 +147,7 @@ class Interface(cw.Widget):
             entrada_nome.setText(nome_aula)
             if nome_aula:
                 print(nome_aula)
+            self.carregando = False
                 
     def buscarVideos(self):
         # Define os filtros para arquivos de vídeo
@@ -170,6 +170,10 @@ class Interface(cw.Widget):
                 self.entrada_videos[os.path.basename(file_name)] = campo_video_novo
                 
     def buscar_na_planilha(self):
+        if self.carregando == True:
+            return
+        self.carregando = True
+        
         spreadsheet_url = self.campo_sheets.text()
         #if self.entradas_videos == None:
             #messagebox.showerror("Erro", "Nenhum arquivo de vídeo fornecido.")
@@ -196,7 +200,7 @@ class Interface(cw.Widget):
                     return None  # Retorna None se não encontrar o título
 
             except requests.exceptions.RequestException as e:
-                print(f"Erro ao acessar a página: {e}")
+                Util.LogError("RenamerSheets",f"Erro ao acessar a página: {e}")
                 return None
         if spreadsheet_url:
             self.campo_id.setText(extrair_titulo_planilha(spreadsheet_url))
@@ -206,8 +210,12 @@ class Interface(cw.Widget):
                 if match:
                     spreadsheet_id = match.group(1)
                     csv_export_url = f'https://docs.google.com/spreadsheets/d/{spreadsheet_id}/export?format=csv'
-
-                    df = pd.read_csv(csv_export_url, header=None)
+                    response = requests.get(csv_export_url)
+                    response.raise_for_status()
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as temp_file:
+                        temp_file.write(response.content)
+                        temp_file_path = temp_file.name
+                    df = pd.read_csv(temp_file_path, header=None)
                     try:
                         coluna_a = df.iloc[:, 0]
                         coluna_b = df.iloc[:, 1]
@@ -246,7 +254,7 @@ class Interface(cw.Widget):
                             print("Tentando matriz")
                             self.atualizar_entradas_videos()
                         except Exception as e:
-                            print(e)
+                            Util.LogError("RenamerSheets",f"Erro: {e}")
             except Exception as e:
-                print(e)
+                Util.LogError("RenamerSheets",f"Erro: {e}")
         

@@ -1,8 +1,7 @@
 import os
 import sys
 import webbrowser
-from PyQt6.QtCore import Qt,QCoreApplication,QProcess
-from PyQt6.QtGui import QCursor
+from PyQt6.QtCore import Qt, QCoreApplication, QProcess
 from Util import Tokens
 import Util.CustomWidgets as cw
 
@@ -113,5 +112,6 @@ class Interface(cw.Widget):
             f.write(self.campo_key.text())
         with open(self.tokens, 'w') as f:
             f.write(self.campo_tokens.text())    
+            
         QCoreApplication.quit()
         QProcess.startDetached(sys.executable, sys.argv)

@@ -152,8 +152,8 @@ class app():
         if success:
             QMessageBox.information(None, "Info", "Download concluído!\nO aplicativo será fechado para que a atualização seja instalada.")
             QCoreApplication.instance().quit()
-            subprocess.run(self.dirtemp,shell=True)  # Execute o arquivo após o download (opcional)
-            #QThread.msleep(5000)
+            subprocess.run(self.dirtemp,shell=True)
+            os._exit()
         else:
             QMessageBox.critical(None, "Erro", "O download falhou.")
     
