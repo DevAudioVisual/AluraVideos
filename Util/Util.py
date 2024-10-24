@@ -1,4 +1,3 @@
-import ctypes
 import logging
 import os
 import string
@@ -14,7 +13,7 @@ import winreg
 # y = minor
 # z = path
 
-version = "V1.0.2"
+version = "V1.0.3"
 
 def verificar_premiere_pro():
         """Verifica se o Adobe Premiere Pro está instalado no computador."""

@@ -1,7 +1,11 @@
-from PyQt6.QtWidgets import QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
+from PyQt6.QtWidgets import QSlider,QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
 from PyQt6.QtGui import QCursor
-from PyQt6.QtCore import Qt, QRect
+from PyQt6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve, QSize
 
+class Slider(QSlider):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
 class Menu(QMenu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,14 +81,35 @@ class Label(QLabel):
         super().__init__(*args, **kwargs)
         
 class PushButton(QPushButton):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args,animacao = True, **kwargs):
         super().__init__(*args, **kwargs)
-        self.layout = QHBoxLayout()
+        self.animacao = animacao
         
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.adjustSize()
+        
+        if self.animacao:
+            self.anim = QPropertyAnimation(self,b'size')
+            self.anim.setDuration(250)
+            self.anim.setEasingCurve(QEasingCurve.Type.OutCurve)
+        
+    def enterEvent(self, event):
+        if self.animacao:
+            self.anim.setDirection(self.anim.Direction.Forward)
+            if self.anim.state() == self.anim.State.Stopped:
+                self.anim.setStartValue(self.size())
+                width = self.geometry().width() + 4
+                height = self.geometry().height() + 4
+                self.anim.setEndValue(QSize(width,height))
+                self.anim.start()
             
-        self.setLayout(self.layout)
+        QPushButton.enterEvent(self,event)
+        
+    def leaveEvent(self, event):
+        if self.animacao:
+            self.anim.setDirection(self.anim.Direction.Backward)
+            if self.anim.state() == self.anim.State.Stopped: self.anim.start()
+        QPushButton.leaveEvent(self, event)
         
 class SpacerItem(QSpacerItem):
     def __init__(self, *args, **kwargs):

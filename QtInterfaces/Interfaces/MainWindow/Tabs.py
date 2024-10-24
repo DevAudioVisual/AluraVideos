@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QTabWidget,QMenu
 from Config import LoadConfigs
+from QtInterfaces.Interfaces.Conversor import InterfaceConversor
 from QtInterfaces.Interfaces.ImagensPixaBay import ImagensPixabay
 from QtInterfaces.Interfaces.LimparCache import InterfaceLimparCache
 from QtInterfaces.Interfaces.ProjectCreator import InterfaceProjectCreator
@@ -32,6 +33,7 @@ class Tabs(QTabWidget):
         
         abas = {
             "Criar Projeto": {InterfaceProjectCreator.Interface(): self.data["Criar Projeto"][0]},
+            "Conversor": {InterfaceConversor.Interface(): self.data["Conversor"][0]},
             "S3": {InterfaceS3.Interface(): self.data["S3"][0]},
             #"PM3": [],
             "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},

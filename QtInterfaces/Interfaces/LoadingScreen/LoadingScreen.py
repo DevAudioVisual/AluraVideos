@@ -21,6 +21,12 @@ class LoadingScreen(cw.Widget):
             Qt.WindowType.WindowStaysOnTopHint | 
             Qt.WindowType.FramelessWindowHint)
         
+        self.setStyleSheet("""
+                           QWidget {
+                               background-color: transparent;
+                           }
+                           """)
+        
         layout = cw.VBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
@@ -63,8 +69,8 @@ class LoadingThread(QThread):
     def __init__(self):
         super().__init__()
         self.processos = [
-            #self.carregar_web_socket,
             self.carregar_configs,
+            #self.carregar_web_socket,
             self.verificar_atualizacoes,
             #self.carregar_atalhos,
             #self.versoes_extensões_ppro
@@ -84,7 +90,11 @@ class LoadingThread(QThread):
             
     def carregar_web_socket(self):
         self.etapa.emit("Iniciando Web Sockets")
-        WebSocket.startServer()
+        def on_message_received(message):
+            print(f"Mensagem recebida na janela principal: {message}")
+        websocket_server = WebSocket.WebSocketServer()
+        websocket_server.message_received.connect(on_message_received)
+        websocket_server.start()
         #QThread.msleep(500)
         
     def carregar_configs(self):

@@ -27,6 +27,11 @@ $cor_hover: #4B70F5;
   font-weight: $weight;
   padding: 10px 0
 }
+
+QWidget {
+  background-color: #242424; 
+}
+
 QLabel { 
   @include labels("Helvetica Neue", 12px, bold);
   
@@ -38,17 +43,17 @@ QLabel {
   &#pequeno-normal { @include labels("Helvetica Neue", 12px, normal); }
 }
 
-QPushButton,QComboBox {@include botoes_clicaveis();}
+QPushButton {@include botoes_clicaveis();}
 
-QComboBox:editable {
+QGroupBox {
   color: white;
-  background: teal;
 }
 
 QProgressBar {  /* Agrupando estilos de QProgressBar */
-  border: 2px solid grey;
-  border-radius: 5px;
+  border: 1px solid grey;
+  border-radius: 7px;
   text-align: center;
+  color: white;
 }
 QProgressBar::chunk {
   background-color: $cor_background;
@@ -59,32 +64,45 @@ QProgressBar::chunk {
 QMenu {  /* Agrupando estilos de QMenu */
   background-color: rgb(66, 66, 66);
   margin: 2px;
+  color: white;
 }
 QMenu::item {
   padding: 2px 25px 2px 20px;
   border: 1px solid transparent;
   background-color: transparent;
+  color: white;
 }
-QMenu::item:selected { background-color: $cor_hover; }
+QMenu::item:selected { 
+  background-color: $cor_hover; 
+}
 QMenu::indicator {
   width: 13px;
   height: 13px;
 }
 
 QMenuBar {  /* Agrupando estilos de QMenuBar */
-  background-color: transparent;
+  background-color: rgb(66, 66, 66);
+  color: white;
   spacing: 3px;
 }
 QMenuBar::item {
   padding: 1px 4px;
-  background: transparent;
+  background-color: rgb(66, 66, 66);
+  color: white;
   border-radius: 4px;
 }
-QMenuBar::item:hover, QMenuBar::item:selected { background-color: $cor_hover; } 
-QMenuBar::item:pressed { background: $cor_background; }
+QMenuBar::item:hover, QMenuBar::item:selected { 
+  background-color: $cor_hover; 
+  color: white;
+} 
+QMenuBar::item:pressed { 
+  background: $cor_background; 
+  color: white;
+}
 
 QToolBar {
   background-color: teal;
+  color: white;
   width: 100%;
   padding: 5px;
 }
@@ -94,14 +112,43 @@ QToolButton {  /* Agrupando estilos de QToolButton */
   border-radius: 6px;
   padding: 5px;
   width: 100%;
+  color: white;
+  background-color: teal;
 }
 QToolButton[active="true"], QToolButton:hover { background-color: $cor_hover; }
+
+QComboBox {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 1px 18px 1px 3px;
+  min-width: 6em;
+}
+
+QComboBox:editable {
+  background: $cor_background;
+  color: white;
+}
+QComboBox:editable:hover {
+  background: $cor_hover;
+}
+QComboBox QAbstractItemView::item {
+  color: white; /* Define a cor do texto para vermelho */
+}
+QComboBox QAbstractItemView::item:hover {
+  background-color: $cor_hover; /* Define a cor do texto para vermelho */
+  color: white;
+}
+QComboBox QAbstractItemView::item:selected {
+  background-color: $cor_hover; /* Define a cor do texto para vermelho */
+  color: white;
+}
 
 QLineEdit {  /* Agrupando estilos de QLineEdit */
   border-radius: 8px;
   padding: 5px 10px;
   border: 2px solid rgb(66, 66, 66);
   background-color: rgb(66, 66, 66);
+  color: white;
 }
 QLineEdit:focus, QLineEdit:hover { 
   selection-background-color: $cor_hover; 
@@ -115,6 +162,7 @@ QTabWidget::tab-bar { left: 5px; } /* move to the right by 5px */
 
 QTabBar::tab {  /* Agrupando estilos de QTabBar */
   background: transparent;
+  color: white;
   border-radius: 3px;
   min-width: 8ex;
   padding: 3px;
@@ -130,9 +178,12 @@ QToolTip {
   font-size: 12px;
   color: $cor_texto;
 }
-
+QAbstractItemView {
+  color: white;
+}
 QTreeView {  /* Agrupando estilos de QTreeView */
   show-decoration-selected: 1;
+  color: white;
 }
 QTreeView::item:hover { background: $cor_hover; }
 QTreeView::item:selected { background-color: $cor_background; }
@@ -159,4 +210,29 @@ QSlider::handle:horizontal {
 QSlider::handle:horizontal:hover {
   border: 1px solid $cor_hover;
   background: $cor_hover;
+}
+
+QCheckBox {
+  color: white;
+}
+
+QScrollBar:vertical {
+  background-color: #353535;
+  width: 15px;
+  margin: 0px 0px 0px 0px;
+}
+QScrollBar::handle:vertical {
+  background-color: #444444;
+  min-height: 20px;
+}
+QScrollBar::handle:vertical:hover {
+  background-color: $cor_hover;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+  background-color: #353535;
+  border: none;
+  height: 0px; /* Esconde as setas */
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+  background: none;
 }

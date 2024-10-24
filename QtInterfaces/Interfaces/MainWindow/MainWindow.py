@@ -10,7 +10,7 @@ from QtInterfaces.Interfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.Interfaces.ExtensõesPPRO import InterfaceExtensoes
 from QtInterfaces.Interfaces.MainWindow.MenuBar import MenuBar
 from QtInterfaces.Interfaces.MainWindow.Tabs import Tabs
-from Util import Tokens, Util
+from Util import Util
 
 global main_window
 main_window = None
@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         
 
         
-        self.botao_expandir = cw.PushButton("<")
+        self.botao_expandir = cw.PushButton("<",animacao=False)
         self.botao_expandir.clicked.connect(self.toggle_sidebar)
 
         #spacer = QWidget()

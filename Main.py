@@ -33,7 +33,6 @@ def main():
     setup_logging()
     
     app = QApplication(sys.argv) 
-    #app.setStyle("Windows")
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
     
@@ -41,7 +40,7 @@ def main():
     with open(r"style.qss", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)
-
+    
     loading_screen = LoadingScreen()
     loading_screen.show()
 
@@ -60,13 +59,6 @@ def main():
     app.aboutToQuit.connect(loading_thread.quit)
 
     loading_thread.start()
-
-    def on_message_received(message):
-        print(f"Mensagem recebida na janela principal: {message}")
-    # websocket_server = WebSocketServer()
-    # websocket_server.message_received.connect(on_message_received)
-    # websocket_server.start()
-
 
     sys.exit(app.exec())
     
