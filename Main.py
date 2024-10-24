@@ -28,7 +28,7 @@ def run_as_admin():
         sys.exit()
 
 def main():
-    #run_as_admin()
+    run_as_admin()
     setup_signal_handlers()
     setup_logging()
     

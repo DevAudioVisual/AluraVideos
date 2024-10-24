@@ -125,7 +125,7 @@ class Interface(cw.Widget):
                             time.sleep(TEMPO_ESPERA)
                         else:
                             erro = True
-                            print(f"Erro: Não foi possível renomear o arquivo {caminho_antigo} após {MAX_TENTATIVAS} tentativas. {e}")
+                            Util.LogError("RenamerSheets",f"Erro: Não foi possível renomear o arquivo {caminho_antigo} após {MAX_TENTATIVAS} tentativas. {e}")
         if erro == False:
             print("Sucesso!")
             #messagebox.showinfo("Sucesso", "Vídeos renomeados com sucesso!")
