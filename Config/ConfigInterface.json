@@ -7,6 +7,7 @@
         "Vimeo": [true,3],
         "Imagens Pixabay": [true, 4],
         "Limpar Cache": [true, 5],
-        "Renamer": [true, 6]
+        "Renamer": [true, 6],
+        "VideoValidator": [true, 6]
     }
 }

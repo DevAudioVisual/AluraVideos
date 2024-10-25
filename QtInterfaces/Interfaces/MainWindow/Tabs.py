@@ -39,7 +39,7 @@ class Tabs(QTabWidget):
             "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},
             "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"][0]},
             "Renamer": {InterfaceRenamerTabs.Tabs(): self.data["Renamer"][0]},
-            #"VideoValidator": {InterfaceValidator.Interface(): self.data["VideoValidator"][0]},
+            "VideoValidator": {InterfaceValidator.Interface(): self.data["VideoValidator"][0]},
             #"Tarefas": {Tarefas.Interface(): self.data["Tarefas"][0]},
             #"Vimeo": {VimeoInterface.Interface(): self.data["Vimeo"][0]}
         }
