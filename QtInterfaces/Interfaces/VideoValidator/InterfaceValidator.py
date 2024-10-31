@@ -19,7 +19,7 @@ class Interface(cw.Widget):
         self.campo_videos = cw.LineEdit()
         self.campo_videos.setPlaceholderText("Diga os vídeos para analizar")
         self.campo_videos.setClearButtonEnabled(True)
-        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),cw.LineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
         self.action_campo_videos.triggered.connect(self.buscarVideos)
         
         self.buttonanalisar = cw.PushButton("Iniciar análise")
@@ -71,10 +71,10 @@ class Interface(cw.Widget):
             items = [self.InterfaceAudio.lista_selecionados.item(i).text() for i in range(self.InterfaceAudio.lista_selecionados.count())]
             items_desativados = [self.InterfaceAudio.lista_desativada_selecionados.item(i).text() for i in range(self.InterfaceAudio.lista_desativada_selecionados.count())]
             
-            # from Models.VideoValidator.VideoAnalyse import VideoAnalyse
-            # VideoAnalyse(analise_videos=self.videos,
-            #                  checkEnquadramento=self.InterfaceVideo.check_enquadramento.isChecked(),
-            #                  checkFPS=self.InterfaceVideo.check_frame_rate.isChecked()).Validar()
+            from Models.VideoValidator.VideoAnalyse import VideoAnalyse
+            VideoAnalyse(analise_videos=self.videos,
+                              checkEnquadramento=self.InterfaceVideo.check_enquadramento.isChecked(),
+                              checkFPS=self.InterfaceVideo.check_frame_rate.isChecked()).Validar()
             
             from Models.VideoValidator.AudioAnalyse import AudioAnalyse
             AudioAnalyse(videos=self.videos,

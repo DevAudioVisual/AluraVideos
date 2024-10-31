@@ -8,12 +8,7 @@ from urllib.parse import urlparse
 import unicodedata
 import winreg
 
-# version = x.y.z
-# x = major
-# y = minor
-# z = path
 
-version = "V1.0.4"
 
 def verificar_premiere_pro():
         """Verifica se o Adobe Premiere Pro está instalado no computador."""

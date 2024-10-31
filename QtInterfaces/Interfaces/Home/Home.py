@@ -97,7 +97,6 @@ class Interface(cw.Widget):
                 layoutPrincipal.addWidget(label_desc)
                 layoutPrincipal.addWidget(label_ajuda)
                 layoutPrincipal.addLayout(cw.alignWidget(button_ajuda))
-                #layoutPrincipal.addWidget(VimeoPlayer())
         
         self.setLayout(layoutPrincipal)
         

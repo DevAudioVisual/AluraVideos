@@ -116,7 +116,6 @@ QMenuBar::item:pressed {
 QToolBar {
   background-color: teal;
   color: white;
-  width: 100%;
   padding: 5px; }
 
 QToolButton {
@@ -126,7 +125,8 @@ QToolButton {
   padding: 5px;
   width: 100%;
   color: white;
-  background-color: teal; }
+  background-color: teal;
+  text-align: left; }
 
 QToolButton[active="true"], QToolButton:hover {
   background-color: #4B70F5; }
@@ -234,6 +234,21 @@ QSlider::handle:horizontal:hover {
 
 QCheckBox {
   color: white; }
+
+QCheckBox::indicator:checked {
+  background-color: #4C3BCF;
+  border: 2px solid #4C3BCF;
+  border-radius: 7px;
+  image: url(Assets/svg/check.svg); }
+
+QCheckBox::indicator:unchecked {
+  background-color: #424242;
+  border: 2px solid #424242;
+  border-radius: 7px; }
+
+QCheckBox::indicator:unchecked:hover, QCheckBox::indicator:checked:hover {
+  background-color: #4B70F5;
+  border-color: #4B70F5; }
 
 QScrollBar:vertical {
   background-color: #353535;

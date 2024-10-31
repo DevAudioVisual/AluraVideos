@@ -1,8 +1,8 @@
 import os
 import Util.CustomWidgets as cw
-from PyQt6.QtGui import QIcon, QAction
-from PyQt6.QtCore import Qt, QTranslator
-from PyQt6.QtWidgets import QMainWindow,QApplication,QStackedWidget,QToolBar,QToolButton
+from PyQt6.QtGui import QIcon, QAction,QPainter
+from PyQt6.QtCore import Qt, QTranslator,QPropertyAnimation, QEasingCurve, pyqtProperty
+from PyQt6.QtWidgets import QMainWindow,QApplication,QStackedWidget,QToolBar,QToolButton, QPushButton
 from Config import LoadConfigs
 from QtInterfaces.Interfaces.Atalhos import InterfaceAtalhos
 from QtInterfaces.Interfaces.Home.Home import Interface
@@ -23,8 +23,9 @@ def create_main_window():
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__() 
-        #self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)
-        self.setWindowTitle(f'AluraVideos {Util.version}')
+        #self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)]
+        import Main
+        self.setWindowTitle(f'AluraVideos {Main.__version__}')
         icon = QIcon(r"Assets\Icons\icon.ico")
         self.setWindowIcon(icon)
         
@@ -68,26 +69,6 @@ class MainWindow(QMainWindow):
         #TeclasAtalho().registrarAtalhos()
 
     def closeEvent(self, event):
-        # if self.isHidden(): QApplication.quit()
-        # reply = QMessageBox.question(self, "Fechar",
-        #     "Minimizar para a bandeja do sistema?",
-        #     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-        #     QMessageBox.StandardButton.Yes)
-
-        # if reply == QMessageBox.StandardButton.Yes:
-        #     self.hide()
-        #     toast = Notification(app_id="AluraVideos",
-        #                  title="AluraVideos",
-        #                  msg="AluraVideos está rodando em segundo plano",
-        #                  icon=r"Assets\Icons\icon.ico",
-        #                  duration="long")
-        #     # Define um som para a notificação
-        #     toast.set_audio(audio.LoopingAlarm, loop=False)
-            
-        #     toast.show()
-        #     event.ignore()  # Impede o fechamento da aplicação
-        # else:
-        #     event.accept()  # Fecha a aplicação
         try:
             data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
             data['barra_lateral_pequena'] = self.barra_pequena
@@ -101,8 +82,9 @@ class MainWindow(QMainWindow):
         self.toolbar.setOrientation(Qt.Orientation.Vertical)
         self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.toolbar.layout().setAlignment(Qt.AlignmentFlag.AlignLeft)
-        #self.toolbar.setMaximumWidth(500)
         self.toolbar.setMovable(False)
+        self.toolbar.setFloatable(False)
+        self.toolbar.setMaximumWidth(190)
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.toolbar)
         
         # Adicionar ações à barra de ferramentas
@@ -112,6 +94,10 @@ class MainWindow(QMainWindow):
         acao_outros = QAction(QIcon(r"Assets\Images\penguin.png"), "Outros", self)
         acao_ppro = QAction(QIcon(r"Assets\Icons\prproj.ico"), "Extensões PPRO", self)
         #acao_configuracoes = QAction(QIcon(r"Assets\Icons\config.ico"), "Configurações", self)
+        
+        #spacer = cw.Widget()
+        #spacer.setSizePolicy(cw.SizePolicy.Policy.Expanding, cw.SizePolicy.Policy.Expanding)
+        #self.toolbar.addWidget(spacer)
         
         self.toolbar.addAction(acao_home)
         self.toolbar.widgetForAction(acao_home).setProperty("active",True)
@@ -126,53 +112,62 @@ class MainWindow(QMainWindow):
         acao_ppro.triggered.connect(self.mostrar_extensoes)
         acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
         
-
-        
-        self.botao_expandir = cw.PushButton("<",animacao=False)
-        self.botao_expandir.clicked.connect(self.toggle_sidebar)
-
-        #spacer = QWidget()
-        #spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        #self.toolbar.addWidget(spacer)
+        self.toolbar.addSeparator()
+        self.botao_expandir = cw.PushButton("",animacao=False)
+        self.botao_expandir.setIcon(QIcon(r"Assets\svg\menu.svg"))
+        self.botao_expandir.clicked.connect(self.change_animation_direction)
         self.toolbar.addWidget(self.botao_expandir)
-
-        # Alinhar o container ao fundo usando o layout
-
-        self.original_sidebar_width = self.toolbar.maximumWidth()  # Corrigido para self.toolbar
-        self.minimized_sidebar_width = 50
         
         
+        self.animationMin = QPropertyAnimation(self.toolbar, b"minimumWidth")
+        self.animationMin.setDuration(500)  # 1 segundo
+        self.animationMin.setStartValue(50)
+        self.animationMin.setEndValue(190)
+        self.animationMin.setEasingCurve(QEasingCurve.Type.InOutCubic)
+        
+        self.animationMax = QPropertyAnimation(self.toolbar, b"maximumWidth")
+        self.animationMax.setDuration(500)  # 1 segundo
+        self.animationMax.setStartValue(50)
+        self.animationMax.setEndValue(190)
+        self.animationMax.setEasingCurve(QEasingCurve.Type.InOutCubic)
         
         for action in self.toolbar.actions():
             button = self.toolbar.widgetForAction(action)
             if button:
-                button.setMinimumWidth(150)
-        
+                button.setMinimumWidth(180)
+                button.setMaximumWidth(180)
+                
         if bool(LoadConfigs.Config.getConfigData(config="ConfigInterface",data="barra_lateral_pequena")) == True:
-            self.toggle_sidebar()
-
-    def toggle_sidebar(self):
-        if self.toolbar.maximumWidth() == self.minimized_sidebar_width:  # Barra lateral minimizada
-            self.toolbar.setMaximumWidth(self.original_sidebar_width)  # Expandir
-            self.botao_expandir.setText("<")
-            self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-            self.barra_pequena = False
-            
-            for action in self.toolbar.actions():
-                button = self.toolbar.widgetForAction(action)
-                if button:
-                    button.setMinimumWidth(150)
-            
-        else: 
-            self.toolbar.setMaximumWidth(self.minimized_sidebar_width)  # Minimizar
-            self.botao_expandir.setText(">")
-            self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+            self.change_animation_direction()
+           
+    def change_animation_direction(self):
+        if self.barra_pequena == False:
+            self.animationMin.setDirection(QPropertyAnimation.Direction.Backward)
+            self.animationMin.finished.connect(lambda: self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly))
+            self.animationMin.start()
+            #self.botao_expandir.setText(">")
             self.barra_pequena = True
-            
             for action in self.toolbar.actions():
                 button = self.toolbar.widgetForAction(action)
                 if button:
-                    button.setMinimumWidth(0)
+                    button.setMinimumWidth(50)
+                    button.setMaximumWidth(50)
+                    button.style().unpolish(button)
+                    button.style().polish(button)
+        else:
+            self.animationMax.setDirection(QPropertyAnimation.Direction.Forward)
+            self.animationMax.finished.connect(lambda: self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon))
+            self.animationMax.start()
+            #self.botao_expandir.setText("<")
+            self.barra_pequena = False
+            for action in self.toolbar.actions():
+                button = self.toolbar.widgetForAction(action)
+                if button:
+                    button.setMinimumWidth(180)
+                    button.setMaximumWidth(180)
+                    button.style().unpolish(button)
+                    button.style().polish(button)
+
            
     def atualizar_estilo_botoes(self):
         sender_action = self.sender() 
@@ -204,3 +199,4 @@ class MainWindow(QMainWindow):
         
     def mostrar_extensoes(self):
         self.stacked_widget.setCurrentWidget(self.extensoes)
+        

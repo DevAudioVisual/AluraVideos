@@ -20,7 +20,7 @@ class Interface(cw.Widget):
         self.campo_videos = cw.LineEdit()
         self.campo_videos.setPlaceholderText("Arquivos para converter")
         self.campo_videos.setClearButtonEnabled(True)
-        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),cw.LineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
         self.action_campo_videos.setToolTip("Buscar")
         self.action_campo_videos.triggered.connect(self.setVideos)
         
@@ -28,7 +28,7 @@ class Interface(cw.Widget):
         self.campo_saida = cw.LineEdit()
         self.campo_saida.setPlaceholderText("Pasta de saída")
         self.campo_saida.setClearButtonEnabled(True)
-        self.action_campo_saida = self.campo_saida.addAction(QIcon(r"Assets\Images\folder.png"),cw.LineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_saida = self.campo_saida.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
         self.action_campo_saida.setToolTip("Buscar")
         self.action_campo_saida.triggered.connect(self.setDirSaida)
         

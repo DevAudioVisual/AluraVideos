@@ -22,7 +22,7 @@ class Interface(QWidget):
         self.campo_videos.setReadOnly(True)
         self.campo_videos.setPlaceholderText("Busque pelos vídeos para subir")
         self.campo_videos.setClearButtonEnabled(True)
-        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"),QLineEdit.ActionPosition.TrailingPosition)
+        self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\svg\folder.svg"),QLineEdit.ActionPosition.TrailingPosition)
         self.action_campo_videos.triggered.connect(self.buscarVideos)
         
         self.label_showcase = QLabel("Nome da showcase:")

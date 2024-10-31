@@ -14,6 +14,15 @@ import qtsass
 import os
 from Util import Tokens
 
+# version = x.y.z
+# x = major
+# y = minor
+# z = path
+__version__ = "V1.0.4"
+__company_name__ = "DevAudioVisual"
+__copyright__ = "Copyright 2024"
+__author__ = "Samuel Mariano"
+
 def is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
@@ -36,8 +45,8 @@ def main():
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
     
-    qtsass.compile_filename(r'style.scss', r'style.qss')
-    with open(r"style.qss", "r") as f:
+    qtsass.compile_filename(r'styles\style.scss', r'styles\style.qss')
+    with open(r"styles\style.qss", "r") as f:
              stylesheet = f.read()
     app.setStyleSheet(stylesheet)
     

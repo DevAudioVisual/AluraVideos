@@ -50,7 +50,7 @@ class Interface(cw.Widget):
         self.campo_dir.setText(self.config["diretorio_padrao"])
         self.campo_dir.setPlaceholderText("Diga onde o projeto será criado.")
         self.campo_dir.setClearButtonEnabled(True)
-        dir_action = self.campo_dir.addAction(QIcon(r"Assets\Images\folder.png"), cw.LineEdit.ActionPosition.TrailingPosition)
+        dir_action = self.campo_dir.addAction(QIcon(r"Assets\svg\folder.svg"), cw.LineEdit.ActionPosition.TrailingPosition)
         
         tool_button = self.campo_dir.findChildren(QAction)[0] 
         tool_button.setToolTip("Buscar vídeos")
@@ -67,8 +67,8 @@ class Interface(cw.Widget):
         label_videos.setObjectName("medio")
         self.campo_videos.setPlaceholderText("Digite a URL ou o local dos arquivos.")
         self.campo_videos.setClearButtonEnabled(True)
-        #self.campo_videos.findChildren(QAction)[0].setIcon(QIcon(r"Assets\Images\folder.png"))
-        buscar_videos_action = self.campo_videos.addAction(QIcon(r"Assets\Images\folder.png"), cw.LineEdit.ActionPosition.TrailingPosition)
+        #self.campo_videos.findChildren(QAction)[0].setIcon(QIcon(r"Assets\svg\folder.svg"))
+        buscar_videos_action = self.campo_videos.addAction(QIcon(r"Assets\svg\folder.svg"), cw.LineEdit.ActionPosition.TrailingPosition)
         
         def open_file_dialog_videos():
             file_name = filedialog.askopenfilename()

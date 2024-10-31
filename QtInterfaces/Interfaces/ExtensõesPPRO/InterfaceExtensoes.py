@@ -41,9 +41,9 @@ class Interface(cw.Widget):
             botao_ordinem = cw.PushButton(f"{LoadingScreen.versao_ordinem}")
             botao_notabillity = cw.PushButton(f"{LoadingScreen.versao_notabillity}")
             
-            botao_effector.setIcon(QIcon(r"Assets\Icons\download.ico"))
-            botao_ordinem.setIcon(QIcon(r"Assets\Icons\download.ico"))
-            botao_notabillity.setIcon(QIcon(r"Assets\Icons\download.ico"))
+            botao_effector.setIcon(QIcon(r"Assets\svg\download.svg"))
+            botao_ordinem.setIcon(QIcon(r"Assets\svg\download.svg"))
+            botao_notabillity.setIcon(QIcon(r"Assets\svg\download.svg"))
             
             botao_effector.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
             botao_ordinem.setLayoutDirection(Qt.LayoutDirection.RightToLeft)

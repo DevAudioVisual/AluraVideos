@@ -1,1 +1,1 @@
-pyinstaller --clean --onedir --noconfirm --noconsole --icon=Assets\Icons\icon.ico -n AluraVideos --add-data="Templates;00_Pastas/Templates" --add-data="Assets;00_Pastas/Assets" --add-data="ffmpeg;00_Pastas/ffmpeg" --add-data="Config;Config" --add-data="TensorModels;00_Pastas/TensorModels" --add-data="style.qss;00_Pastas/." --add-data="style.scss;00_Pastas/." Main.py
+pyinstaller.exe AluraVideos.spec

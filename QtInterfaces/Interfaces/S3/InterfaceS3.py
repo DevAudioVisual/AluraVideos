@@ -97,14 +97,14 @@ class Interface(cw.Widget):
       campo_access_key.setPlaceholderText("Digite a sua access key")
       campo_access_key.setClearButtonEnabled(True)
       campo_access_key.setEchoMode(cw.LineEdit.EchoMode.Password)
-      action_access_key = campo_access_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
+      action_access_key = campo_access_key.addAction(QIcon(r"Assets\svg\eye.svg"), cw.LineEdit.ActionPosition.TrailingPosition)
       def alterarOfuscarAccessKey():
         if campo_access_key.echoMode() == cw.LineEdit.EchoMode.Password:
             campo_access_key.setEchoMode(cw.LineEdit.EchoMode.Normal)
-            action_access_key.setIcon(QIcon(r"Assets\Icons\eye_off.ico"))  # Ícone de olho aberto
+            action_access_key.setIcon(QIcon(r"Assets\svg\eye-off.svg"))  # Ícone de olho aberto
         else:
             campo_access_key.setEchoMode(cw.LineEdit.EchoMode.Password)
-            action_access_key.setIcon(QIcon(r"Assets\Icons\eye_on.ico")) 
+            action_access_key.setIcon(QIcon(r"Assets\svg\eye.svg")) 
       action_access_key.triggered.connect(alterarOfuscarAccessKey)
           
       label_secret_key = cw.Label("Secret Key:")
@@ -112,14 +112,14 @@ class Interface(cw.Widget):
       campo_secret_key.setPlaceholderText("Digite a sua secret key")
       campo_secret_key.setClearButtonEnabled(True)
       campo_secret_key.setEchoMode(cw.LineEdit.EchoMode.Password)
-      action_secret_key = campo_secret_key.addAction(QIcon(r"Assets\Icons\eye_on.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
+      action_secret_key = campo_secret_key.addAction(QIcon(r"Assets\svg\eye.svg"), cw.LineEdit.ActionPosition.TrailingPosition)
       def alterarOfuscarSecretKey():
         if campo_secret_key.echoMode() == cw.LineEdit.EchoMode.Password:
             campo_secret_key.setEchoMode(cw.LineEdit.EchoMode.Normal)
-            action_secret_key.setIcon(QIcon(r"Assets\Icons\eye_off.ico"))  # Ícone de olho aberto
+            action_secret_key.setIcon(QIcon(r"Assets\svg\eye-off.svg"))  # Ícone de olho aberto
         else:
             campo_secret_key.setEchoMode(cw.LineEdit.EchoMode.Password)
-            action_secret_key.setIcon(QIcon(r"Assets\Icons\eye_on.ico")) 
+            action_secret_key.setIcon(QIcon(r"Assets\svg\eye.svg")) 
       action_secret_key.triggered.connect(alterarOfuscarSecretKey)
       
       
