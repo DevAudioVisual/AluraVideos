@@ -1,3 +1,4 @@
+import os
 import threading
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QCursor
@@ -23,7 +24,7 @@ class Interface(cw.Widget):
         layout.setContentsMargins(10, 20, 10, 10)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
         
-        if not Util.verificar_premiere_pro():
+        if not os.path.isdir(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions"):
             label = cw.Label("<font color='red'>Adobe Premiere Pro não encontrado.</font>")
             label.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
             label.setObjectName("grande")

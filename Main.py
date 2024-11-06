@@ -18,7 +18,7 @@ from Util import Tokens
 # x = major
 # y = minor
 # z = path
-__version__ = "V1.0.4"
+__version__ = "V1.1.0"
 __company_name__ = "DevAudioVisual"
 __copyright__ = "Copyright 2024"
 __author__ = "Samuel Mariano"
@@ -37,7 +37,7 @@ def run_as_admin():
         sys.exit()
 
 def main():
-    run_as_admin()
+    #run_as_admin()
     setup_signal_handlers()
     setup_logging()
     
@@ -45,10 +45,17 @@ def main():
     locale = QLocale(QLocale.Language.Portuguese, QLocale.Country.Brazil)
     QLocale.setDefault(locale)
     
-    qtsass.compile_filename(r'styles\style.scss', r'styles\style.qss')
-    with open(r"styles\style.qss", "r") as f:
-             stylesheet = f.read()
-    app.setStyleSheet(stylesheet)
+    try:
+        qtsass.compile_filename(r'styles\style.scss', r'styles\style.qss')
+    except Exception as e:
+        import Util.Util as util
+        util.LogError("QtSass",e,False)
+    try:    
+        with open(r"styles\style.qss", "r") as f:
+                stylesheet = f.read()
+        app.setStyleSheet(stylesheet)
+    except Exception as e:   
+        util.LogError("SetStyleSheet",f"Ocorreu um erro ao definir a estilização:\n{e}",False)        
     
     loading_screen = LoadingScreen()
     loading_screen.show()

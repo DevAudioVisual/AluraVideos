@@ -15,10 +15,18 @@ class MenuBar():
     def Arquivo(self):
       self.visualizar_menu = self.menubar.addMenu("Arquivo")
       self.atalhos_action = QAction(QIcon(r"Assets\Icons\shortcut.ico"), "Atalhos (Em breve)", self.MainWindow)
+      self.atalhos_action.setStatusTip("Em breve")
+      
       self.logs_action = QAction(QIcon(r"Assets\Images\logs.png"), "Logs", self.MainWindow)
+      self.logs_action.setStatusTip("Acesse o arquivo de logs do AluraVideos")
+      
       self.repositorion_action = QAction(QIcon(r"Assets\Icons\github.ico"), "Repositório", self.MainWindow)
+      
       self.notion_action = QAction(QIcon(r"Assets\Icons\notion.ico"), "Documentação", self.MainWindow)
-      self.preferences_action = QAction(QIcon(r"Assets\Icons\config.ico"), "Preferências", self.MainWindow)
+      self.notion_action.setStatusTip("Acesse a documentação oficial do AluraVideos")
+      
+      self.preferences_action = QAction(QIcon(r"Assets\Icons\config.ico"), "Preferências (Em breve)", self.MainWindow)
+      self.preferences_action.setStatusTip("Em breve")
       
       self.visualizar_menu.addAction(self.atalhos_action)
       self.visualizar_menu.addAction(self.logs_action)

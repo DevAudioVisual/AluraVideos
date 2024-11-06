@@ -20,6 +20,8 @@ class Interface(cw.Widget):
         
         self.setContentsMargins(10, 10, 10, 10)
         
+        layoutPrincipal = cw.VBoxLayout()
+        
         self.entrada_videos = {}
         self.dados = {}
                 
@@ -100,6 +102,11 @@ class Interface(cw.Widget):
         layout_conteudo.addLayout(self.layout2)  
         layout.addWidget(self.buttonrenomear)
 
+        # widgetPrincipal = cw.Widget()
+        # widgetPrincipal.setLayout(layout)
+        # widgetPrincipal.setMinimumWidth(500)
+
+        # layoutPrincipal.addWidget(widgetPrincipal,alignment=Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
         
     

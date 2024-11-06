@@ -152,7 +152,20 @@ class DownloadDropApp(QObject):
         else:
             return f"{size:.2f} bytes"
         
-
+def quebrar_texto(texto, limite):
+    resultado = ""
+    contador = 0
+    
+    for i, caractere in enumerate(texto):
+        resultado += caractere
+        contador += 1
+        
+        # Quando o limite é atingido
+        if contador == limite:
+            resultado += "<br>"   # Quebra normal
+            contador = 0  # Reinicia o contador para a próxima linha
+    
+    return resultado
 class ProgressWidget(QWidget):
     def __init__(self, projeto):
         super().__init__()
@@ -161,7 +174,8 @@ class ProgressWidget(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         layout.setContentsMargins(10, 20, 10, 10)
 
-        self.titulo = QLabel(f"Aguarde! Estou criando o projeto: {projeto} para você! ^^")
+        self.titulo = QLabel(f"Aguarde! Estou criando o projeto:<br><font face='Helvetica'>{projeto}</font>")
+        self.titulo.setWordWrap(True)
         self.titulo.setObjectName("grande")
         self.subtitulo = QLabel("Etapa atual: Fazendo download")
         self.subtitulo.setObjectName("medio")

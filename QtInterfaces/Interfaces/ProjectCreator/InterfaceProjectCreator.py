@@ -2,6 +2,7 @@ import re
 import threading
 import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QSizePolicy
 from PyQt6.QtGui import QIcon, QCursor, QAction
 from bs4 import BeautifulSoup
 from unidecode import unidecode
@@ -15,11 +16,12 @@ from tkinter import filedialog
 
 class Interface(cw.Widget):
     def __init__(self):
-        super().__init__() 
+        super().__init__()
+                 
         self.df = LoadConfigs.Config.getDataFrame("ConfigCriarProjeto")
         self.config = LoadConfigs.Config.getConfigData("ConfigCriarProjeto")
         self.stacked_widget = cw.StackedWidget(self)
-        
+                
         self.campo_videos = cw.LineEdit()
         self.campo_nome = cw.LineEdit()
         
@@ -29,7 +31,8 @@ class Interface(cw.Widget):
         
         
         layout = cw.VBoxLayout()
-        layout.addWidget(self.stacked_widget)
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.stacked_widget)#, alignment=Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
         self.ultimo_texto = ""
@@ -186,7 +189,7 @@ class Interface(cw.Widget):
                 cw.MessageBox.warning(None, "Aviso", "Link dropbox inválido ou inexistente.")
                 return
             def buscar():
-                self.setCursor(Qt.CursorShape.WaitCursor)
+                #self.setCursor(Qt.CursorShape.WaitCursor)
                 self.campo_nome.setText("Buscando...")
                 self.BotaoCriar.setText("Aguarde...")
                 self.BotaoCriar.setEnabled(False)
@@ -194,7 +197,7 @@ class Interface(cw.Widget):
                 
                 nome = obter_nome_pasta(self.campo_videos.text())
                 
-                self.setCursor(Qt.CursorShape.ArrowCursor)
+                #self.setCursor(Qt.CursorShape.ArrowCursor)
                 self.campo_nome.setText(limpar_texto(nome))
                 self.BotaoCriar.setText("Criar")
                 self.BotaoCriar.setEnabled(True)

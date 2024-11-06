@@ -12,43 +12,43 @@ QLabel {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   font-weight: bold;
-  padding: 10px 0; }
+  padding: 0px 0px; }
   QLabel#extra-grande {
     color: white;
     font-family: "Chakra Petch", Helvetica, Arial, sans-serif;
     font-size: 30px;
     font-weight: bold;
-    padding: 10px 0; }
+    padding: 0px 0px; }
   QLabel#grande {
     color: white;
     font-family: "Chakra Petch", Helvetica, Arial, sans-serif;
     font-size: 25px;
     font-weight: bold;
-    padding: 10px 0; }
+    padding: 0px 0px; }
   QLabel#medio {
     color: white;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 15px;
     font-weight: bold;
-    padding: 10px 0; }
+    padding: 0px 0px; }
   QLabel#medio-normal {
     color: white;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 15px;
     font-weight: normal;
-    padding: 10px 0; }
+    padding: 0px 0px; }
   QLabel#pequeno {
     color: white;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
     font-weight: bold;
-    padding: 10px 0; }
+    padding: 0px 0px; }
   QLabel#pequeno-normal {
     color: white;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 12px;
     font-weight: normal;
-    padding: 10px 0; }
+    padding: 0px 0px; }
 
 QPushButton {
   background-color: #4C3BCF;
@@ -114,7 +114,6 @@ QMenuBar::item:pressed {
   color: white; }
 
 QToolBar {
-  background-color: teal;
   color: white;
   padding: 5px; }
 
@@ -125,7 +124,7 @@ QToolButton {
   padding: 5px;
   width: 100%;
   color: white;
-  background-color: teal;
+  background-color: transparent;
   text-align: left; }
 
 QToolButton[active="true"], QToolButton:hover {
@@ -192,9 +191,13 @@ QTabBar::tab:selected, QTabBar::tab:hover {
 
 QToolTip {
   padding: 5px;
-  border-radius: 3px;
-  font-size: 12px;
-  color: #6c757d; }
+  color: white;
+  background-color: #424242;
+  border-left: 3px solid #4C3BCF;
+  background-repeat: no-repeat;
+  text-align: left;
+  padding-left: 8px;
+  margin: 0px; }
 
 QAbstractItemView {
   color: white; }
@@ -270,3 +273,26 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
 
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
   background: none; }
+
+QTableWidget {
+  background-color: transparent;
+  padding: 10px;
+  border-radius: 5px;
+  gridline-color: transparent; }
+
+QTableWidget::item {
+  padding-left: 5px;
+  padding-right: 5px; }
+
+QTableWidget::item:selected, QTableWidget::item:hover {
+  background-color: #4B70F5; }
+
+QHeaderView::section:hover {
+  background-color: #4B70F5; }
+
+QHeaderView::section:horizontal {
+  background-color: #4C3BCF;
+  color: white;
+  padding: 3px;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px; }

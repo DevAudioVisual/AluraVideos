@@ -13,7 +13,7 @@ class S3TreeItem(QStandardItem):
         if self.is_folder:
             self.setEditable(False)
             # Adicionar um item filho "falso" para mostrar que ele pode ser expandido
-            self.setIcon(QIcon(r"Assets\Images\folder.png"))
+            self.setIcon(QIcon(r"Assets\svg\folder.svg"))
             self.appendRow(QStandardItem(''))  
         else:
             file_extension = self.full_path.split('.')[-1]

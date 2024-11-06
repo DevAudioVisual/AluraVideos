@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QSlider,QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
-from PyQt6.QtGui import QCursor,QTransform
-from PyQt6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve, QSize
+from PyQt6.QtGui import QCursor
+from PyQt6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve
+from PyQt6.QtGui import QPainter, QLinearGradient,QColor
 
 class Slider(QSlider):
     def __init__(self, *args, **kwargs):
@@ -36,10 +37,6 @@ class ProgressBar(QProgressBar):
         super().__init__(*args, **kwargs)
 
 class ToolButton(QToolButton):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-class ToolBar(QToolBar):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -79,6 +76,17 @@ class LineEdit(QLineEdit):
 class Label(QLabel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.setWordWrap(True)
+        
+class ToolBar(QToolBar):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        gradient = QLinearGradient(0, 0, self.width(), self.height())
+        gradient.setColorAt(0.0, QColor(0x4C3BCF))  # Cor inicial
+        gradient.setColorAt(1.0, QColor(0x6c757d))  # Cor final
+        painter.fillRect(self.rect(), gradient)
         
 class PushButton(QPushButton):
     def __init__(self, *args, animacao=True, **kwargs):
@@ -138,6 +146,8 @@ class GridLayout(QGridLayout):
 class Widget(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)       
+        #self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed) 
+        #self.setMaximumSize(900,10000)
         
 class SizePolicy(QSizePolicy):
     def __init__(self, *args, **kwargs):

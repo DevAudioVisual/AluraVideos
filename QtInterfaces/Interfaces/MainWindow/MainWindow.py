@@ -10,7 +10,7 @@ from QtInterfaces.Interfaces.Preferencias import InterfacePreferencias
 from QtInterfaces.Interfaces.ExtensõesPPRO import InterfaceExtensoes
 from QtInterfaces.Interfaces.MainWindow.MenuBar import MenuBar
 from QtInterfaces.Interfaces.MainWindow.Tabs import Tabs
-from Util import Util
+
 
 global main_window
 main_window = None
@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__() 
         #self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)]
+        self.barra_pequena = False
         import Main
         self.setWindowTitle(f'AluraVideos {Main.__version__}')
         icon = QIcon(r"Assets\Icons\icon.ico")
@@ -54,7 +55,6 @@ class MainWindow(QMainWindow):
         self.tabs = Tabs(self.menubar)  # Passar a instância de MenuBar para Tabs
         
         self.Navbar()
-        self.barra_pequena = False
  
         
         self.stacked_widget.addWidget(self.tabs)
@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.atalhos)
         
         self.extensoes = InterfaceExtensoes.Interface()
-        self.stacked_widget.addWidget(self.extensoes)
+        if os.path.isdir(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions"): self.stacked_widget.addWidget(self.extensoes)
         
         
         #SystemTrayIcon.SystemTrayIcon(self)
@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
             print(e)
     def Navbar(self):
         # Criar a barra de ferramentas (navbar)
-        self.toolbar = QToolBar("", self)
+        self.toolbar = cw.ToolBar("", self)
         self.toolbar.setOrientation(Qt.Orientation.Vertical)
         self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.toolbar.layout().setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -108,12 +108,13 @@ class MainWindow(QMainWindow):
         acao_edicao.triggered.connect(self.mostrar_ferramentas)
         acao_edicao.triggered.connect(self.atualizar_estilo_botoes)
         
-        self.toolbar.addAction(acao_ppro)
-        acao_ppro.triggered.connect(self.mostrar_extensoes)
-        acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
+        if os.path.isdir(r"C:\Program Files (x86)\Common Files\Adobe\CEP\extensions"):
+            self.toolbar.addAction(acao_ppro)
+            acao_ppro.triggered.connect(self.mostrar_extensoes)
+            acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
         
         self.toolbar.addSeparator()
-        self.botao_expandir = cw.PushButton("",animacao=False)
+        self.botao_expandir = cw.PushButton("",animacao=True)
         self.botao_expandir.setIcon(QIcon(r"Assets\svg\menu.svg"))
         self.botao_expandir.clicked.connect(self.change_animation_direction)
         self.toolbar.addWidget(self.botao_expandir)
@@ -122,13 +123,13 @@ class MainWindow(QMainWindow):
         self.animationMin = QPropertyAnimation(self.toolbar, b"minimumWidth")
         self.animationMin.setDuration(500)  # 1 segundo
         self.animationMin.setStartValue(50)
-        self.animationMin.setEndValue(190)
+        self.animationMin.setEndValue(200)
         self.animationMin.setEasingCurve(QEasingCurve.Type.InOutCubic)
         
         self.animationMax = QPropertyAnimation(self.toolbar, b"maximumWidth")
         self.animationMax.setDuration(500)  # 1 segundo
         self.animationMax.setStartValue(50)
-        self.animationMax.setEndValue(190)
+        self.animationMax.setEndValue(200)
         self.animationMax.setEasingCurve(QEasingCurve.Type.InOutCubic)
         
         for action in self.toolbar.actions():
@@ -145,28 +146,35 @@ class MainWindow(QMainWindow):
             self.animationMin.setDirection(QPropertyAnimation.Direction.Backward)
             self.animationMin.finished.connect(lambda: self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly))
             self.animationMin.start()
-            #self.botao_expandir.setText(">")
             self.barra_pequena = True
-            for action in self.toolbar.actions():
-                button = self.toolbar.widgetForAction(action)
-                if button:
-                    button.setMinimumWidth(50)
-                    button.setMaximumWidth(50)
-                    button.style().unpolish(button)
-                    button.style().polish(button)
+            
+            def mudar():
+                tamanho = self.toolbar.minimumWidth()-10  # Obtém o valor atual de minimumWidth
+                for action in self.toolbar.actions():
+                    button = self.toolbar.widgetForAction(action)
+                    if button:
+                        button.setMinimumWidth(tamanho)
+                        button.setMaximumWidth(tamanho)
+                        button.style().unpolish(button)
+                        button.style().polish(button)
+
+            self.animationMin.valueChanged.connect(mudar)
         else:
             self.animationMax.setDirection(QPropertyAnimation.Direction.Forward)
-            self.animationMax.finished.connect(lambda: self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon))
+            self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
             self.animationMax.start()
-            #self.botao_expandir.setText("<")
             self.barra_pequena = False
-            for action in self.toolbar.actions():
-                button = self.toolbar.widgetForAction(action)
-                if button:
-                    button.setMinimumWidth(180)
-                    button.setMaximumWidth(180)
-                    button.style().unpolish(button)
-                    button.style().polish(button)
+            def mudar():
+                tamanho = self.toolbar.maximumWidth()-10  # Obtém o valor atual de minimumWidth
+                for action in self.toolbar.actions():
+                    button = self.toolbar.widgetForAction(action)
+                    if button:
+                        button.setMinimumWidth(tamanho)
+                        button.setMaximumWidth(tamanho)
+                        button.style().unpolish(button)
+                        button.style().polish(button)
+
+            self.animationMax.valueChanged.connect(mudar)
 
            
     def atualizar_estilo_botoes(self):
@@ -199,4 +207,12 @@ class MainWindow(QMainWindow):
         
     def mostrar_extensoes(self):
         self.stacked_widget.setCurrentWidget(self.extensoes)
+        
+    def showEvent(self, event):
+        # Centralizar a janela no monitor atual após ela ser exibida
+        qtRectangle = self.frameGeometry()
+        centerPoint = self.window().windowHandle().screen().availableGeometry().center()
+        qtRectangle.moveCenter(centerPoint)
+        self.move(qtRectangle.topLeft())
+        super().showEvent(event)
         
