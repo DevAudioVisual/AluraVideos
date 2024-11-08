@@ -14,13 +14,13 @@ def LoadKeys():
   global GITHUB,VIMEO,PIXABAY,AWS_S3
  #credentials = Credentials()
   try:
-    key = "O+k9G/kMiXqcm+FRKGvAWQ=="
+    key = os.getenv("LOGIN_KEY")
     dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
     tokens = os.path.join(dir,"credentials.json") 
     with open(tokens, 'r') as f:
         encoded_jwt = f.read()  # Lê o token do arquivo
         decoded_jwt = jwt.decode(encoded_jwt, key, algorithms=['HS256'])
-    response = requests.post("https://aluravideosapi.onrender.com/login",
+    response = requests.post("https://samuka.pythonanywhere.com/login",
                          json=decoded_jwt,
                          timeout=60)
     GITHUB = response.json().get("GITHUB")#credentials.getKeys()["GITHUB"]

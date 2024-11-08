@@ -113,7 +113,7 @@ class Interface(cw.Widget):
             "password": self.campo_tokens.text()
         }
         try:
-            response = requests.post("https://aluravideosapi.onrender.com/login",
+            response = requests.post("https://samuka.pythonanywhere.com/login",
                             json=payload,
                             timeout=60)
             
@@ -121,7 +121,7 @@ class Interface(cw.Widget):
                 # Se a autenticação for bem-sucedida, obtem o token de acesso
                 print("Autenticação bem-sucedida.")
                 
-                key = "O+k9G/kMiXqcm+FRKGvAWQ=="
+                key = os.getenv("LOGIN_KEY")
                 encoded_jwt = jwt.encode(payload, key, algorithm='HS256')
             
                 with open(self.tokens, 'w') as f:

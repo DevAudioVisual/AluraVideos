@@ -12,6 +12,7 @@ from QtInterfaces.Interfaces.LoadingScreen.LoadingScreen import LoadingScreen, L
 from QtInterfaces.Interfaces.MainWindow import MainWindow
 import qtsass
 from Util import Tokens
+from dotenv import load_dotenv
 
 # Metadados da aplicação
 __version__ = "V1.1.0"
@@ -37,7 +38,7 @@ def run_as_admin():
 # Função principal da aplicação
 def main():
     #run_as_admin()
-    
+    load_dotenv()
     # Configurações de inicialização
     setup_signal_handlers()
     setup_logging()
@@ -66,16 +67,13 @@ def main():
     loading_screen = LoadingScreen()
     loading_screen.show()
     loading_thread = LoadingThread()
-
+    
     # Conecta sinais de progresso e atualizações de etapas
     loading_thread.progress_updated.connect(loading_screen.update_progress)
     loading_thread.etapa.connect(loading_screen.update_etapa)
     
-    # Executa a verificação de atualização em thread principal, se chaves forem carregadas
-    def _updates():
-        if Tokens.LoadKeys():
-            AutoUpdate.app().check_updates()
-    loading_thread.execute_in_main_thread.connect(lambda: _updates())
+    # Executa a verificação de atualização em thread principal, se chaves forem carregadas      
+    loading_thread.execute_in_main_thread.connect(lambda: AutoUpdate.app().check_updates())
 
     # Finaliza tela de carregamento e inicializa a janela principal
     loading_thread.finished.connect(loading_screen.close)

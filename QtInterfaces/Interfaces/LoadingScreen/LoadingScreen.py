@@ -2,6 +2,7 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from PyQt6.QtGui import QPixmap, QPainter, QLinearGradient,QColor
 from PyQt6.QtWidgets import QWidget
 from Config import LoadConfigs
+from Util import Tokens
 from WebSocket import WebSocket
 import Util.CustomWidgets as cw
 global Config
@@ -113,10 +114,11 @@ class LoadingThread(QThread):
         self.processos = [
             self.carregar_configs,
             #self.carregar_web_socket,
-            self.verificar_atualizacoes,
             #self.carregar_atalhos,
             #self.versoes_extensões_ppro
             self.carregar_tensorflow,
+            self.validar_credenciais,
+            self.verificar_atualizacoes,
         ]
         
     def run(self):
@@ -154,6 +156,10 @@ class LoadingThread(QThread):
         self.etapa.emit("Buscando por atualizações")
         self.execute_in_main_thread.emit(self.verificar_atualizacoes) 
         #QThread.msleep(500)
+    
+    def validar_credenciais(self):
+        self.etapa.emit("Validando credenciais de acesso")
+        Tokens.LoadKeys()
         
 
         
