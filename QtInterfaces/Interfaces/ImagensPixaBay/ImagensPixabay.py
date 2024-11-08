@@ -7,8 +7,7 @@ from PyQt6.QtGui import QPixmap, QImage, QCursor
 from PyQt6.QtCore import Qt, QByteArray, QBuffer, QIODevice, QThread, pyqtSignal, QRunnable, QThreadPool
 import Util.CustomWidgets as cw
 from functools import lru_cache
-from Util import Util
-from Util.Tokens import Credentials
+from Util import Tokens, Util
 
 image_cache = {}
 threadpool = QThreadPool()
@@ -292,7 +291,8 @@ class SearchThread(QThread):
         self.ordem = ordem
 
     def run(self):
-        api_key = Credentials().getKeys()["PIXABAY"]
+        global PIXABAY
+        api_key = Tokens.PIXABAY
         if self.tipo == "Vetores":
             url = f"https://pixabay.com/api/?key={api_key}&q={self.query}&image_type=vector&order={
                 self.ordem}&page={self.page}&per_page={self.per_page}"

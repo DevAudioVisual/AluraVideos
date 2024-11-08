@@ -134,7 +134,7 @@ class GitRequest():
             release_version = version.parse(latest_tag_name.lstrip("V"))
             return release_notes, release_version
         except requests.exceptions.RequestException as e:
-            Util.LogError(func="PPRO", mensagem=f"Erro na requisição extensão ppro: {self.repo_name} {e}")
+            Util.LogError(func="PPRO", mensagem=f"Erro na requisição extensão ppro: {self.repo_name} {e}",dialog=False)
             return "Erro", "Erro"
 
 def versaoAtual(arquivo):

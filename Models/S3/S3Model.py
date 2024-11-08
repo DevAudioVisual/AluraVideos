@@ -10,12 +10,13 @@ from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QObject, QThread, QTimer
 from Models.S3.ProgressDialog import ProgressDialog
 from Models.S3.Workers.S3Worker import S3Worker
-from Util.Tokens import Credentials
+from Util import Tokens
 
 class S3Model(QObject):
     def __init__(self):
         super().__init__() 
-        self.KEY = Credentials().getKeys()["S3"]
+        global AWS_S3
+        self.KEY = Tokens.AWS_S3
         self.s3_client = None
         self.bucket_name = "equipevideos"
         self.downloaded = False

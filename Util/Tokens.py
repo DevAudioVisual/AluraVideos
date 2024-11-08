@@ -1,4 +1,6 @@
 import os
+import jwt
+import requests
 import yaml
 from cryptography.fernet import Fernet
 from Util import Util
@@ -10,19 +12,28 @@ AWS_S3 = None
 
 def LoadKeys():
   global GITHUB,VIMEO,PIXABAY,AWS_S3
-  credentials = Credentials()
+ #credentials = Credentials()
   try:
-    GITHUB = credentials.getKeys()["GITHUB"]
-    VIMEO = credentials.getKeys()["VIMEO"]
-    PIXABAY = credentials.getKeys()["PIXABAY"]
-    AWS_S3 = credentials.getKeys()["S3"]
+    key = "O+k9G/kMiXqcm+FRKGvAWQ=="
+    dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
+    tokens = os.path.join(dir,"credentials.json") 
+    with open(tokens, 'r') as f:
+        encoded_jwt = f.read()  # Lê o token do arquivo
+        decoded_jwt = jwt.decode(encoded_jwt, key, algorithms=['HS256'])
+    response = requests.post("https://aluravideosapi.onrender.com/login",
+                         json=decoded_jwt,
+                         timeout=60)
+    GITHUB = response.json().get("GITHUB")#credentials.getKeys()["GITHUB"]
+    VIMEO = ""#credentials.getKeys()["VIMEO"]
+    PIXABAY = response.json().get("PIXABAY")#credentials.getKeys()["PIXABAY"]
+    AWS_S3 = response.json().get("S3")#credentials.getKeys()["S3"]
     return True
   except Exception as e:
     return False
     
   
 
-class Credentials():
+class Credentialss():
     def __init__(self):
         self.key = None
         self.dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")

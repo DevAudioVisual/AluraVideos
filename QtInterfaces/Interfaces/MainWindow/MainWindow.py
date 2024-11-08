@@ -40,14 +40,6 @@ class MainWindow(QMainWindow):
         self.home = Interface()
         self.stacked_widget.addWidget(self.home)
         
-        dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
-        tokens = os.path.join(dir,"tokens.yml")
-        key = os.path.join(dir,"key.key")
-        if not os.path.exists(tokens) or not os.path.exists(key):
-            return
-        
-        
-        
         self.extensoes = None
         self.config = InterfacePreferencias.Interface()
         self.atalhos = InterfaceAtalhos.Interface()

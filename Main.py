@@ -5,7 +5,6 @@ import logging
 import ctypes
 import threading
 from logging.handlers import TimedRotatingFileHandler
-
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QLocale
 from Models.AutoUpdate import AutoUpdate
@@ -37,7 +36,7 @@ def run_as_admin():
 
 # Função principal da aplicação
 def main():
-    run_as_admin()
+    #run_as_admin()
     
     # Configurações de inicialização
     setup_signal_handlers()

@@ -8,7 +8,6 @@ import yaml
 from packaging import version
 
 from Util import Tokens
-from Util.Tokens import Credentials
 
 class GithubUpdater:
     def __init__(self, versao_atual_ordinem, versao_atual_effector, versao_atual_notabillity):

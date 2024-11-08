@@ -2,7 +2,10 @@ import os
 import sys
 import webbrowser
 from PyQt6.QtCore import Qt, QCoreApplication, QProcess
-from Util import Tokens
+from PyQt6.QtWidgets import QMessageBox
+import jwt
+import requests
+from Util import Tokens, Util
 import Util.CustomWidgets as cw
 
 class Interface(cw.Widget):
@@ -19,10 +22,9 @@ class Interface(cw.Widget):
         layoutPrincipal.addWidget(h1)
         
         self.dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
-        self.tokens = os.path.join(self.dir,"tokens.yml")
-        self.key = os.path.join(self.dir,"key.key")    
+        self.tokens = os.path.join(self.dir,"credentials.json") 
         arquivos_inexistentes = []
-        arquivos = [self.tokens, self.key]
+        arquivos = [self.tokens]
         for arquivo in arquivos:
             if not os.path.exists(arquivo):
                 arquivos_inexistentes.append(arquivo)
@@ -32,14 +34,14 @@ class Interface(cw.Widget):
             h2.setObjectName("grande")
             h2.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
             
-            h3 = cw.Label(f"Por favor, registre suas chaves de acesso:")
+            h3 = cw.Label(f"Por favor, se registre agora:")
             h3.setWordWrap(True)
             h3.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
             h3.setObjectName("medio")
             
-            label_key = cw.Label(f"Key:")
+            label_key = cw.Label(f"Login:")
             self.campo_key = cw.LineEdit()
-            label_tokens = cw.Label(f"Token:")
+            label_tokens = cw.Label(f"Senha:")
             self.campo_tokens = cw.LineEdit()
             
             salvar = cw.PushButton("Registrar")
@@ -63,9 +65,9 @@ class Interface(cw.Widget):
                 h3.setAlignment(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop)
                 h3.setObjectName("medio")
                 
-                label_key = cw.Label(f"Key:")
+                label_key = cw.Label(f"Login:")
                 self.campo_key = cw.LineEdit()
-                label_tokens = cw.Label(f"Token:")
+                label_tokens = cw.Label(f"Senha:")
                 self.campo_tokens = cw.LineEdit()
                 
                 salvar = cw.PushButton("Registrar")
@@ -102,15 +104,34 @@ class Interface(cw.Widget):
         
     def salvarKeyEToken(self):
         try:
-            os.remove(self.key)
             os.remove(self.tokens)
         except Exception as e:
             print(e)         
         
-        with open(self.key, 'w') as f:
-            f.write(self.campo_key.text())
-        with open(self.tokens, 'w') as f:
-            f.write(self.campo_tokens.text())    
+        payload = {
+            "username": self.campo_key.text(),
+            "password": self.campo_tokens.text()
+        }
+        try:
+            response = requests.post("https://aluravideosapi.onrender.com/login",
+                            json=payload,
+                            timeout=60)
             
-        QCoreApplication.quit()
-        QProcess.startDetached(sys.executable, sys.argv)
+            if response.status_code == 200:
+                # Se a autenticação for bem-sucedida, obtem o token de acesso
+                print("Autenticação bem-sucedida.")
+                
+                key = "O+k9G/kMiXqcm+FRKGvAWQ=="
+                encoded_jwt = jwt.encode(payload, key, algorithm='HS256')
+            
+                with open(self.tokens, 'w') as f:
+                    f.write(encoded_jwt)    
+                    
+                QCoreApplication.quit()
+                QProcess.startDetached(sys.executable, sys.argv)  
+            else:
+                # Em caso de erro
+                QMessageBox.information(None,"Erro","Dados de login inválidos!")
+                print("Falha na autenticação:", response.json().get("message"))
+        except Exception as e:
+            Util.LogError("Home/Auth","Ocorreu um erro ao processar seu login na API.",True)
