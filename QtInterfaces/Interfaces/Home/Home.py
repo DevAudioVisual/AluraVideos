@@ -109,7 +109,7 @@ class Interface(cw.Widget):
             print(e)         
         
         payload = {
-            "username": self.campo_key.text(),
+            "username": self.campo_key.text().upper(),
             "password": self.campo_tokens.text()
         }
         try:
