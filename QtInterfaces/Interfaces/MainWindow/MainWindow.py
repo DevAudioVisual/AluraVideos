@@ -114,7 +114,8 @@ class MainWindow(QMainWindow):
             acao_ppro.triggered.connect(self.atualizar_estilo_botoes)
         
         self.toolbar.addSeparator()
-        self.botao_expandir = cw.PushButton("",animacao=True)
+        self.botao_expandir = cw.PushButton("",animacao=False)
+        self.botao_expandir.setObjectName("botaoMenuBarraLateral")
         self.botao_expandir.setIcon(QIcon(r"Assets\svg\menu.svg"))
         self.botao_expandir.clicked.connect(self.change_animation_direction)
         self.toolbar.addWidget(self.botao_expandir)
@@ -122,13 +123,13 @@ class MainWindow(QMainWindow):
         
         self.animationMin = QPropertyAnimation(self.toolbar, b"minimumWidth")
         self.animationMin.setDuration(500)  # 1 segundo
-        self.animationMin.setStartValue(50)
+        self.animationMin.setStartValue(70)
         self.animationMin.setEndValue(200)
         self.animationMin.setEasingCurve(QEasingCurve.Type.InOutCubic)
         
         self.animationMax = QPropertyAnimation(self.toolbar, b"maximumWidth")
         self.animationMax.setDuration(500)  # 1 segundo
-        self.animationMax.setStartValue(50)
+        self.animationMax.setStartValue(70)
         self.animationMax.setEndValue(200)
         self.animationMax.setEasingCurve(QEasingCurve.Type.InOutCubic)
         
@@ -158,6 +159,7 @@ class MainWindow(QMainWindow):
                         button.style().unpolish(button)
                         button.style().polish(button)
 
+                if not self.isMaximized(): self.adjustSize()
             self.animationMin.valueChanged.connect(mudar)
         else:
             self.animationMax.setDirection(QPropertyAnimation.Direction.Forward)
@@ -173,6 +175,7 @@ class MainWindow(QMainWindow):
                         button.setMaximumWidth(tamanho)
                         button.style().unpolish(button)
                         button.style().polish(button)
+                if not self.isMaximized(): self.adjustSize()
 
             self.animationMax.valueChanged.connect(mudar)
 

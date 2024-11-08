@@ -162,7 +162,7 @@ class Interface(cw.Widget):
     def upload_item(self):
         upload_path = filedialog.askdirectory()
         index = self.tree_view.currentIndex()
-        if not index.isValid():
+        if not index.isValid() or not upload_path:
             return  # Verifica se um item válido foi selecionado
 
         item = self.Standardmodel.itemFromIndex(index)

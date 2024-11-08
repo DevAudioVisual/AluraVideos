@@ -59,6 +59,11 @@ QPushButton {
   QPushButton:hover {
     background-color: #4B70F5; }
 
+QPushButton#botaoMenuBarraLateral {
+  background-color: teal;
+  width: 100%;
+  border-radius: 0px; }
+
 QGroupBox {
   color: white; }
 
@@ -115,13 +120,14 @@ QMenuBar::item:pressed {
 
 QToolBar {
   color: white;
-  padding: 5px; }
+  padding: 5px 0px; }
 
 QToolButton {
   /* Agrupando estilos de QToolButton */
   float: left;
-  border-radius: 6px;
-  padding: 5px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 7px 0px;
   width: 100%;
   color: white;
   background-color: transparent;
@@ -174,17 +180,17 @@ QTabBar::scroller {
   width: 20px; }
 
 QTabWidget::tab-bar {
-  left: 5px; }
+  left: 1px;
+  right: 5px; }
 
 /* move to the right by 5px */
 QTabBar::tab {
   /* Agrupando estilos de QTabBar */
   background: transparent;
   color: white;
-  border-radius: 3px;
   min-width: 8ex;
   padding: 3px;
-  margin-left: 3px; }
+  margin-right: 3px; }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
   background: #4B70F5; }
@@ -206,6 +212,14 @@ QTreeView {
   /* Agrupando estilos de QTreeView */
   show-decoration-selected: 1;
   color: white; }
+
+QTreeView::branch:closed:has-children {
+  border-image: none;
+  image: url(Assets/svg/corner-down-right.svg); }
+
+QTreeView::branch:open:has-children {
+  border-image: none;
+  image: url(Assets/svg/corner-left-down.svg); }
 
 QTreeView::item:hover {
   background: #4B70F5; }

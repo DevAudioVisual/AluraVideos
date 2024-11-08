@@ -1,5 +1,7 @@
 import ctypes
 import os
+import shutil
+import stat
 import Util.CustomWidgets as cw
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt,QThread, pyqtSignal
@@ -34,7 +36,13 @@ class CleanerThread(QThread):
                       for file in files:
                           file_path = os.path.join(root, file)
                           try:
-                              os.remove(file_path)
+                                os.chmod(file_path, stat.S_IWRITE)  
+                                if os.path.isfile(file_path):
+                                    # Ignora permissões do arquivo e o remove
+                                    os.remove(file_path)
+                                elif os.path.isdir(file_path):
+                                    # Remove a pasta e seu conteúdo recursivamente, ignorando erros
+                                    shutil.rmtree(file_path, ignore_errors=True)  
                           except PermissionError:
                               print(f"Erro de permissão ao remover {file_path}. Pulando para o próximo arquivo.")
                           except Exception as e:
