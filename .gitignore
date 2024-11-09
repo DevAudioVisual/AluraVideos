@@ -20,6 +20,7 @@ z_KeyEToken/
 build/
 .vscode/
 z_Old/
+inserirUsuario.py
 builder.bat
 z_Testes/
 ffmpeg/

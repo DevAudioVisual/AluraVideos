@@ -11,7 +11,6 @@ from Models.AutoUpdate import AutoUpdate
 from QtInterfaces.Interfaces.LoadingScreen.LoadingScreen import LoadingScreen, LoadingThread
 from QtInterfaces.Interfaces.MainWindow import MainWindow
 import qtsass
-from Util import Tokens
 from dotenv import load_dotenv
 
 # Metadados da aplicação
@@ -37,7 +36,7 @@ def run_as_admin():
 
 # Função principal da aplicação
 def main():
-    #run_as_admin()
+    run_as_admin()
     load_dotenv()
     # Configurações de inicialização
     setup_signal_handlers()

@@ -76,7 +76,6 @@ class MainWindow(QMainWindow):
         self.toolbar.layout().setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.toolbar.setMovable(False)
         self.toolbar.setFloatable(False)
-        self.toolbar.setMaximumWidth(190)
         self.addToolBar(Qt.ToolBarArea.LeftToolBarArea, self.toolbar)
         
         # Adicionar ações à barra de ferramentas
@@ -132,7 +131,28 @@ class MainWindow(QMainWindow):
                 button.setMaximumWidth(180)
                 
         if bool(LoadConfigs.Config.getConfigData(config="ConfigInterface",data="barra_lateral_pequena")) == True:
-            self.change_animation_direction()
+            self.barra_pequena = True
+            self.toolbar.setMinimumWidth(70)
+            self.toolbar.setMaximumWidth(70)
+            self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+            for action in self.toolbar.actions():
+                button = self.toolbar.widgetForAction(action)
+                if button:
+                    button.setMinimumWidth(70)
+                    button.setMaximumWidth(70)
+                    button.style().unpolish(button)
+                    button.style().polish(button)
+        else:
+            self.barra_pequena = False
+            self.toolbar.setMinimumWidth(200)
+            self.toolbar.setMaximumWidth(200)
+            for action in self.toolbar.actions():
+                button = self.toolbar.widgetForAction(action)
+                if button:
+                    button.setMinimumWidth(200)
+                    button.setMaximumWidth(200)
+                    button.style().unpolish(button)
+                    button.style().polish(button)
            
     def change_animation_direction(self):
         if self.barra_pequena == False:
