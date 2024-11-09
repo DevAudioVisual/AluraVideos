@@ -36,7 +36,7 @@ def run_as_admin():
 
 # Função principal da aplicação
 def main():
-    run_as_admin()
+    #run_as_admin()
     load_dotenv()
     # Configurações de inicialização
     setup_signal_handlers()

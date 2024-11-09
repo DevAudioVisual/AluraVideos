@@ -148,8 +148,11 @@ class LoadingThread(QThread):
         #QThread.msleep(500)
 
     def carregar_tensorflow(self):
-        self.etapa.emit("Inicializando TensorFlow")
-        import tensorflow
+        config = LoadConfigs.Config
+        data = config.getConfigData("ConfigInterface")["Janelas"]["VideoValidator"][0]
+        if data:
+            self.etapa.emit("Inicializando TensorFlow")
+            import tensorflow
         #QThread.msleep(500)
 
     def verificar_atualizacoes(self):
