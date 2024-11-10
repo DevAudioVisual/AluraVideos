@@ -9,7 +9,7 @@ from unidecode import unidecode
 import requests
 from Config import LoadConfigs
 from Models.CriarProjeto import CriarProjeto
-from QtInterfaces.Interfaces.MainWindow import MainWindow
+from Interfaces.MainWindow import MainWindow
 global Config
 import tkinter as tk
 from tkinter import filedialog

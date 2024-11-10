@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QLineEdit, QWidget
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
-from QtInterfaces.Interfaces.Preferencias import Tabs
+from Interfaces.Preferencias import Tabs
 
 class Interface(QWidget):
     def __init__(self):

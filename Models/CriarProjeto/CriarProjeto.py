@@ -3,7 +3,7 @@ import webbrowser
 import shutil
 import os
 from Models.CriarProjeto import Descompactador, DropDownloader
-from QtInterfaces.Interfaces.ProjectCreator import InterfaceProjectCreator
+from Interfaces.ProjectCreator import InterfaceProjectCreator
 from Util import TempoVideos, Util
 from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QTimer,QCoreApplication

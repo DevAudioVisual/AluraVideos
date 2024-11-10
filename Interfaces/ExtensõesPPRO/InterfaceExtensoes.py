@@ -6,7 +6,7 @@ import requests
 from packaging import version
 import yaml
 from Models.ExtensoesPPRO.GithubDownloader import GithubDownloader, GithubUpdater
-from QtInterfaces.Interfaces.LoadingScreen import LoadingScreen
+from Interfaces.LoadingScreen import LoadingScreen
 from Util import Tokens, Util
 import Util.CustomWidgets as cw
 

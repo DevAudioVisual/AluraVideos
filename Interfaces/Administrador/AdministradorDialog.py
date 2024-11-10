@@ -1,13 +1,15 @@
+from functools import lru_cache
 import os
 from PyQt6.QtWidgets import QDialog,QTableWidgetItem,QHeaderView
 import jwt
 import requests
 import Util.CustomWidgets as cw
 
+@lru_cache(maxsize=128,typed=True)
 class TabelaDialog(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Resultados da Busca")
+        self.setWindowTitle("Painel administrativo")
         self.showMaximized()
         # Configuração do layout e da tabela
         self.layout = cw.VBoxLayout()
@@ -26,8 +28,12 @@ class TabelaDialog(QDialog):
         
         botaoAdicionar = cw.PushButton("Adicionar")
         botaoAdicionar.clicked.connect(self.adicionar)
+        botaoAdicionar.setStyleSheet("background-color: green;")
         botaoRemover = cw.PushButton("Remover")
+        botaoRemover.setStyleSheet("background-color: red;")
         botaoRemover.clicked.connect(self.remover)
+        botaoRecarregar = cw.PushButton("Recarregar")
+        botaoRecarregar.clicked.connect(self.recarregar)
         
         gridLayout.addWidget(lbl_Nome,0,0)
         gridLayout.addWidget(self.campoNome,1,0)
@@ -35,6 +41,7 @@ class TabelaDialog(QDialog):
         gridLayout.addWidget(self.campoTime,3,0)
         gridLayout.addWidget(botaoAdicionar,4,0)
         gridLayout.addWidget(botaoRemover,4,1)
+        gridLayout.addWidget(botaoRecarregar,4,2)
         
         self.layout.addLayout(gridLayout)
         self.layout.addWidget(self.tableWidget)
@@ -107,9 +114,12 @@ class TabelaDialog(QDialog):
                 self.tableWidget.setItem(row_index, 1, QTableWidgetItem(row_data["senha"]))
                 self.tableWidget.setItem(row_index, 2, QTableWidgetItem(row_data["time"]))
                 self.tableWidget.setItem(row_index, 3, QTableWidgetItem(str(row_data["adm"]))) 
-                self.tableWidget.setItem(row_index, 4, QTableWidgetItem(str(row_data["logins"]))) 
+                self.tableWidget.setItem(row_index, 4, QTableWidgetItem(str(row_data["LOGINS"]))) 
           else:
             print(response.content)
         except Exception as e:
           print(e)
+    def recarregar(self):
+        self.tableWidget.clearContents()
+        self.itensTabela()  
         

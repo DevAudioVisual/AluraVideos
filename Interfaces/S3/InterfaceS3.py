@@ -4,8 +4,8 @@ from PyQt6.QtGui import QCursor,QStandardItemModel,QIcon
 import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt,QTimer
 from Models.S3 import S3Model
-from QtInterfaces.Interfaces.S3.S3TreeItem import S3TreeItem
-from QtInterfaces.Interfaces.S3.S3TreeView import S3TreeView
+from Interfaces.S3.S3TreeItem import S3TreeItem
+from Interfaces.S3.S3TreeView import S3TreeView
 
 
 class Interface(cw.Widget):

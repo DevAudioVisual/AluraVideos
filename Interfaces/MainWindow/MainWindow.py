@@ -4,12 +4,12 @@ from PyQt6.QtGui import QIcon, QAction,QPainter
 from PyQt6.QtCore import Qt, QTranslator,QPropertyAnimation, QEasingCurve, pyqtProperty
 from PyQt6.QtWidgets import QMainWindow,QApplication,QStackedWidget,QToolBar,QToolButton, QPushButton
 from Config import LoadConfigs
-from QtInterfaces.Interfaces.Atalhos import InterfaceAtalhos
-from QtInterfaces.Interfaces.Home.Home import Interface
-from QtInterfaces.Interfaces.Preferencias import InterfacePreferencias
-from QtInterfaces.Interfaces.ExtensõesPPRO import InterfaceExtensoes
-from QtInterfaces.Interfaces.MainWindow.MenuBar import MenuBar
-from QtInterfaces.Interfaces.MainWindow.Tabs import Tabs
+from Interfaces.Atalhos import InterfaceAtalhos
+from Interfaces.Home.Home import Interface
+from Interfaces.Preferencias import InterfacePreferencias
+from Interfaces.ExtensõesPPRO import InterfaceExtensoes
+from Interfaces.MainWindow.MenuBar import MenuBar
+from Interfaces.MainWindow.Tabs import Tabs
 
 
 global main_window
@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
         
         self.toolbar.addSeparator()
         self.botao_expandir = cw.PushButton("",animacao=False)
-        self.botao_expandir.setObjectName("botaoMenuBarraLateral")
+        #self.botao_expandir.setObjectName("botaoMenuBarraLateral")
         self.botao_expandir.setIcon(QIcon(r"Assets\svg\menu.svg"))
         self.botao_expandir.clicked.connect(self.change_animation_direction)
         self.toolbar.addWidget(self.botao_expandir)

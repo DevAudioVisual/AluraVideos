@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QMenu
 import jwt
 import requests
 
-from QtInterfaces.Interfaces.Administrador import AdministradorDialog
+from Interfaces.Administrador import AdministradorDialog
 
 class MenuBar():
     def __init__(self, MainWindow):
@@ -39,10 +39,12 @@ class MenuBar():
       self.visualizar_menu.addAction(self.logs_action)
       self.visualizar_menu.addAction(self.repositorion_action)
       self.visualizar_menu.addAction(self.notion_action)
-      #self.visualizar_menu.addSeparator()
+      self.visualizar_menu.addSeparator()
       self.visualizar_menu.addAction(self.preferences_action)
       
-      if self.isAdm(): self.visualizar_menu.addAction(self.administrador_action)
+      if self.isAdm(): 
+        self.visualizar_menu.addSeparator()
+        self.visualizar_menu.addAction(self.administrador_action)
       
 
       #self.atalhos_action.triggered.connect(self.MainWindow.mostrar_atalhos)

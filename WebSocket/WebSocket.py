@@ -8,6 +8,7 @@ class WebSocketServer(QThread):
         super().__init__()
         self.server = QTcpServer()
         self.server.newConnection.connect(self.on_new_connection)
+        print("Iniciado")
 
     def on_new_connection(self):
         client_socket = self.server.nextPendingConnection()
@@ -28,3 +29,5 @@ class WebSocketServer(QThread):
             print("Erro ao iniciar o servidor:", self.server.errorString())
         else:
             print("Servidor WebSocket iniciado na porta 8081")
+            # A execução do servidor continua em segundo plano na thread do QTcpServer
+            # O loop de escuta é gerenciado internamente pelo Qt

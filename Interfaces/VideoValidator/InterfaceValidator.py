@@ -1,11 +1,9 @@
-from concurrent.futures import ThreadPoolExecutor
-import os
 import tempfile
 from tkinter import filedialog
 from PyQt6.QtGui import QIcon
 import moviepy.editor as mp
-from QtInterfaces.Interfaces.VideoValidator.InterfaceAudioAnalyse import InterfaceAudio
-from QtInterfaces.Interfaces.VideoValidator.InterfaceVideoAnalyse import InterfaceVideo
+from Interfaces.VideoValidator.InterfaceAudioAnalyse import InterfaceAudio
+from Interfaces.VideoValidator.InterfaceVideoAnalyse import InterfaceVideo
 import Util.CustomWidgets as cw
 global Config
 
@@ -93,4 +91,7 @@ class Interface(cw.Widget):
             self.campo_videos.setText(file_names[0])
             for file_name in file_names:
                 self.videos.append(file_name)
+                
+    def showEvent(self, event):
+        import tensorflow
 

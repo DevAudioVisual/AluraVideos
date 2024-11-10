@@ -1,14 +1,14 @@
 from PyQt6.QtWidgets import QTabWidget,QMenu
 from Config import LoadConfigs
-from QtInterfaces.Interfaces.Conversor import InterfaceConversor
-from QtInterfaces.Interfaces.ImagensPixaBay import ImagensPixabay
-from QtInterfaces.Interfaces.LimparCache import InterfaceLimparCache
-from QtInterfaces.Interfaces.ProjectCreator import InterfaceProjectCreator
-from QtInterfaces.Interfaces.Renamer import InterfaceRenamer
-from QtInterfaces.Interfaces.S3 import InterfaceS3
+from Interfaces.Conversor import InterfaceConversor
+from Interfaces.ImagensPixaBay import ImagensPixabay
+from Interfaces.LimparCache import InterfaceLimparCache
+from Interfaces.ProjectCreator import InterfaceProjectCreator
+from Interfaces.VideoValidator import InterfaceValidator
+from Interfaces.Renamer import InterfaceRenamer
+from Interfaces.S3 import InterfaceS3
 from PyQt6.QtGui import QAction
 
-from QtInterfaces.Interfaces.VideoValidator import InterfaceValidator
 
 class Tabs(QTabWidget):
     def __init__(self, menubar):  # Passar a instância de MenuBar
