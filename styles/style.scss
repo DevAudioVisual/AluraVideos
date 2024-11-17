@@ -194,6 +194,7 @@ QTreeView {  /* Agrupando estilos de QTreeView */
   show-decoration-selected: 1;
   color: white;
 }
+
 QTreeView::branch:closed:has-children {
   border-image: none;
   image: url(Assets/svg/corner-down-right.svg)

@@ -2,7 +2,6 @@ import re
 import threading
 import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QSizePolicy
 from PyQt6.QtGui import QIcon, QCursor, QAction
 from bs4 import BeautifulSoup
 from unidecode import unidecode

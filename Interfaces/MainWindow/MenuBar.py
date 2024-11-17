@@ -6,15 +6,17 @@ import jwt
 import requests
 
 from Interfaces.Administrador import AdministradorDialog
+from Util import Tokens
 
 class MenuBar():
     def __init__(self, MainWindow):
       self.MainWindow = MainWindow
       self.menubar = self.MainWindow.menuBar()
       self.janelas_submenu = QMenu("Janelas fechadas:", self.MainWindow)
-      self.Arquivo()
-      self.Visualizar()
-      self.Ajuda()
+      if Tokens.AWS_S3 != None: 
+        self.Arquivo()
+        self.Visualizar()
+        self.Ajuda()
       
     def Arquivo(self):
       self.visualizar_menu = self.menubar.addMenu("Arquivo")
@@ -69,7 +71,7 @@ class MenuBar():
       self.exit_action.triggered.connect(self.MainWindow.close) 
     def isAdm(self):
       try:
-          key = os.getenv("LOGIN_KEY")
+          key = "O+k9G/kMiXqcm+FRKGvAWQ=="
           dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
           tokens = os.path.join(dir,"credentials.json") 
           with open(tokens, 'r') as f:

@@ -1,12 +1,12 @@
 import os
 from tkinter import filedialog
 from PyQt6.QtGui import QCursor,QStandardItemModel,QIcon
+from PyQt6.QtCore import Qt,QTimer,QSortFilterProxyModel
+from Interfaces.S3 import S3DialogFilaUploader
 import Util.CustomWidgets as cw
-from PyQt6.QtCore import Qt,QTimer
 from Models.S3 import S3Model
 from Interfaces.S3.S3TreeItem import S3TreeItem
 from Interfaces.S3.S3TreeView import S3TreeView
-
 
 class Interface(cw.Widget):
     def __init__(self):
@@ -16,26 +16,22 @@ class Interface(cw.Widget):
         self.GridLayout = cw.GridLayout()
         self.GridLayout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         self.GridLayout.setContentsMargins(10, 20, 10, 10)
-        self.start()
+        QTimer.singleShot(0, self.start)
         self.setLayout(self.GridLayout)
         
     def start(self):
-      self.limpar()    
-      if self.model.hasToken(): 
-        bota_iniciar_conexao = cw.PushButton("Iniciar Conexão")
-        bota_iniciar_conexao.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        bota_iniciar_conexao.clicked.connect(lambda: bota_iniciar_conexao.setEnabled(False))
-        bota_iniciar_conexao.clicked.connect(self.startconnection)
-        self.GridLayout.addWidget(bota_iniciar_conexao,0,0)
-      else:
-        self.noCredentials() 
+        self.limpar()    
+        if self.model.hasToken(): 
+            self.startconnection()
+        else:
+            self.noCredentials() 
       
     def startconnection(self):      
-      self.limpar()
-      if self.model.hasToken(): 
-          self.hasCredentials()   
-      else: 
-        self.noCredentials() 
+        if self.model.hasToken(): 
+            self.limpar()
+            self.hasCredentials()   
+        else: 
+            self.noCredentials() 
         
     def hasCredentials(self):
       if self.model.setS3Client() == False:
@@ -63,16 +59,22 @@ class Interface(cw.Widget):
           return
         QTimer.singleShot(2000,checkUploaded)
       
-      self.search_input = cw.LineEdit()
-      self.search_input.setPlaceholderText("Buscar pastas ou itens... (EM BREVE)")
-      search_input_action = self.search_input.addAction(QIcon(r"Assets\Icons\reload.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
-      search_input_action.triggered.connect(self.refresh_tree)
-      #self.search_input.textChanged.connect(self.filter_tree)
-      
       self.Standardmodel = QStandardItemModel()
       self.Standardmodel.setHorizontalHeaderLabels(['equipevideos Bucket'])
-      self.tree_view = S3TreeView(self.model)
-      self.tree_view.setModel(self.Standardmodel)
+      
+      self.proxy_model = MyFilterProxyModel()
+      self.proxy_model.setSourceModel(self.Standardmodel)
+      self.proxy_model.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+      self.proxy_model.setFilterKeyColumn(-1)  # Filtrar em todas as colunas
+      self.proxy_model.setFilterRegularExpression("") 
+
+      self.search_input = cw.LineEdit()
+      self.search_input.setPlaceholderText("Buscar")
+      self.search_input.textChanged.connect(self.proxy_model.setFilterRegularExpression)
+      search_input_action = self.search_input.addAction(QIcon(r"Assets\Icons\reload.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
+      search_input_action.triggered.connect(self.refresh_tree)
+      
+      self.tree_view = S3TreeView(self.model,self.proxy_model,self.Standardmodel)
       self.tree_view.header().setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
       self.tree_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
       self.tree_view.customContextMenuRequested.connect(self.create_context_menu)  # Conecta o menu ao clique direito
@@ -146,7 +148,8 @@ class Interface(cw.Widget):
         if not index.isValid():
             return  # Verifica se um item válido foi selecionado
 
-        item = self.Standardmodel.itemFromIndex(index)
+        source_index = self.proxy_model.mapToSource(index)
+        item = self.Standardmodel.itemFromIndex(source_index)
         full_path = item.full_path  # Obtém o caminho completo do item
 
         # Abre um diálogo para escolher o diretório de salvamento
@@ -160,21 +163,24 @@ class Interface(cw.Widget):
 
 
     def upload_item(self):
-        upload_path = filedialog.askdirectory()
+        #upload_path = filedialog.askdirectory()
         index = self.tree_view.currentIndex()
-        if not index.isValid() or not upload_path:
-            return  # Verifica se um item válido foi selecionado
+        #if not index.isValid() or not upload_path:
+        #    return  # Verifica se um item válido foi selecionado
 
-        item = self.Standardmodel.itemFromIndex(index)
+        source_index = self.proxy_model.mapToSource(index)
+        item = self.Standardmodel.itemFromIndex(source_index)
         full_path = item.full_path  # Obtém o caminho completo do item
-        self.model.startUpload(local_folder_path=upload_path,destination_folder=full_path)
+        S3DialogFilaUploader.DialogUpload(full_path).exec()
+        #self.model.startUpload(local_folder_path=upload_path,destination_folder=full_path)
 
     def rename_item(self):
         index = self.tree_view.currentIndex()
         if not index.isValid():
             return  # Verifica se um item válido foi selecionado
 
-        item = self.Standardmodel.itemFromIndex(index)
+        source_index = self.proxy_model.mapToSource(index)
+        item = self.Standardmodel.itemFromIndex(source_index)
         old_key = item.full_path
 
         # Caixa de diálogo para inserir o novo nome
@@ -206,25 +212,39 @@ class Interface(cw.Widget):
         if not index.isValid():
             return  # Verifica se um item válido foi selecionado
 
-        item = self.Standardmodel.itemFromIndex(index)
+        source_index = self.proxy_model.mapToSource(index)
+        item = self.Standardmodel.itemFromIndex(source_index)
         full_path = item.full_path 
         folder_name = os.path.basename(full_path)
         
         msg_box = cw.MessageBox()
         msg_box.setIcon(cw.MessageBox.Icon.Question)
         msg_box.setWindowTitle("Confirmação")
-        msg_box.setText(f"Confirmar remoção da pasta:\n{folder_name}")
+        msg_box.setText(f"Confirmar remoção do item:\n{full_path}")
         msg_box.setStandardButtons(cw.MessageBox.StandardButton.Yes | cw.MessageBox.StandardButton.No)
         msg_box.setDefaultButton(cw.MessageBox.StandardButton.Yes)
         ret = msg_box.exec()
         msg_box.activateWindow()
         msg_box.raise_()
         if ret == cw.MessageBox.StandardButton.Yes:
-            print(full_path)
-            #self.model.s3_client.delete_object(Bucket=self.model.bucket_name, Key=full_path)
-            self.tree_view.model().removeRow(index.row(), index.parent())  
-            cw.MessageBox().information(None,"Sucesso!","Arquivo excluido com exito.")
-        
+            try:
+                # Exclui todos os objetos com o prefixo full_path
+                objects_to_delete = []
+                response = self.model.s3_client.list_objects_v2(Bucket=self.model.bucket_name, Prefix=full_path)
+                for obj in response.get('Contents', []):
+                    objects_to_delete.append({'Key': obj['Key']})
+
+                # Exclui os objetos em lotes de 1000
+                for i in range(0, len(objects_to_delete), 1000):
+                    self.model.s3_client.delete_objects(Bucket=self.model.bucket_name, Delete={'Objects': objects_to_delete[i:i+1000]})
+
+                # Remove a linha do tree_view
+                self.tree_view.model().removeRow(index.row(), index.parent())
+
+                cw.MessageBox().information(None, "Sucesso!", "Item excluío com sucesso.")
+
+            except Exception as e:
+                cw.MessageBox().critical(None, "Erro!", f"Erro ao excluir pasta: {e}")
     def create_context_menu(self, position):
         # Cria o menu de contexto
         menu = cw.Menu()
@@ -235,31 +255,15 @@ class Interface(cw.Widget):
 
         upload_action = menu.addAction("Upload")
         upload_action.triggered.connect(self.upload_item)
-        #upload_action = menu.addAction("Renomear")
-        #upload_action.triggered.connect(self.rename_item)
-        #delete_action = menu.addAction("Excluir")
-        #delete_action.triggered.connect(self.delete_item)  # Conecte a um método para excluir
+        
+        upload_action = menu.addAction("Renomear")
+        upload_action.triggered.connect(lambda: cw.MessageBox.information(self, "Aviso", "Em breve!"))
+        menu.addSeparator()
+        delete_action = menu.addAction("Excluir")
+        delete_action.triggered.connect(self.delete_item)  # Conecte a um método para excluir
 
         # Exibe o menu no local do clique
         menu.exec(self.tree_view.viewport().mapToGlobal(position))
-        
-    def filter_tree(self, text):
-    # Percorre todos os itens na árvore e filtra com base na entrada
-        for i in range(self.Standardmodel.rowCount()):
-            item = self.Standardmodel.item(i)
-            self.filter_item(item, text)
-
-    def filter_item(self, item, text):
-        # Verifica se o item deve ser exibido com base na pesquisa
-        item.setVisible(False)  # Esconde o item inicialmente
-        if text.lower() in item.text().lower():  # Verifica se o texto está no nome do item
-            item.setVisible(True)  # Exibe o item se houver correspondência
-        elif item.hasChildren():  # Se o item tiver filhos, verifica recursivamente
-            for row in range(item.rowCount()):
-                child = item.child(row)
-                self.filter_item(child, text)
-                if child.isVisible():  # Se algum filho for visível, mostra o pai
-                    item.setVisible(True)
                     
     def refresh_tree(self):
       # Limpar o modelo existente
@@ -269,8 +273,7 @@ class Interface(cw.Widget):
       self.load_root() 
       
     def load_root(self):
-        #print("Carregando pastas e arquivos do bucket...")  # Adicionando log para verificar o carregamento
-        # Carregar a raiz do bucket
+        self.tree_view.setModel(self.proxy_model)  
         root_item = self.Standardmodel.invisibleRootItem()
         self.Standardmodel.removeRows(0, self.Standardmodel.rowCount())
         result = self.model.s3_client.list_objects_v2(Bucket=self.model.bucket_name, Delimiter='/')
@@ -303,9 +306,11 @@ class Interface(cw.Widget):
     # Evento chamado quando uma pasta é expandida
     # No on_item_expanded
     def on_item_expanded(self, index):
-        item = self.Standardmodel.itemFromIndex(index)
+        # Mapeia o índice do proxy para o modelo subjacente
+        source_index = self.proxy_model.mapToSource(index)
+        item = self.Standardmodel.itemFromIndex(source_index)
         if isinstance(item, S3TreeItem) and item.is_folder:
-            item.fetch_children()  # Carrega os filhos apenas quando a pasta é expandida
+            item.fetch_children()
 
                   
     def limpar(self):
@@ -316,3 +321,28 @@ class Interface(cw.Widget):
               if widget is not None:
                   widget.deleteLater()  # Envia o widget para ser excluído
               self.GridLayout.removeItem(item)  # Remove o item do layout
+              
+              
+class MyFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self):
+        super().__init__()
+
+    def filterAcceptsRow(self, source_row, source_parent):
+        index = self.sourceModel().index(source_row, 0, source_parent)
+        item = self.sourceModel().itemFromIndex(index)
+
+        # Verifique se o item é do tipo esperado (S3TreeItem)
+        if isinstance(item, S3TreeItem):
+            # Agora você pode acessar is_folder sem erro
+            if item.is_folder:
+                # Verifique se algum filho da pasta corresponde ao filtro
+                for row in range(item.rowCount()):
+                    child_item = item.child(row)
+                    child_index = self.sourceModel().indexFromItem(child_item)  # Usar o model para acessar o índice do filho
+                    if self.filterAcceptsRow(child_index.row(), child_index.parent()):
+                        return True
+
+        # Verifique o nome do item se for um arquivo (não pasta)
+        return super().filterAcceptsRow(source_row, source_parent)
+
+

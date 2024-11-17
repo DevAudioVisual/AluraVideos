@@ -1,7 +1,11 @@
-from PyQt6.QtWidgets import QSlider,QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
+from PyQt6.QtWidgets import QDialog,QSlider,QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve
 from PyQt6.QtGui import QPainter, QLinearGradient,QColor
+
+class Dialog(QDialog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 class Slider(QSlider):
     def __init__(self, *args, **kwargs):
@@ -100,7 +104,8 @@ class PushButton(QPushButton):
             self.anim = QPropertyAnimation(self, b'geometry')
             self.anim.setDuration(250)
             self.anim.setEasingCurve(QEasingCurve.Type.OutCurve)
-
+    def setAnimacao(self, bool):
+        self.animacao = bool
     def enterEvent(self, event):
         if self.animacao:
             self.anim.setDirection(self.anim.Direction.Forward)

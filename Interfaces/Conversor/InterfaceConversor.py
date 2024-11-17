@@ -34,11 +34,12 @@ class Interface(cw.Widget):
         
         self.label_converter_para = cw.Label("Converter para:")
         self.combo_tipo = cw.ComboBox()
-        self.combo_tipo.addItems([".mp4",".avi",".mov",".mkv"])
+        self.combo_tipo.addItems([".mp4",".avi",".mov",".mkv",".mp3",".wav"])
+        self.combo_tipo.currentTextChanged.connect(self.ativar_widgets_audio)
         
         self.checkbox_ativar = cw.CheckBox("Manter as propriedades originais", self)
-        self.checkbox_ativar.stateChanged.connect(self.ativar_widgets)
         self.checkbox_ativar.setChecked(True)
+        self.checkbox_ativar.stateChanged.connect(self.ativar_widgets)
         
         self.label_Encoder = cw.Label("Encoder:")
         self.combo_Encoder = cw.ComboBox()
@@ -115,7 +116,28 @@ class Interface(cw.Widget):
           # Verifica se o item realmente contém um widget
           if item and item.widget():
               widget = item.widget()
-              widget.setEnabled(estado_booleano)
+              widget.setVisible(estado_booleano)
+    def ativar_widgets_audio(self, valor):
+        if valor == ".mp3" or valor == ".wav":
+            self.label_crf.setVisible(False)
+            self.label_resolucao.setVisible(False)
+            self.combo_resolucao.setVisible(False)
+            self.slider_crf.setVisible(False)
+            self.label_Encoder.setVisible(False)
+            self.combo_Encoder.setVisible(False)
+            self.label_preset.setVisible(False)
+            self.combo_preset.setVisible(False)
+        else:
+            if not self.checkbox_ativar.isChecked():
+                self.label_crf.setVisible(True)
+                self.label_resolucao.setVisible(True)
+                self.combo_resolucao.setVisible(True)
+                self.slider_crf.setVisible(True)
+                self.label_Encoder.setVisible(True)
+                self.combo_Encoder.setVisible(True)
+                self.label_preset.setVisible(True)
+                self.combo_preset.setVisible(True)
+    
     def setVideos(self):
       files = filedialog.askopenfilenames()
       self.campo_videos.setText(str(files))
@@ -130,8 +152,9 @@ class Interface(cw.Widget):
     def update_progress(self, value):
       self.progressbar.setValue(value) 
       
-    def finalizado():
-      cw.MessageBox.information(None,"Sucesso!","Videos convertidos com exito.")
+    def finalizado(self):
+        cw.MessageBox.information(None,"Sucesso!","Arquivos convertidos com exito.")
+        self.update_progress(0)
       
     def converter(self):
       self.thread = ConvertThread(self.videos, self.combo_tipo, self.slider_crf, self.dir_saida, self.combo_resolucao, self.checkbox_ativar,self.combo_Encoder, self.combo_preset)
@@ -174,39 +197,26 @@ class ConvertThread(QThread):
                     resolucao = f"{largura}:{altura}"
                 else:
                     resolucao = "Original"
-
-                if not self.checkbox_ativar.isChecked():
-                    if resolucao != "Original":
-                        command = [
-                            Util.pegarFFMPEG(),
-                            "-hwaccel", "cuda",
-                            "-i", video,
-                            "-y",
-                            "-s", resolucao,
+                    
+                if formato_video != ".mp3" and formato_video != ".wav":
+                    command = [Util.pegarFFMPEG(),"-hwaccel", "cuda","-i", video,"-y"]
+                    if not self.checkbox_ativar.isChecked():
+                        if resolucao != "Original":
+                            command.extend(["-s", resolucao])
+                        command.extend([
                             "-c:v", self.combo_Encoder.currentText(),
                             "-crf", str(crf_value),
                             "-profile:v", "high",
                             "-preset", self.combo_preset.currentText(),
                             caminho_completo
-                        ]
+                        ])
                     else:
-                        command = [
-                            Util.pegarFFMPEG(),
-                            "-hwaccel", "cuda",
-                            "-i", video,
-                            "-y",
-                            "-c:v", self.combo_Encoder.currentText(),
-                            "-crf", str(crf_value),
-                            "-profile:v", "high",
-                            "-preset", self.combo_preset.currentText(),
-                            caminho_completo
-                        ]
+                        command.extend(["-c", "copy", caminho_completo])
                 else:
-                    command = [Util.pegarFFMPEG(), "-i", video, "-y", "-c", "copy", caminho_completo]
-
-                print("Comando gerado:", command)
+                    command = f'{Util.pegarFFMPEG()} -loglevel quiet -i "{video}" "{caminho_completo}"'
 
                 # Usar Popen para rodar o ffmpeg e capturar o stderr
+                print("################## COMANDO:", command)
                 process = subprocess.Popen(command, stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True)
 
                 duration = None
@@ -231,7 +241,7 @@ class ConvertThread(QThread):
                             self.progress_updated.emit(int(progress))  # Emite o progresso como inteiro
                 
                 process.wait()  # Espera o processo terminar
-                self.finished.emit()  # Emite o sinal de finalização
+            self.finished.emit()  # Emite o sinal de finalização
 
         except Exception as e:
             print(f"Erro ao converter o vídeo: {e}")

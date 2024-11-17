@@ -52,12 +52,12 @@ class CleanerThread(QThread):
                           progresso = int((arquivos_processados / total_arquivos) * 100)
                           self.progress_updated.emit(progresso)
 
-                  for dir in dirs:
-                      dir_path = os.path.join(root, dir)
-                      try:
-                          os.rmdir(dir_path)
-                      except OSError:
-                          pass
+                      for dir in dirs:
+                        dir_path = os.path.join(root, dir)
+                        try:
+                            os.rmdir(dir_path)
+                        except OSError:
+                            pass
 
       self.finished.emit()
     def esvaziar_lixeira(self):

@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QTabWidget,QMenu
 from Config import LoadConfigs
 from Interfaces.Conversor import InterfaceConversor
-from Interfaces.ImagensPixaBay import ImagensPixabay
 from Interfaces.LimparCache import InterfaceLimparCache
 from Interfaces.ProjectCreator import InterfaceProjectCreator
 from Interfaces.VideoValidator import InterfaceValidator
@@ -36,7 +35,7 @@ class Tabs(QTabWidget):
             "Conversor": {InterfaceConversor.Interface(): self.data["Conversor"][0]},
             "S3": {InterfaceS3.Interface(): self.data["S3"][0]},
             #"PM3": [],
-            "Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},
+            #"Imagens Pixabay": {ImagensPixabay.Interface(): self.data["Imagens Pixabay"][0]},
             "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"][0]},
             "Renamer": {InterfaceRenamer.Interface(): self.data["Renamer"][0]},
             "VideoValidator": {InterfaceValidator.Interface(): self.data["VideoValidator"][0]},

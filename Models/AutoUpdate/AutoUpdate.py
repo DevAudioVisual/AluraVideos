@@ -1,12 +1,13 @@
+from concurrent.futures import thread
 import re
+import sys
 import requests
 import os
 import tempfile
-import subprocess
 import time
 from packaging import version
 from Util import Tokens, Util
-from PyQt6.QtCore import QThread, pyqtSignal,QCoreApplication,Qt
+from PyQt6.QtCore import QThread, pyqtSignal,Qt
 from PyQt6.QtWidgets import QMessageBox, QProgressDialog
 
 
@@ -73,7 +74,7 @@ class app():
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/releases/latest"
         self.headers = {"Authorization": f"Bearer {Tokens.GITHUB}","Accept": "application/vnd.github+json"}
         import Main
-        self.current_version = version.parse(Main.__version__.lstrip("V"))  # Certifique-se de que Util.version esteja definido
+        self.current_version = version.parse(Main.version.lstrip("V"))  # Certifique-se de que Util.version esteja definido
 
         self.response = None
         self.release_data = None
@@ -152,9 +153,10 @@ class app():
     def download_finished(self, success):
         if success:
             QMessageBox.information(None, "Info", "Download concluído!\nO aplicativo será fechado para que a atualização seja instalada.")
-            QCoreApplication.instance().quit()
-            subprocess.run(self.dirtemp,shell=True)
-            os._exit()
+            os.startfile(self.dirtemp)
+            #QCoreApplication.instance().quit()
+            os._exit(0) 
+            sys.exit(1)  
         else:
             QMessageBox.critical(None, "Erro", "O download falhou.")
     

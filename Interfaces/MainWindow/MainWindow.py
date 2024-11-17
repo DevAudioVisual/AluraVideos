@@ -1,4 +1,5 @@
 import os
+from Util import Tokens
 import Util.CustomWidgets as cw
 from PyQt6.QtGui import QIcon, QAction,QPainter
 from PyQt6.QtCore import Qt, QTranslator,QPropertyAnimation, QEasingCurve, pyqtProperty
@@ -7,7 +8,7 @@ from Config import LoadConfigs
 from Interfaces.Atalhos import InterfaceAtalhos
 from Interfaces.Home.Home import Interface
 from Interfaces.Preferencias import InterfacePreferencias
-from Interfaces.ExtensõesPPRO import InterfaceExtensoes
+from Interfaces.ExtensoesPPRO import InterfaceExtensoes
 from Interfaces.MainWindow.MenuBar import MenuBar
 from Interfaces.MainWindow.Tabs import Tabs
 
@@ -26,7 +27,7 @@ class MainWindow(QMainWindow):
         #self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.MSWindowsFixedSizeDialogHint)]
         self.barra_pequena = False
         import Main
-        self.setWindowTitle(f'AluraVideos {Main.__version__}')
+        self.setWindowTitle(f'AluraVideos {Main.version}')
         icon = QIcon(r"Assets\Icons\icon.ico")
         self.setWindowIcon(icon)
         
@@ -46,7 +47,7 @@ class MainWindow(QMainWindow):
         self.menubar = MenuBar(self)  # Criar a instância de MenuBar
         self.tabs = Tabs(self.menubar)  # Passar a instância de MenuBar para Tabs
         
-        self.Navbar()
+        if Tokens.AWS_S3 != None: self.Navbar()
  
         
         self.stacked_widget.addWidget(self.tabs)

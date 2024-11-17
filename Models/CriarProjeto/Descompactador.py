@@ -4,7 +4,7 @@ import zipfile
 import patoolib
 from Util import Util
 from PyQt6.QtCore import QTimer, QThread, QObject, pyqtSignal, Qt
-from PyQt6.QtWidgets import QLabel, QWidget, QGridLayout, QProgressBar
+import Util.CustomWidgets as cw
 
 class Descompact(QObject):
     progress_signal = pyqtSignal(int, int)  # Para comunicar o progresso
@@ -153,19 +153,19 @@ class Worker(QObject):
         self.finished.emit()  # Emite sinal de finalização
 
 
-class ProgressDialog(QWidget):
+class ProgressDialog(cw.Widget):
     def __init__(self, projeto):
         super().__init__()
-        layout = QGridLayout()
+        layout = cw.GridLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
         layout.setContentsMargins(10, 20, 10, 10)
 
-        self.titulo = QLabel(f"Aguarde! Estou criando o projeto: {projeto} para você! ^^")
+        self.titulo = cw.Label(f"Aguarde! Estou criando o projeto: {projeto} para você! ^^")
         self.titulo.setObjectName("grande")
-        self.subtitulo = QLabel("Etapa atual: carregando")
+        self.subtitulo = cw.Label("Etapa atual: carregando")
         self.subtitulo.setObjectName("medio")
 
-        self.progress_bar = QProgressBar()
+        self.progress_bar = cw.ProgressBar()
         self.progress_bar.setValue(0)
 
         layout.addWidget(self.titulo,0,0)

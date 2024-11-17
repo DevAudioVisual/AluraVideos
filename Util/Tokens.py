@@ -1,3 +1,4 @@
+import json
 import os
 import jwt
 import requests
@@ -7,14 +8,13 @@ from Util import Util
 
 GITHUB = None
 VIMEO = None
-PIXABAY = None
 AWS_S3 = None
 
 def LoadKeys():
   global GITHUB,VIMEO,PIXABAY,AWS_S3
  #credentials = Credentials()
   try:
-    key = os.getenv("LOGIN_KEY")
+    key = "O+k9G/kMiXqcm+FRKGvAWQ=="
     dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
     tokens = os.path.join(dir,"credentials.json") 
     with open(tokens, 'r') as f:
@@ -25,7 +25,6 @@ def LoadKeys():
                          timeout=60)
     GITHUB = response.json().get("GITHUB")#credentials.getKeys()["GITHUB"]
     VIMEO = ""#credentials.getKeys()["VIMEO"]
-    PIXABAY = response.json().get("PIXABAY")#credentials.getKeys()["PIXABAY"]
     AWS_S3 = response.json().get("S3")#credentials.getKeys()["S3"]
     return True
   except Exception as e:

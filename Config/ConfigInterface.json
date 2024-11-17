@@ -5,9 +5,8 @@
         "Conversor": [true, 1],
         "S3": [true, 2],
         "Vimeo": [true,3],
-        "Imagens Pixabay": [true, 4],
-        "Limpar Cache": [true, 5],
-        "Renamer": [true, 6],
-        "VideoValidator": [false, 7]
+        "Limpar Cache": [true, 4],
+        "Renamer": [true, 5],
+        "VideoValidator": [false, 6]
     }
 }

@@ -75,6 +75,7 @@ class Interface(cw.Widget):
             layoutFooter.setContentsMargins(10, 20, 10, 10)
             
             label_footer = cw.Label("Criadas por Denis Santos para o time de Vídeos da Alura Online.")
+            label_footer.setWordWrap(False)
             label_footer.setObjectName("pequeno-normal")
             
             # Add footer label to the footer layout
@@ -86,6 +87,7 @@ class Interface(cw.Widget):
             self.setLayout(main_layout)
             
             def updateNames():
+                if Tokens.AWS_S3 == None: return
                 notas_effector, version_effector = GitRequest("Effector").initRequest()
                 notas_ordinem, version_ordinem = GitRequest("Ordinem").initRequest()
                 notas_notabillity, version_notabillity = GitRequest("Notability").initRequest()

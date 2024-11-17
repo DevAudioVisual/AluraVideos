@@ -153,11 +153,12 @@ class LoadingThread(QThread):
         if data:
             self.etapa.emit("Inicializando TensorFlow")
             import tensorflow
-        #QThread.msleep(500)
+        QThread.msleep(500)
 
     def verificar_atualizacoes(self):
-        self.etapa.emit("Buscando por atualizações")
-        self.execute_in_main_thread.emit(self.verificar_atualizacoes) 
+        if Tokens.AWS_S3 != None: 
+            self.etapa.emit("Buscando por atualizações")
+            self.execute_in_main_thread.emit(self.verificar_atualizacoes) 
         #QThread.msleep(500)
     
     def validar_credenciais(self):

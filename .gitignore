@@ -17,6 +17,8 @@ QtInterfaces/ImagensPixaBay/keys.json
 interface_invisivel.png
 z_KeyEToken/
 .github/
+keys.json
+builder copy.bat
 build/
 .vscode/
 z_Old/

@@ -1,6 +1,5 @@
-import json
+from genericpath import isdir
 import os
-from pathlib import Path
 import jwt
 from Config import LoadConfigs
 import boto3
@@ -18,6 +17,7 @@ class S3Model(QObject):
         global AWS_S3
         self.KEY = Tokens.AWS_S3
         self.s3_client = None
+        self.setS3Client()
         self.bucket_name = "equipevideos"
         self.downloaded = False
         self.config = TransferConfig(
@@ -26,7 +26,6 @@ class S3Model(QObject):
             use_threads=True,
             max_io_queue=1000,
         )
-
     def resetCredentials(self):
         self.s3_client = None
         LoadConfigs.Config.Reset("Credentials", reabrir=False)
@@ -82,11 +81,17 @@ class S3Model(QObject):
         
     def startUpload(self, local_folder_path, destination_folder):
         self.start()
-        total_size = sum(os.path.getsize(os.path.join(root, file)) for root, _, files in os.walk(local_folder_path) for file in files)
+        total_size = 0
+        for diretorio in local_folder_path:
+            for root, dirs, files in os.walk(diretorio):
+                for f in files:
+                    filepath = os.path.join(root, f)
+                    total_size += os.path.getsize(filepath)
         self.progressdialog.setTotal_size(total_size)
 
         print(local_folder_path, destination_folder)
         self.worker_thread.started.connect(lambda: self.worker.upload_folder(local_folder_path, destination_folder))
+           
         self.worker_thread.start()
         
     def update(self):

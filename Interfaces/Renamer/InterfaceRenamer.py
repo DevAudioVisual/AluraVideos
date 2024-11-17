@@ -6,7 +6,7 @@ import time
 from Util import Util
 import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon,QMovie
+from PyQt6.QtGui import QIcon
 from bs4 import BeautifulSoup
 import pandas as pd
 import requests
@@ -20,14 +20,12 @@ class Interface(cw.Widget):
         
         self.setContentsMargins(10, 10, 10, 10)
         
-        layoutPrincipal = cw.VBoxLayout()
-        
         self.entrada_videos = {}
         self.dados = {}
                 
-        self.label_videos = cw.Label("Videos:")
+        self.label_videos = cw.Label("Arquivos para renomear:")
         self.campo_videos = cw.LineEdit()
-        self.campo_videos.setPlaceholderText("Busque pelos vídeos para renomear")
+        self.campo_videos.setPlaceholderText("Busque pelos arquivos para renomear")
         self.campo_videos.setClearButtonEnabled(True)
         self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
         self.action_campo_videos.setToolTip("Buscar")
@@ -43,7 +41,7 @@ class Interface(cw.Widget):
         self.action_campo_sheets.triggered.connect(lambda: threading.Thread(target=self.buscar_na_planilha,daemon=True).start())
         
         self.action_campo_sheets = self.campo_sheets.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
-        self.action_campo_sheets.setToolTip("Buscar videos")
+        self.action_campo_sheets.setToolTip("Buscar arquivos")
         self.action_campo_sheets.triggered.connect(lambda: self.setFileVideos())
         
         self.label_id = cw.Label("ID do curso:")
@@ -139,7 +137,7 @@ class Interface(cw.Widget):
                 if match:
                     numero_aula = match.group(1)
                 else:
-                    numero_aula = None
+                    numero_aula = ""
                 
                 novo_nome_arquivo = (self.campo_formato.text()
                                      .replace("{id}",self.campo_id.text())
@@ -166,7 +164,7 @@ class Interface(cw.Widget):
                             Util.LogError("RenamerSheets",f"Erro: Não foi possível renomear o arquivo {caminho_antigo} após {MAX_TENTATIVAS} tentativas. {e}")
         if erro == False:
             print("Sucesso!")
-            cw.MessageBox.information(None,"Sucesso","Videos renomeados com sucesso!")
+            cw.MessageBox.information(None,"Sucesso","Arquivos renomeados com sucesso!")
         else:
             print("Erro")
             #Util.LogError("RenamerSheets",f"Erro ao renomear o arquivo {caminho_antigo}")
@@ -188,13 +186,9 @@ class Interface(cw.Widget):
         self.carregando = False
                 
     def buscarVideos(self):
-        # Define os filtros para arquivos de vídeo
-        filters = "Arquivos de Vídeo (*.mp4 *.avi *.mov *.mkv);;Todos os Arquivos (*)"
-        # Abre a caixa de diálogo para seleção de múltiplos arquivos
         file_names = filedialog.askopenfilenames(
         initialdir="/",
-        title="Selecione os arquivos de vídeo",
-        filetypes=(("Arquivos de vídeo", "*.mp4 *.avi *.mkv *.mov"),("Todos os arquivos", "*.*")))
+        title="Selecione os arquivos para renomear")
         if file_names:
             self.campo_videos.setText(file_names[0])
             for file_name in file_names:

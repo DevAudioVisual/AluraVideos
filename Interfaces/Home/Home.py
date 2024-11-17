@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import webbrowser
@@ -87,9 +88,8 @@ class Interface(cw.Widget):
             
             if response.status_code == 200:
                 # Se a autenticação for bem-sucedida, obtem o token de acesso
-                print("Autenticação bem-sucedida.")
-                
-                key = os.getenv("LOGIN_KEY")
+
+                key = "O+k9G/kMiXqcm+FRKGvAWQ=="
                 encoded_jwt = jwt.encode(payload, key, algorithm='HS256')
             
                 with open(self.tokens, 'w') as f:
