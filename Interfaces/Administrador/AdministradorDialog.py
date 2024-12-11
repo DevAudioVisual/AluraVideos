@@ -122,8 +122,8 @@ class TabelaDialog(QDialog):
           if response.status_code == 200:
             json_dados = response.json().get("dados")
             self.tableWidget.setRowCount(len(json_dados))
-            self.tableWidget.setColumnCount(5)
-            self.tableWidget.setHorizontalHeaderLabels(["Nome", "Senha", "Time", "ADM", "Logins"])
+            self.tableWidget.setColumnCount(6)
+            self.tableWidget.setHorizontalHeaderLabels(["Nome", "Senha", "Time", "ADM", "Logins", "Version"])
             # Populando a QTableWidget com os dados do JSON
             for row_index, row_data in enumerate(json_dados):
                 self.tableWidget.setItem(row_index, 0, QTableWidgetItem(row_data["nome"]))
@@ -131,6 +131,7 @@ class TabelaDialog(QDialog):
                 self.tableWidget.setItem(row_index, 2, QTableWidgetItem(row_data["time"]))
                 self.tableWidget.setItem(row_index, 3, QTableWidgetItem(str(row_data["adm"]))) 
                 self.tableWidget.setItem(row_index, 4, QTableWidgetItem(str(row_data["LOGINS"]))) 
+                self.tableWidget.setItem(row_index, 5, QTableWidgetItem(str(row_data["version"]))) 
           else:
             print(response.content)
         except Exception as e:

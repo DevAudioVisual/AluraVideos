@@ -8,6 +8,28 @@ from urllib.parse import urlparse
 import unicodedata
 import winreg
 
+def remover_extensao(nome_arquivo):
+    try:
+        nome, extensao = os.path.splitext(nome_arquivo)
+        extensao = extensao.lower()  # Converter para minúsculas para comparação
+        formatos_video = ['.mp4', '.avi', '.mov', '.mkv', '.wmv', '.flv', '.webm', '.wav', '.mp3']  # Lista de formatos de vídeo
+        if extensao in formatos_video:
+            return nome
+        else:
+            return nome_arquivo
+    except Exception as e:
+        print(f"Erro ao remover extensão: {e}")
+        return nome_arquivo
+
+def format_size(size):
+    if size >= 1024**3:  # GB
+        return f"{size / (1024**3):.2f} GB"
+    elif size >= 1024**2:  # MB
+        return f"{size / (1024**2):.2f} MB"
+    elif size >= 1024:  # KB
+        return f"{size / 1024:.2f} KB"
+    else:
+        return f"{size} B"
 
 
 def verificar_premiere_pro():

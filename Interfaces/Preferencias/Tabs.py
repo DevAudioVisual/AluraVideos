@@ -1,11 +1,11 @@
 from PyQt6.QtWidgets import QVBoxLayout, QTabWidget
-from Interfaces.ProjectCreator import InterfaceProjectCreator
+from Interfaces.CriarProjeto import InterfaceCriarProjeto
 
 class Tabs(QTabWidget):
     def __init__(self):  # Passar a instância de MenuBar
         super().__init__()
 
-        self.InterfaceProjectCreator = InterfaceProjectCreator.Interface()
+        self.InterfaceProjectCreator = InterfaceCriarProjeto.Interface()
         
         self.setContentsMargins(10, 20, 10, 10)
         

@@ -62,6 +62,7 @@ class Interface(cw.Widget):
             label_ajuda.setObjectName("medio")
             
             button_ajuda = cw.PushButton("Acessar documentação")
+            button_ajuda.setToolTip("Acesse a documentação oficial do AluraVideos")
             cw.setSizePolicy(button_ajuda).setFixed()
             button_ajuda.clicked.connect(lambda: webbrowser.open("https://www.notion.so/grupoalura/AluraVideos-8589d6eab57744b7a9ccf4080c0b6bca?pvs=25"))
             

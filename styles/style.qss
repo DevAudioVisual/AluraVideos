@@ -185,15 +185,15 @@ QTabWidget::tab-bar {
 
 /* move to the right by 5px */
 QTabBar::tab {
-  /* Agrupando estilos de QTabBar */
   background: transparent;
   color: white;
-  min-width: 8ex;
+  min-width: 10ex;
+  min-height: 10ex;
   padding: 3px;
-  margin-right: 3px; }
+  margin-right: 5px; }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-  background: #4B70F5; }
+  border-bottom: 2px solid #4B70F5; }
 
 QToolTip {
   padding: 5px;

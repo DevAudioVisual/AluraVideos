@@ -21,7 +21,7 @@ class Interface(cw.Widget):
         self.campo_videos.setPlaceholderText("Arquivos para converter")
         self.campo_videos.setClearButtonEnabled(True)
         self.action_campo_videos = self.campo_videos.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
-        self.action_campo_videos.setToolTip("Buscar")
+        self.action_campo_videos.setToolTip("Buscar arquivos")
         self.action_campo_videos.triggered.connect(self.setVideos)
         
         self.label_saida = cw.Label("Saida:")
@@ -29,30 +29,35 @@ class Interface(cw.Widget):
         self.campo_saida.setPlaceholderText("Pasta de saída")
         self.campo_saida.setClearButtonEnabled(True)
         self.action_campo_saida = self.campo_saida.addAction(QIcon(r"Assets\svg\folder.svg"),cw.LineEdit.ActionPosition.TrailingPosition)
-        self.action_campo_saida.setToolTip("Buscar")
+        self.action_campo_saida.setToolTip("Buscar arquivos")
         self.action_campo_saida.triggered.connect(self.setDirSaida)
         
         self.label_converter_para = cw.Label("Converter para:")
         self.combo_tipo = cw.ComboBox()
+        self.combo_tipo.setToolTip("Formato de arquivo para conversão")
         self.combo_tipo.addItems([".mp4",".avi",".mov",".mkv",".mp3",".wav"])
         self.combo_tipo.currentTextChanged.connect(self.ativar_widgets_audio)
         
         self.checkbox_ativar = cw.CheckBox("Manter as propriedades originais", self)
+        self.checkbox_ativar.setToolTip("Mantém as propriedades originais do vídeo")
         self.checkbox_ativar.setChecked(True)
         self.checkbox_ativar.stateChanged.connect(self.ativar_widgets)
         
         self.label_Encoder = cw.Label("Encoder:")
         self.combo_Encoder = cw.ComboBox()
+        self.combo_Encoder.setToolTip("Codificação de arquivo\nh264_nvenc - Utiliza GPU para codificação H264\nlibx264 - Utiliza CPU para codificação H264")
         self.combo_Encoder.addItems(["h264_nvenc","libx264"])
         
         self.label_preset = cw.Label("Preset:")
         self.combo_preset = cw.ComboBox()
+        self.combo_preset.setToolTip("Preset de compressão de arquivo\n- fast = Preset rápido, ocasiona em uma rápida conversão e um arquivo maior.\n- Medium = preset médio, ocasiona em uma velocidade média de conversão e um arquivo ligeralmente menor.\n- Slow = preset lento, ocasiona em uma velocidade lenta de conversão e um arquivo menor.")
         self.combo_preset.addItems(["fast","medium","slow"])
         
         self.label_crf = cw.Label("CRF: 10")
         def atualizar_label():
           self.label_crf.setText(f"CRF: {self.slider_crf.value()}")
         self.slider_crf = cw.Slider(Qt.Orientation.Horizontal)
+        self.slider_crf.setToolTip("Qualidade de codificação, valores menores ocasionam em uma melhor qualidade, e também um maior tamanho de arquivo.")
         self.slider_crf.setTickPosition(cw.Slider.TickPosition.TicksBelow)
         self.slider_crf.valueChanged.connect(atualizar_label)
         self.slider_crf.setTickInterval(10)  
@@ -62,6 +67,7 @@ class Interface(cw.Widget):
         
         self.label_resolucao = cw.Label("Resolução:")
         self.combo_resolucao = cw.ComboBox()
+        self.combo_resolucao.setToolTip("Resolução de conversão")
         self.combo_resolucao.addItem("Original")
         self.combo_resolucao.addItem("Dual-HD 3840x1080 32:9")
         self.combo_resolucao.addItem("UW-HD 2560x720 21:9)")
@@ -185,7 +191,7 @@ class ConvertThread(QThread):
             for video in self.videos:
                 print("Iniciando conversão para:", video)
                 nome = os.path.basename(video)
-                nome = os.path.splitext(nome)[0] + formato_video
+                nome = os.path.splitext(nome)[0] + "_CONVERTIDO" + formato_video
                 caminho_completo = os.path.join(self.dir_saida, nome)
                 crf_value = int(self.slider_crf.value())
                 res_item = self.combo_resolucao.currentText()

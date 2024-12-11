@@ -2,8 +2,9 @@ import time
 import webbrowser
 import shutil
 import os
-from Models.CriarProjeto import Descompactador, DropDownloader
-from Interfaces.ProjectCreator import InterfaceProjectCreator
+from Models.CriarProjeto.Downloader import DropDownloader
+from Interfaces.CriarProjeto import InterfaceCriarProjeto
+from Models.CriarProjeto.Descompactador import Descompactador
 from Util import TempoVideos, Util
 from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QTimer,QCoreApplication
@@ -32,7 +33,7 @@ class ProjectCreator():
         self.main_window = main_window
         
         self.Mensagem = "Projeto: "+self.nome_projeto+" criado com sucesso!"
-        self.Interface = InterfaceProjectCreator.Interface()
+        self.Interface = InterfaceCriarProjeto.Interface()
         
     def create(self):
         if not self.CriarEm.text(): 

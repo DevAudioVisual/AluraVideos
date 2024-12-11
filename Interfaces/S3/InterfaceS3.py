@@ -72,6 +72,7 @@ class Interface(cw.Widget):
       self.search_input.setPlaceholderText("Buscar")
       self.search_input.textChanged.connect(self.proxy_model.setFilterRegularExpression)
       search_input_action = self.search_input.addAction(QIcon(r"Assets\Icons\reload.ico"), cw.LineEdit.ActionPosition.TrailingPosition)
+      search_input_action.setToolTip("Recarregar arvore de arquivos")
       search_input_action.triggered.connect(self.refresh_tree)
       
       self.tree_view = S3TreeView(self.model,self.proxy_model,self.Standardmodel)

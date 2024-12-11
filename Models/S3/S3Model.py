@@ -7,7 +7,7 @@ from boto3.s3.transfer import TransferConfig
 from botocore.config import Config
 from PyQt6.QtWidgets import QMessageBox
 from PyQt6.QtCore import QObject, QThread, QTimer
-from Models.S3.ProgressDialog import ProgressDialog
+from Interfaces.S3.ProgressDialog import ProgressDialog
 from Models.S3.Workers.S3Worker import S3Worker
 from Util import Tokens
 

@@ -6,7 +6,6 @@
         "S3": [true, 2],
         "Vimeo": [true,3],
         "Limpar Cache": [true, 4],
-        "Renamer": [true, 5],
-        "VideoValidator": [false, 6]
+        "Renamer": [true, 5]
     }
 }

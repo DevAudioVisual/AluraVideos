@@ -1,18 +1,12 @@
-import json
 import os
 import jwt
 import requests
-import yaml
-from cryptography.fernet import Fernet
-from Util import Util
 
 GITHUB = None
-VIMEO = None
 AWS_S3 = None
 
 def LoadKeys():
-  global GITHUB,VIMEO,PIXABAY,AWS_S3
- #credentials = Credentials()
+  global GITHUB,PIXABAY,AWS_S3
   try:
     key = "O+k9G/kMiXqcm+FRKGvAWQ=="
     dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
@@ -20,70 +14,29 @@ def LoadKeys():
     with open(tokens, 'r') as f:
         encoded_jwt = f.read()  # Lê o token do arquivo
         decoded_jwt = jwt.decode(encoded_jwt, key, algorithms=['HS256'])
+    import Main
+    decoded_jwt["version"] = f"{Main.version}"
     response = requests.post("https://samuka.pythonanywhere.com/login",
                          json=decoded_jwt,
                          timeout=60)
-    GITHUB = response.json().get("GITHUB")#credentials.getKeys()["GITHUB"]
-    VIMEO = ""#credentials.getKeys()["VIMEO"]
-    AWS_S3 = response.json().get("S3")#credentials.getKeys()["S3"]
+    JWT_TOKEN = response.json().get("JWT_TOKEN")
+    JWT_DECODER = "b'hXP5vrphNUNwEHDmfV8E1vxlQ28jLZfEpR_BN5SxqUASDDzdassd133x@5!23$%¨SAD2o='"
+    
+    KEYS = jwt.decode(JWT_TOKEN,JWT_DECODER,algorithms=['HS256'])
+    GITHUB = KEYS["GITHUB"]
+    AWS_S3 = KEYS["AWS_S3"]
     return True
   except Exception as e:
     return False
-    
-  
 
-class Credentialss():
-    def __init__(self):
-        self.key = None
-        self.dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
-        self.file = os.path.join(self.dir,"tokens.yml")
-    
-    def getKeys(self):
-      self.loadKey()
-      try:
-        dados_yaml = self.decript()
-        credenciais = yaml.safe_load(dados_yaml)
-        return credenciais
-      except Exception as e:
-        print(e)
-        Util.LogError("Tokens","Arquivo tokens.yml não encontrado",dialog=False)
-        raise e
-    
-    def encript(self):
-      self.generateKey()
-      f = Fernet(self.key)
-      
-      with open(r"z_KeyEToken\tokens_originais.yml", "r") as arquivo:
-          dados_originais = yaml.safe_load(arquivo)
-          
-      dados_originais = yaml.dump(dados_originais).encode()
-      dados_criptografados = f.encrypt(dados_originais)
-      
-      with open(self.file, "wb") as arquivo:
-          arquivo.write(dados_criptografados)
-      print("Dados criptografados")
-    
-    def decript(self):
-      f = Fernet(self.key)
-      with open(self.file, "rb") as arquivo:
-          dados_criptografados = arquivo.read()
-      dados_originais = f.decrypt(dados_criptografados)
-      
-      # Salva os dados criptografados
-      with open(self.file, "wb") as arquivo:
-          arquivo.write(dados_criptografados)
-          
-      return dados_originais.decode()
-    
-    def loadKey(self):
-      try:
-        self.key = open(os.path.join(self.dir,"key.key"), "rb").read()
-      except Exception as e:
-        print(e)
-        Util.LogError("Tokens","Arquivo key.key não encontrado.",dialog=False)
-      
-    def generateKey(self):
-      print("Gerando keys")
-      self.key = Fernet.generate_key()
-      with open(os.path.join(self.dir,"key.key"), "wb") as arquivo_chave:
-          arquivo_chave.write(self.key)
+# payload = {
+#     "GITHUB": "",
+#     "AWS_S3": ""
+#     }
+#key = "b'hXP5vrphNUNwEHDmfV8E1vxlQ28jLZfEpR_BN5SxqUASDDzdassd133x@5!23$%¨SAD2o='"
+#print(jwt.encode(payload=payload,key=key,algorithm="HS256"))
+
+#print(jwt.decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJHSVRIVUIiOiJnaHBfa0NFS0E2U003enFwZmY4dzR0SlBYVWxaVlpRYXBCMVN4cEJoIiwiQVdTX1MzIjoiOHM1JUhIc2RvIUp3Y20xX1UzMTVnQGxhbFlDMkV1U2o0QGowaHo5NG42NWp3JDZjNmUtNjc4N2gzZGEzNTgifQ.OvpZ1f7JyJ1kqlAczI4njAb9WWoH9orZ32updVnXwV4",key,algorithms=['HS256']))
+
+#Credentials().encript()
+#print(Fernet.generate_key())
