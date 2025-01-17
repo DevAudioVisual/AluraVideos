@@ -2,10 +2,11 @@
     "barra_lateral_pequena": false,
     "Janelas": {
         "Criar Projeto": [true, 0],
-        "Conversor": [true, 1],
-        "S3": [true, 2],
-        "Vimeo": [true,3],
-        "Limpar Cache": [true, 4],
-        "Renamer": [true, 5]
+        "Video Uploader": [true, 1],
+        "Conversor": [true, 2],
+        "S3": [true, 3],
+        "Vimeo": [true, 4],
+        "Limpar Cache": [true, 5],
+        "Renamer": [true, 6]
     }
 }

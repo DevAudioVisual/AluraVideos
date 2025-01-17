@@ -12,9 +12,8 @@ from Interfaces.MainWindow.LoadingScreen.LoadingThread import LoadingThread
 from Models.AutoUpdate import AutoUpdate
 from Interfaces.MainWindow import MainWindow
 import qtsass
-from dotenv import load_dotenv
-# Metadados da aplicação
-version = "V1.1.3"
+
+version = "V1.1.4"
 
 # Função para verificar se o usuário possui permissões de administrador
 def is_admin():
@@ -33,7 +32,6 @@ def run_as_admin():
 
 # Função principal da aplicação
 def main():
-    load_dotenv()
     #run_as_admin()
     setup_signal_handlers()
     setup_logging()

@@ -57,6 +57,7 @@ class Interface(cw.Widget):
         self.campo_formato = cw.LineEdit()
         self.campo_formato.setPlaceholderText("Variáveis disponíveis: {id} {aula} {titulo} {sufixo}")
         self.campo_formato.setText("{id}-video{aula}-{titulo}-{sufixo}")
+        self.campo_formato.setToolTip("Variáveis disponíveis: {id} {aula} {titulo} {sufixo}")
         
         self.buttonrenomear = cw.PushButton("Renomear")
         self.buttonrenomear.clicked.connect(lambda: Renomear(pasta=os.path.dirname(self.campo_videos.text()),

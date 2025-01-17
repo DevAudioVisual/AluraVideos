@@ -7,6 +7,8 @@ from Interfaces.Renamer import InterfaceRenamer
 from Interfaces.S3 import InterfaceS3
 from PyQt6.QtGui import QAction
 
+from Interfaces.VideoUploader import InterfaceVideoUploader
+
 
 class Tabs(QTabWidget):
     def __init__(self, menubar):  # Passar a instância de MenuBar
@@ -29,27 +31,51 @@ class Tabs(QTabWidget):
         #self.setToolTip("Dica: Você pode clicar com o botão direito e fechar guias não desejadas.\nAlém de poder posicionalas ao seu agrado! :D")
         
         
-        abas = {
-            "Criar Projeto": {InterfaceCriarProjeto.Interface(): self.data["Criar Projeto"][0]},
-            "Conversor": {InterfaceConversor.Interface(): self.data["Conversor"][0]},
-            "S3": {InterfaceS3.Interface(): self.data["S3"][0]},
-            "Limpar Cache": {InterfaceLimparCache.Interface(): self.data["Limpar Cache"][0]},
-            "Renamer": {InterfaceRenamer.Interface(): self.data["Renamer"][0]},
-            #"VideoValidator": {InterfaceValidator.Interface(): self.data["VideoValidator"][0]},
+        self.abas = {
+            "Criar Projeto": {
+                "modulo": InterfaceCriarProjeto.Interface(), 
+                "ativado": self.data["Criar Projeto"][0], 
+                "ToolTip": "Criador de projetos para o time de Edição"
+            },
+            "Video Uploader": {
+                "modulo": InterfaceVideoUploader.Interface(), 
+                "ativado": self.data["Video Uploader"][0], 
+                "ToolTip": "Uploader de Vídeos"
+            },
+            "Conversor": {
+                "modulo": InterfaceConversor.Interface(), 
+                "ativado": self.data["Conversor"][0], 
+                "ToolTip": "Conversor de arquivos"
+            },
+            "S3": {
+                "modulo": InterfaceS3.Interface(), 
+                "ativado": self.data["S3"][0], 
+                "ToolTip": "FTP para o servidor Amazon S3"
+            },
+            "Limpar Cache": {
+                "modulo": InterfaceLimparCache.Interface(), 
+                "ativado": self.data["Limpar Cache"][0], 
+                "ToolTip": "Limpador de cache do Windows"
+            },
+            "Renamer": {
+                "modulo": InterfaceRenamer.Interface(), 
+                "ativado": self.data["Renamer"][0], 
+                "ToolTip": "Renomeador de arquivos"
+            },
         }
         abas_para_fechar = {}
-        for nome_aba, valor in abas.items():  # Alterado de dict para valor
-            if isinstance(valor, dict):  # Verifica se o valor é um dicionário
-                for modulo, ativado in valor.items():
-                    self.janelas[nome_aba] = ativado
-                    self.janelasModulo[nome_aba] = modulo
-                    if ativado:
-                        self.insertTab(self.data[nome_aba][1],modulo,nome_aba)
-                    else:
-                        abas_para_fechar[nome_aba] = modulo
+        for nome_aba, valores in self.abas.items():
+            modulo = valores["modulo"]
+            ativado = valores["ativado"]
+            tooltip = valores["ToolTip"]
+
+            self.janelas[nome_aba] = ativado
+            self.janelasModulo[nome_aba] = modulo
+            if ativado:
+                index = self.insertTab(self.data[nome_aba][1], modulo, nome_aba)
+                self.setTabToolTip(index, tooltip)
             else:
-                # Aqui você pode adicionar um tratamento para o caso de 'PM3'
-                print(f"Valor associado a '{nome_aba}' não é um dicionário: {valor}")
+                abas_para_fechar[nome_aba] = modulo
                 
         for nome_aba, modulo in abas_para_fechar.items():
             self.close_tab(self.insertTab(self.data[nome_aba][1],modulo,nome_aba))

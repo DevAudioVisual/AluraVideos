@@ -10,7 +10,6 @@ from Config import LoadConfigs
 from Models.CriarProjeto import CriarProjeto
 from Interfaces.MainWindow import MainWindow
 global Config
-import tkinter as tk
 from tkinter import filedialog
 
 class Interface(cw.Widget):

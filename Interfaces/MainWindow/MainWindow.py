@@ -60,7 +60,6 @@ class MainWindow(QMainWindow):
         
         #SystemTrayIcon.SystemTrayIcon(self)
         #TeclasAtalho().registrarAtalhos()
-
     def closeEvent(self, event):
         try:
             data = LoadConfigs.Config.getConfigData(config="ConfigInterface") 
@@ -69,6 +68,7 @@ class MainWindow(QMainWindow):
             self.tabs.save()
         except Exception as e:
             print(e)
+        event.accept()
     def Navbar(self):
         # Criar a barra de ferramentas (navbar)
         self.toolbar = cw.ToolBar("", self)

@@ -3,10 +3,11 @@ import jwt
 import requests
 
 GITHUB = None
+GITHUB2 = None
 AWS_S3 = None
 
 def LoadKeys():
-  global GITHUB,PIXABAY,AWS_S3
+  global GITHUB,GITHUB2,AWS_S3
   try:
     key = "O+k9G/kMiXqcm+FRKGvAWQ=="
     dir = os.path.join(os.path.expanduser("~"), "Documents", "AluraVideos")
@@ -24,6 +25,7 @@ def LoadKeys():
     
     KEYS = jwt.decode(JWT_TOKEN,JWT_DECODER,algorithms=['HS256'])
     GITHUB = KEYS["GITHUB"]
+    GITHUB2 = KEYS["GITHUB2"]
     AWS_S3 = KEYS["AWS_S3"]
     return True
   except Exception as e:
