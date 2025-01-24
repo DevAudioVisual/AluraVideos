@@ -26,7 +26,7 @@ class UploadWorker(QRunnable):
             )
             #QMessageBox.information(None, "Sucesso!", f"Upload concluido!\nLocal de acesso: {self.s3_key}")
             #self.progress_dialog.quit()
-            print(f"Upload concluído para {self.s3_key}")
+            #print(f"Upload concluído para {self.s3_key}")
             #messagebox.showinfo("Sucesso!",f"Upload concluído para {self.s3_key}")
             #QMessageBox.information(None,"Aviso",f"Upload concluído para {self.s3_key}")
         except Exception as e:

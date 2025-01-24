@@ -175,6 +175,17 @@ QLineEdit:focus, QLineEdit:hover {
   selection-background-color: #4B70F5;
   border-color: #4B70F5; }
 
+QSpinBox {
+  background-color: #424242;
+  color: white; }
+
+QSpinBox:hover {
+  border-color: #4B70F5; }
+
+QSpinBox:focus {
+  selection-background-color: #4B70F5;
+  border-color: #4B70F5; }
+
 QTabBar::scroller {
   /* the width of the scroll buttons */
   width: 20px; }

@@ -2,7 +2,6 @@ import os
 import Util.CustomWidgets as cw
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFileDialog
-from PyQt6.QtGui import QIcon, QCursor, QAction
 global Config
 
 class FileSelector(cw.Widget):
@@ -14,6 +13,10 @@ class FileSelector(cw.Widget):
         self.select_button = cw.PushButton("Selecionar Arquivos")
         self.select_button.clicked.connect(self.select_files)
         self.main_layout.addWidget(self.select_button)
+        
+        self.clear_button = cw.PushButton("Limpar")
+        self.clear_button.clicked.connect(self.clear)
+        self.main_layout.addWidget(self.clear_button)
 
         self.file_list = cw.ListWidget()
         self.main_layout.addWidget(self.file_list)
@@ -22,7 +25,9 @@ class FileSelector(cw.Widget):
         self.main_layout.addWidget(self.count_label)
         
         self.setLayout(self.main_layout)
-
+    def clear(self):
+        self.file_list.clear()
+        self.update_count_label()
     def select_files(self):
         """Abre uma janela de diálogo para selecionar arquivos de vídeo 
         e adiciona os arquivos selecionados à lista."""

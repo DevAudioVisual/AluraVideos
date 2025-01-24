@@ -1,8 +1,11 @@
-from PyQt6.QtWidgets import QDialog,QSlider,QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
+from PyQt6.QtWidgets import QSpinBox, QDialog,QSlider,QMenu, QScrollArea, QGroupBox,QCheckBox, QTableWidgetItem, QStackedWidget, QProgressBar, QToolButton,QToolBar, QApplication, QMainWindow, QMessageBox, QListWidgetItem, QComboBox, QPushButton, QLabel, QSpacerItem, QVBoxLayout, QWidget, QGridLayout, QSizePolicy, QLineEdit, QTableWidget, QListWidget, QHBoxLayout
 from PyQt6.QtGui import QCursor
 from PyQt6.QtCore import Qt, QRect, QPropertyAnimation, QEasingCurve
 from PyQt6.QtGui import QPainter, QLinearGradient,QColor
 
+class SpinBox(QSpinBox):
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
 class Dialog(QDialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

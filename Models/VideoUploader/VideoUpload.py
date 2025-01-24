@@ -8,20 +8,22 @@ from PyQt6.QtCore import QThread, pyqtSignal
 from Models.VideoUploader import UploaderTokenManager
 
 class UploadWorker(QThread):
-    progress_signal = pyqtSignal(float, str, float)
+    progress_signal = pyqtSignal(str, float, str)
     finished_signal = pyqtSignal(str, str)
     error_signal = pyqtSignal(str)
 
-    def __init__(self, showcase_id, file_path, chunk_size=1024*1024, max_retries=3):
+    def __init__(self, showcase_id, file_path, max_retries=3):
         super().__init__()
         self.showcase_id = showcase_id
         self.file_path = file_path
-        self.chunk_size = chunk_size
         self.max_retries = max_retries
 
     def run(self):
+        
         print("Iniciando upload do video:", self.file_path)
 
+        self.progress_counter = 0
+        
         url = "https://video-uploader.alura.com.br/api/video/upload"
 
         headers = {
@@ -61,38 +63,44 @@ class UploadWorker(QThread):
                 speed_str = f"{speed_mb:.2f} MB/s"
             else:
                 speed_str = f"{speed_kb:.2f} KB/s"
+                
+            horas, minutos, segundos = converte_segundos(int(f"{round(remaining_time)}"))
+            remaining_time = f"{horas}h {minutos}m {segundos}s"
 
-            self.progress_signal.emit(percent, speed_str, remaining_time)
-            print(f"Progresso: {percent:.2f}% - Velocidade: {speed_str} - Tempo restante: {remaining_time:.2f} segundos",end="\r")
+            self.progress_counter += 1
+            if self.progress_counter >= 200:  # Emite o sinal a cada 10 chamadas
+                self.progress_signal.emit(self.file_path, percent, remaining_time)
+                self.progress_counter = 0  # Reinicia o contador
+                print(f"Progresso: {percent:.2f}% - Velocidade: {speed_str} - Tempo restante: {remaining_time}",end="\r")
 
             last_bytes_read = monitor.bytes_read
             last_time = time.time()
 
-        retries = 0
-        while retries < self.max_retries:
-            try:
-                with open(self.file_path, 'rb') as file:
-                    encoder = MultipartEncoder(
-                        fields={
-                            'showcase': str(self.showcase_id),
-                            'file': (file_name, file, mime_type)
-                        }
-                    )
-                    monitor = MultipartEncoderMonitor(encoder, progress_callback)
-                    headers['Content-Type'] = monitor.content_type
-                    response = requests.post(url, headers=headers, data=monitor)
-                    response.raise_for_status()
+        try:
+            with open(self.file_path, 'rb') as file:
+                encoder = MultipartEncoder(
+                    fields={
+                        'showcase': str(self.showcase_id),
+                        'file': (file_name, file, mime_type)
+                    }
+                )
+                monitor = MultipartEncoderMonitor(encoder, progress_callback)
+                headers['Content-Type'] = monitor.content_type
+                response = requests.post(url, headers=headers, data=monitor)
+                response.raise_for_status()
 
-                    video_id = response.json()['uuid']
-                    self.finished_signal.emit(self.file_path, video_id)
-                    break
+                video_id = response.json()['uuid']
+                self.finished_signal.emit(self.file_path, video_id)       
 
-            except requests.exceptions.RequestException as e:
-                self.error_signal.emit(f"Erro ao subir o vídeo: {e}")
-                retries += 1
-            except (IndexError, KeyError, AttributeError) as e:
-                self.error_signal.emit(f"Erro ao extrair o ID do vídeo: {e}")
-                break
+        except requests.exceptions.RequestException as e:
+            self.error_signal.emit(self.file_path)
+        except (IndexError, KeyError, AttributeError) as e:
+            self.error_signal.emit(self.file_path)
 
-        if retries == self.max_retries:
-            self.error_signal.emit(f"Falha ao enviar o vídeo após {self.max_retries} tentativas.")
+            
+def converte_segundos(segundos):
+  horas = segundos // 3600
+  segundos %= 3600
+  minutos = segundos // 60
+  segundos %= 60
+  return horas, minutos, segundos
